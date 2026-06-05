@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CircleUser, FolderOpen, LogOut } from "lucide-react";
+import Link from "next/link";
+import { CircleUser, FolderOpen, Library, LogOut } from "lucide-react";
 import { signOut, useSession } from "@/lib/auth-client";
 import { UI, type Lang } from "@/lib/i18n";
 import { AuthDialog } from "./auth-dialog";
@@ -53,6 +54,12 @@ export function BarreCompte({ lang }: { lang: Lang }) {
           <DropdownMenuItem onClick={() => setScnOuvert(true)}>
             <FolderOpen className="size-4" />
             {UI.mesScenarios[lang]}
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/bibliotheque">
+              <Library className="size-4" />
+              {UI.navBibliotheque[lang]}
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => signOut()}>
             <LogOut className="size-4" />
