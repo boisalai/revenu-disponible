@@ -17,6 +17,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 /** Paramètres d'un des 4 types de ménage. */
 export interface ParamsTypePT {
@@ -74,9 +75,9 @@ export function primeAuTravail(
   revenuFamilialNet: number,
   nbAdultes: 1 | 2,
   aDesEnfants: boolean,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = PRIME_TRAVAIL[annee];
+  const p = (typeof annee === "number" ? PRIME_TRAVAIL[annee] : annee.primeTravail);
   const t = p.parType[nbAdultes][aDesEnfants ? "avecEnfants" : "sansEnfants"];
   const croissance = Math.min(
     Math.max(0, revenuTravail - t.revenuTravailExclu) * t.tauxCroissance,
@@ -91,7 +92,7 @@ export function primeAuTravailMenage(
   menage: Menage,
   revenuTravail: number,
   revenuFamilialNet: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   return primeAuTravail(revenuTravail, revenuFamilialNet, nbAdultes, menage.enfants.length > 0, annee);

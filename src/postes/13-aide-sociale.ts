@@ -19,6 +19,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 import { rrqMenage } from "./01-rrq";
 import { rqapMenage } from "./02-rqap";
 import { aeMenage } from "./03-ae";
@@ -68,9 +69,9 @@ export function aideSociale(
   age1: number,
   age2: number,
   nbEnfants: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = AIDE_SOCIALE[annee];
+  const p = (typeof annee === "number" ? AIDE_SOCIALE[annee] : annee.aideSociale);
   if (age1 >= 65 || (nbAdultes === 2 && age2 >= 65)) return 0; // 65 ans et + : PSV/SRG, pas d'aide sociale
   const base = prestationBase(nbAdultes, age1, age2, nbEnfants, p);
   const exemption = nbAdultes === 2 ? p.exemptionCouple : p.exemptionSeul;
@@ -81,7 +82,7 @@ export function aideSociale(
 }
 
 /** Aide de dernier recours du ménage (= QC_adr). Le revenu de travail est compté net des cotisations. */
-export function aideSocialeMenage(menage: Menage, annee: Annee): number {
+export function aideSocialeMenage(menage: Menage, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   const brut = menage.revenu1 + (nbAdultes === 2 ? menage.revenu2 : 0);
   const cotisations = rrqMenage(menage, annee).total + rqapMenage(menage, annee) + aeMenage(menage, annee);

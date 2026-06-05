@@ -22,6 +22,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 /** Barème à deux tranches de la prime, selon le nombre d'adultes du ménage. */
 export interface BaremeRAMQ {
@@ -76,9 +77,9 @@ export function primeRAMQparAdulte(
   revenuFamilialNet: number,
   nbAdultes: 1 | 2,
   nbEnfants: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = RAMQ[annee];
+  const p = (typeof annee === "number" ? RAMQ[annee] : annee.ramq);
   const exemption = p.exemption[nbAdultes][Math.min(Math.max(nbEnfants, 0), 2)];
   const base = Math.max(0, revenuFamilialNet - exemption);
   const { tranche1, tranche2 } = p.taux[nbAdultes];
@@ -101,7 +102,7 @@ export function primeRAMQparAdulte(
  * plus et touche le SRG maximal — ou ≥ 94 % de celui-ci). Ces conditions
  * dépendent de postes non encore construits (aide sociale ; PSV/SRG, poste 17).
  */
-export function ramqMenage(menage: Menage, revenuFamilialNet: number, annee: Annee): number {
+export function ramqMenage(menage: Menage, revenuFamilialNet: number, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   const parAdulte = primeRAMQparAdulte(revenuFamilialNet, nbAdultes, menage.enfants.length, annee);
   return parAdulte * nbAdultes;

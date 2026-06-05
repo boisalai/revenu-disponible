@@ -21,6 +21,7 @@
 // ===========================================================================
 
 import { Annee, Menage, Situation, SITUATIONS, impotProgressif } from "../socle";
+import type { Parametres } from "../parametres";
 import { cotisationRRQ } from "./01-rrq";
 import { cotisationRQAP } from "./02-rqap";
 import { cotisationAE } from "./03-ae";
@@ -65,8 +66,8 @@ interface ComposantesFederales {
 }
 
 /** Composantes fédérales d'un adulte (revenus, impôt brut, crédits) — base commune seul/couple. */
-function composantesFederales(revenu: number, age: number, retraite: boolean, annee: Annee): ComposantesFederales {
-  const p = IMPOT_FEDERAL[annee];
+function composantesFederales(revenu: number, age: number, retraite: boolean, annee: Annee | Parametres): ComposantesFederales {
+  const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
   const rrq = retraite ? { base: 0, supplementaire: 0 } : cotisationRRQ(revenu, annee);
   const rqap = retraite ? 0 : cotisationRQAP(revenu, annee);
   const ae = retraite ? 0 : cotisationAE(revenu, annee);
@@ -75,7 +76,7 @@ function composantesFederales(revenu: number, age: number, retraite: boolean, an
   return {
     taxable: net,
     net,
-    brut: impotProgressif(net, PALIERS_FEDERAL[annee]),
+    brut: impotProgressif(net, (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)),
     horsAgePension: bpaFederal(net, p) + rrq.base + rqap + ae + (retraite ? 0 : Math.min(p.emploiCanadaMax, revenu)),
     age: age >= 65 ? Math.max(0, p.ageMontant - p.ageTaux * Math.max(0, net - p.ageSeuil)) : 0,
     pension: retraite ? Math.min(p.pensionMax, revenu) : 0,
@@ -88,11 +89,11 @@ function composantesFederales(revenu: number, age: number, retraite: boolean, an
  * `proche` = vrai si l'adulte demande le **montant pour un proche admissible** (parent seul) —
  * un second montant personnel de base (ligne 30400), soumis à la même réduction de bonification.
  */
-export function impotFederalAdulte(revenu: number, age: number, retraite: boolean, proche: boolean, annee: Annee): number {
-  const p = IMPOT_FEDERAL[annee];
+export function impotFederalAdulte(revenu: number, age: number, retraite: boolean, proche: boolean, annee: Annee | Parametres): number {
+  const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
   const c = composantesFederales(revenu, age, retraite, annee);
   const credits = c.horsAgePension + c.age + c.pension + (proche ? bpaFederal(c.net, p) : 0);
-  const impotNet = Math.max(0, c.brut - credits * PALIERS_FEDERAL[annee][0].taux);
+  const impotNet = Math.max(0, c.brut - credits * (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)[0].taux);
   return Math.round(impotNet * (1 - p.abattementQc) * 100) / 100; // après abattement du Québec
 }
 
@@ -106,10 +107,10 @@ export function impotFederalAdulte(revenu: number, age: number, retraite: boolea
  */
 export function impotFederalCouple(
   revenu1: number, age1: number, revenu2: number, age2: number,
-  retraite: boolean, ramqPremium: number, annee: Annee,
+  retraite: boolean, ramqPremium: number, annee: Annee | Parametres,
 ): number {
-  const p = IMPOT_FEDERAL[annee];
-  const taux = PALIERS_FEDERAL[annee][0].taux;
+  const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
+  const taux = (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)[0].taux;
   const c1 = composantesFederales(revenu1, age1, retraite, annee);
   const c2 = composantesFederales(revenu2, age2, retraite, annee);
 
@@ -148,7 +149,7 @@ export function impotFederalCouple(
  * `ramqPremium` = prime RAMQ du ménage (poste 5), nécessaire au crédit médical des couples
  * (≡ 0 pour 1 adulte, où le crédit médical est toujours nul — voir poste 12).
  */
-export function impotFederalMenage(menage: Menage, annee: Annee, ramqPremium = 0): number {
+export function impotFederalMenage(menage: Menage, annee: Annee | Parametres, ramqPremium = 0): number {
   const { nbAdultes, retraite } = SITUATIONS[menage.situation];
   if (nbAdultes === 2) {
     return impotFederalCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee);
@@ -184,9 +185,9 @@ export const IMPOT_QUEBEC: Record<Annee, ParamsImpotQuebec> = {
  * Pas d'abattement (propre au fédéral). Les cotisations ne sont **pas** créditées au Québec dans
  * le modèle (la déduction pour travailleur en tient lieu) — voir docs.
  */
-export function impotQuebecAdulte(revenu: number, age: number, retraite: boolean, vivantSeul: boolean, annee: Annee): number {
-  const p = IMPOT_QUEBEC[annee];
-  const tauxCredit = PALIERS_QC[annee][0].taux; // crédits au taux du 1ᵉʳ palier (14 %)
+export function impotQuebecAdulte(revenu: number, age: number, retraite: boolean, vivantSeul: boolean, annee: Annee | Parametres): number {
+  const p = (typeof annee === "number" ? IMPOT_QUEBEC[annee] : annee.impotQuebec);
+  const tauxCredit = (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec)[0].taux; // crédits au taux du 1ᵉʳ palier (14 %)
 
   const rrqSuppl = retraite ? 0 : cotisationRRQ(revenu, annee).supplementaire;
   const psvImpos = psvImposable(age, revenu, annee);
@@ -196,7 +197,7 @@ export function impotQuebecAdulte(revenu: number, age: number, retraite: boolean
   const revenuNet = revenu + caPsv - deducTravailleur - rrqSuppl; // c2T271 (SRG/supplément inclus)
   const revenuImposable = revenu + psvImpos - deducTravailleur - rrqSuppl; // SRG/supplément retranchés
 
-  const impotBrut = impotProgressif(revenuImposable, PALIERS_QC[annee]);
+  const impotBrut = impotProgressif(revenuImposable, (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec));
 
   // Montant combiné (personne seule + âge + revenus de retraite), réduit de 18,75 % au-delà du seuil.
   const combine =
@@ -210,7 +211,7 @@ export function impotQuebecAdulte(revenu: number, age: number, retraite: boolean
 }
 
 /** Revenu imposable québécois d'un adulte (revenu + PSV imposable − déduction travailleur − RRQ suppl.). */
-function imposableQuebec(revenu: number, age: number, retraite: boolean, p: ParamsImpotQuebec, annee: Annee): number {
+function imposableQuebec(revenu: number, age: number, retraite: boolean, p: ParamsImpotQuebec, annee: Annee | Parametres): number {
   const rrqSuppl = retraite ? 0 : cotisationRRQ(revenu, annee).supplementaire;
   const deduc = retraite ? 0 : Math.min(p.deducTravailleurTaux * revenu, p.deducTravailleurMax);
   return revenu + psvImposable(age, revenu, annee) - deduc - rrqSuppl;
@@ -226,14 +227,14 @@ function imposableQuebec(revenu: number, age: number, retraite: boolean, p: Para
  */
 export function impotQuebecCouple(
   revenu1: number, age1: number, revenu2: number, age2: number,
-  retraite: boolean, ramqPremium: number, annee: Annee,
+  retraite: boolean, ramqPremium: number, annee: Annee | Parametres,
 ): number {
-  const p = IMPOT_QUEBEC[annee];
-  const taux = PALIERS_QC[annee][0].taux; // 0,14
+  const p = (typeof annee === "number" ? IMPOT_QUEBEC[annee] : annee.impotQuebec);
+  const taux = (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec)[0].taux; // 0,14
   const t1 = imposableQuebec(revenu1, age1, retraite, p, annee);
   const t2 = imposableQuebec(revenu2, age2, retraite, p, annee);
-  const brut1 = impotProgressif(t1, PALIERS_QC[annee]);
-  const brut2 = impotProgressif(t2, PALIERS_QC[annee]);
+  const brut1 = impotProgressif(t1, (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec));
+  const brut2 = impotProgressif(t2, (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec));
   const revenuNetFamilial = t1 + t2;
 
   // (1) Montant combiné (âge + pension des DEUX conjoints), réclamé par l'adulte 1.
@@ -263,7 +264,7 @@ export function impotQuebecCouple(
  * `ramqPremium` = prime RAMQ du ménage (poste 5), nécessaire au crédit médical des couples
  * (≡ 0 pour 1 adulte).
  */
-export function impotQuebecMenage(menage: Menage, annee: Annee, ramqPremium = 0): number {
+export function impotQuebecMenage(menage: Menage, annee: Annee | Parametres, ramqPremium = 0): number {
   const { nbAdultes, retraite } = SITUATIONS[menage.situation];
   if (nbAdultes === 2) {
     return impotQuebecCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee);
