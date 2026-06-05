@@ -69,11 +69,11 @@ export function JeuPicker({
     valeur === cleOfficiel(2025) || valeur === cleOfficiel(2026) || jeux.some((j) => j.id === valeur);
 
   return (
-    <div className="grid gap-1.5">
-      {label && <Label>{label}</Label>}
-      <div className="flex gap-2">
+    <div className="grid gap-2">
+      <div className="grid gap-1.5">
+        {label && <Label>{label}</Label>}
         <Select value={valeur} onValueChange={choisir}>
-          <SelectTrigger className="flex-1">
+          <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -87,13 +87,13 @@ export function JeuPicker({
             {!valeurConnue && valeur && <SelectItem value={valeur}>{UI.modifie[lang]}</SelectItem>}
           </SelectContent>
         </Select>
-        {peutEnregistrer && (
-          <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5" onClick={() => setDlg(true)}>
-            <Save className="size-4" />
-            {UI.enregistrerCeJeu[lang]}
-          </Button>
-        )}
       </div>
+      {peutEnregistrer && (
+        <Button type="button" variant="outline" size="sm" className="justify-self-start gap-1.5" onClick={() => setDlg(true)}>
+          <Save className="size-4" />
+          {UI.enregistrerCeJeu[lang]}
+        </Button>
+      )}
       {peutEnregistrer && (
         <JeuDialog
           open={dlg}

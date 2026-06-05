@@ -43,16 +43,16 @@ export function MenagePicker({
   if (!session) return null;
 
   return (
-    <div className="grid gap-1.5">
-      <Label>{UI.selectMenage[lang]}</Label>
-      <div className="flex gap-2">
+    <div className="grid gap-2">
+      <div className="grid gap-1.5">
+        <Label>{UI.selectMenage[lang]}</Label>
         <Select
           onValueChange={(id) => {
             const m = menages.find((x) => x.id === id);
             if (m) onCharger(m.data);
           }}
         >
-          <SelectTrigger className="flex-1">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder={menages.length ? UI.menagePersonnalise[lang] : UI.aucunMenage[lang]} />
           </SelectTrigger>
           <SelectContent>
@@ -63,11 +63,11 @@ export function MenagePicker({
             ))}
           </SelectContent>
         </Select>
-        <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5" onClick={() => setDlg(true)}>
-          <Save className="size-4" />
-          {UI.enregistrerCeMenage[lang]}
-        </Button>
       </div>
+      <Button type="button" variant="outline" size="sm" className="justify-self-start gap-1.5" onClick={() => setDlg(true)}>
+        <Save className="size-4" />
+        {UI.enregistrerCeMenage[lang]}
+      </Button>
       <MenageDialog open={dlg} onOpenChange={setDlg} lang={lang} initial={{ etat: etatCourant }} onSaved={recharger} />
     </div>
   );
