@@ -17,6 +17,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsTPS {
   baseAdulte: number; // montant de base par adulte ($)
@@ -47,9 +48,9 @@ export function creditTPS(
   revenuFamilialNetAjuste: number,
   nbAdultes: 1 | 2,
   nbEnfants: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = TPS[annee];
+  const p = (typeof annee === "number" ? TPS[annee] : annee.tps);
   const base = nbAdultes * p.baseAdulte + nbEnfants * p.parEnfant;
   const supplMono = nbAdultes === 1 && nbEnfants > 0 ? p.supplMonoparental : 0;
   const supplSeul =
@@ -62,7 +63,7 @@ export function creditTPS(
 }
 
 /** Crédit pour la TPS/TVH du ménage (= CA_tps). */
-export function creditTPSMenage(menage: Menage, revenuFamilialNetAjuste: number, annee: Annee): number {
+export function creditTPSMenage(menage: Menage, revenuFamilialNetAjuste: number, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   return creditTPS(revenuFamilialNetAjuste, nbAdultes, menage.enfants.length, annee);
 }

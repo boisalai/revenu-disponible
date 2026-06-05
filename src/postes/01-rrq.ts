@@ -6,6 +6,7 @@
 // ===========================================================================
 
 import { Annee, Menage, revenusAdultes } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsRRQ {
   exemption: number; // exemption générale ($)
@@ -28,8 +29,8 @@ export interface CotisationRRQ {
 }
 
 /** Cotisation RRQ d'un adulte sur son revenu de travail. */
-export function cotisationRRQ(revenuTravail: number, annee: Annee): CotisationRRQ {
-  const p = RRQ[annee];
+export function cotisationRRQ(revenuTravail: number, annee: Annee | Parametres): CotisationRRQ {
+  const p = (typeof annee === "number" ? RRQ[annee] : annee.rrq);
   // Bande 1 : entre l'exemption et le MGA
   const bande1 = Math.max(0, Math.min(revenuTravail, p.mga) - p.exemption);
   // Bande 2 : entre le MGA et le MGAS (2e cotisation supplémentaire uniquement)
@@ -41,7 +42,7 @@ export function cotisationRRQ(revenuTravail: number, annee: Annee): CotisationRR
 }
 
 /** Cotisation RRQ du ménage. CA_rrq = `total`. */
-export function rrqMenage(menage: Menage, annee: Annee): CotisationRRQ {
+export function rrqMenage(menage: Menage, annee: Annee | Parametres): CotisationRRQ {
   return revenusAdultes(menage)
     .map((r) => cotisationRRQ(r, annee))
     .reduce(

@@ -6,6 +6,7 @@
 // ===========================================================================
 
 import { Annee, Menage, revenusAdultes } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsRQAP {
   maxAssurable: number; // revenu maximal assurable ($)
@@ -19,13 +20,13 @@ export const RQAP: Record<Annee, ParamsRQAP> = {
 };
 
 /** Cotisation RQAP d'un adulte sur son revenu de travail assurable. */
-export function cotisationRQAP(revenuAssurable: number, annee: Annee): number {
-  const p = RQAP[annee];
+export function cotisationRQAP(revenuAssurable: number, annee: Annee | Parametres): number {
+  const p = (typeof annee === "number" ? RQAP[annee] : annee.rqap);
   if (revenuAssurable <= p.seuil) return 0; // sous le minimum : aucune cotisation
   return Math.min(revenuAssurable, p.maxAssurable) * p.taux; // pas d'exemption : prime sur le plein montant
 }
 
 /** Cotisation RQAP du ménage (= QC_rqap). */
-export function rqapMenage(menage: Menage, annee: Annee): number {
+export function rqapMenage(menage: Menage, annee: Annee | Parametres): number {
   return revenusAdultes(menage).reduce((tot, r) => tot + cotisationRQAP(r, annee), 0);
 }
