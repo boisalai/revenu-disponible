@@ -11,7 +11,8 @@ import {
 } from "@/index";
 import { UI, type Bilingue, type Lang } from "@/lib/i18n";
 import { POSTES_INFO } from "@/lib/postes-info";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -293,6 +294,16 @@ export function Calculateur() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>{UI.tauxMarginalTitre[lang]}</CardTitle>
+          <CardDescription>{UI.tauxMarginalDesc[lang]}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <GraphiqueTauxMarginal menage={menage} annee={2025} revenuActuel={revenu1} lang={lang} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
