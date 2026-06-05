@@ -11,6 +11,8 @@ import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { SelecteurLangue } from "@/components/calculateur";
 import { BoutonPartage } from "@/components/bouton-partage";
+import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
+import { BarreCompte } from "@/components/compte/barre-compte";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -103,8 +105,10 @@ export function Comparaison() {
             <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+          <BoutonEnregistrer type="COMPARAISON" encoded={encoded} lang={lang} />
           <BoutonPartage lang={lang} />
+          <BarreCompte lang={lang} />
           <SelecteurLangue lang={lang} onChange={setLang} />
         </div>
       </header>
