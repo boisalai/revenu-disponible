@@ -69,4 +69,16 @@ export const UI = {
   tauxAxe: { fr: "Taux marginal", en: "Marginal rate" },
   tauxTotal: { fr: "Taux marginal total", en: "Total marginal rate" },
   revenuActuel: { fr: "Revenu actuel", en: "Current income" },
+
+  // Navigation et comparaison
+  navCalculateur: { fr: "Calculateur", en: "Calculator" },
+  navComparaison: { fr: "Comparer", en: "Compare" },
+  comparaisonTitre: { fr: "Comparer deux scénarios", en: "Compare two scenarios" },
+  comparaisonDesc: {
+    fr: "Mettez deux ménages (ou deux années) côte à côte et voyez l'écart de revenu disponible, poste par poste.",
+    en: "Place two households (or two years) side by side and see the difference in disposable income, item by item.",
+  },
+  scenarioA: { fr: "Scénario A", en: "Scenario A" },
+  scenarioB: { fr: "Scénario B", en: "Scenario B" },
+  annee: { fr: "Année", en: "Year" },
 } as const;
