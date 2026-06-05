@@ -19,6 +19,7 @@
 // ===========================================================================
 
 import { Annee } from "../socle";
+import type { Parametres } from "../parametres";
 
 /** Un palier du taux du crédit : revenu familial net ≤ plafond → taux. */
 export interface PalierTauxGarde {
@@ -71,8 +72,8 @@ export const GARDE: Record<Annee, ParamsGarde> = {
 };
 
 /** Taux du crédit selon le revenu familial net (décroît par paliers de 78 % à 67 %). */
-export function tauxCreditGarde(revenuFamilialNet: number, annee: Annee): number {
-  const paliers = GARDE[annee].taux;
+export function tauxCreditGarde(revenuFamilialNet: number, annee: Annee | Parametres): number {
+  const paliers = (typeof annee === "number" ? GARDE[annee] : annee.garde).taux;
   const palier = paliers.find((p) => revenuFamilialNet <= p.plafond);
   return (palier ?? paliers[paliers.length - 1]).taux; // dernier palier (Infinity) = taux plancher
 }
@@ -85,8 +86,8 @@ export function tauxCreditGarde(revenuFamilialNet: number, annee: Annee): number
  * seuil jeune/autre, reproduite ici par fidélité au modèle (voir doc). Le plafond
  * « enfant handicapé » (16 800 $/17 145 $) n'est pas modélisé (aucune entrée handicap).
  */
-export function plafondFraisEnfant(age: number, annee: Annee): number {
-  const p = GARDE[annee];
+export function plafondFraisEnfant(age: number, annee: Annee | Parametres): number {
+  const p = (typeof annee === "number" ? GARDE[annee] : annee.garde);
   if (age <= 5) return p.plafondJeune; // « moins de 7 ans » au sens du fichier (âge ≤ 5)
   if (age < p.ageMax) return p.plafondAutre; // autre enfant admissible (< 16 en 2025 ; < 14 dès 2026)
   return 0; // au-delà de l'âge d'admissibilité
@@ -113,7 +114,7 @@ export interface EnfantGarde {
 export function creditFraisGarde(
   revenuFamilialNet: number,
   enfants: EnfantGarde[],
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   const taux = tauxCreditGarde(revenuFamilialNet, annee);
   const plafondTotal = enfants.reduce(

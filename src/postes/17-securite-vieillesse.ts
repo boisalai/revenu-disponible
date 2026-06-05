@@ -17,6 +17,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsPSV {
   // Pension de la sécurité de la vieillesse (PSV)
@@ -76,8 +77,8 @@ function pensionVieillesse(age: number, revenu: number, p: ParamsPSV): number {
  * Pension de la sécurité de la vieillesse (PSV) **imposable** d'un adulte — sans le SRG ni le
  * supplément, qui ne sont pas imposables. Sert au revenu imposable de l'impôt (poste 19).
  */
-export function psvImposable(age: number, revenu: number, annee: Annee): number {
-  return pensionVieillesse(age, revenu, PSV[annee]);
+export function psvImposable(age: number, revenu: number, annee: Annee | Parametres): number {
+  return pensionVieillesse(age, revenu, (typeof annee === "number" ? PSV[annee] : annee.psv));
 }
 
 /** Allocation pour un conjoint de 60-64 ans (réduction à deux taux : 75 % sous le seuil, 25 % au-delà). */
@@ -100,9 +101,9 @@ export function securiteVieillesse(
   revenu1: number,
   revenu2: number,
   nbAdultes: 1 | 2,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = PSV[annee];
+  const p = (typeof annee === "number" ? PSV[annee] : annee.psv);
   const couple = nbAdultes === 2;
   const revenu = revenu1 + (couple ? revenu2 : 0); // revenu de retraite combiné (la PSV est exclue)
 
@@ -143,7 +144,7 @@ function topup(revenu: number, max: number, exemption: number, tranche: number, 
 }
 
 /** Sécurité de la vieillesse du ménage (= CA_psv). Le revenu de retraite = revenu1/revenu2 du ménage. */
-export function securiteVieillesseMenage(menage: Menage, annee: Annee): number {
+export function securiteVieillesseMenage(menage: Menage, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   return securiteVieillesse(
     menage.ageAdulte1,

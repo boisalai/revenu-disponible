@@ -16,6 +16,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsAllocationFamille {
   maxParEnfant: number; // montant maximal par enfant ($)
@@ -65,10 +66,10 @@ export function allocationFamille(
   revenuFamilialNet: number,
   nbEnfants: number,
   nbAdultes: 1 | 2,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   if (nbEnfants <= 0) return 0;
-  const p = ALLOCATION_FAMILLE[annee];
+  const p = (typeof annee === "number" ? ALLOCATION_FAMILLE[annee] : annee.allocationFamille);
   const monoparental = nbAdultes === 1;
   const maximum = nbEnfants * p.maxParEnfant + (monoparental ? p.suppMonoMax : 0);
   const minimum = nbEnfants * p.minParEnfant + (monoparental ? p.suppMonoMin : 0);
@@ -81,7 +82,7 @@ export function allocationFamille(
 export function allocationFamilleMenage(
   menage: Menage,
   revenuFamilialNet: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   return allocationFamille(revenuFamilialNet, menage.enfants.length, nbAdultes, annee);
@@ -91,7 +92,7 @@ export function allocationFamilleMenage(
  * Supplément pour l'achat de fournitures scolaires (= SFS). Montant fixe par enfant **de 4 à 16 ans**
  * (`âge > 3` et `âge < 17`), sans réduction selon le revenu. Versé avec l'Allocation famille.
  */
-export function supplementFournituresScolaires(menage: Menage, annee: Annee): number {
+export function supplementFournituresScolaires(menage: Menage, annee: Annee | Parametres): number {
   const nb = menage.enfants.filter((e) => e.age > 3 && e.age < 17).length;
-  return nb * ALLOCATION_FAMILLE[annee].supplementFournitures;
+  return nb * (typeof annee === "number" ? ALLOCATION_FAMILLE[annee] : annee.allocationFamille).supplementFournitures;
 }

@@ -7,6 +7,7 @@
 // ===========================================================================
 
 import { Annee, Menage, revenusAdultes } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsAE {
   mra: number; // maximum de la rémunération assurable ($)
@@ -20,13 +21,13 @@ export const AE: Record<Annee, ParamsAE> = {
 };
 
 /** Cotisation AE d'un adulte sur son revenu de travail assurable. */
-export function cotisationAE(revenuAssurable: number, annee: Annee): number {
-  const p = AE[annee];
+export function cotisationAE(revenuAssurable: number, annee: Annee | Parametres): number {
+  const p = (typeof annee === "number" ? AE[annee] : annee.ae);
   if (revenuAssurable <= p.seuil) return 0; // ≤ 2 000 $ : cotisation remboursée (art. 96(4))
   return Math.min(revenuAssurable, p.mra) * p.taux; // pas d'exemption : prime sur le plein montant, plafonné au MRA
 }
 
 /** Cotisation AE du ménage (= CA_ae). */
-export function aeMenage(menage: Menage, annee: Annee): number {
+export function aeMenage(menage: Menage, annee: Annee | Parametres): number {
   return revenusAdultes(menage).reduce((tot, r) => tot + cotisationAE(r, annee), 0);
 }

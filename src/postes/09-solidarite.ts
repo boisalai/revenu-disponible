@@ -16,6 +16,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsSolidarite {
   // Volet TVQ
@@ -71,9 +72,9 @@ export function creditSolidarite(
   revenuFamilialNet: number,
   nbAdultes: 1 | 2,
   nbEnfants: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = SOLIDARITE[annee];
+  const p = (typeof annee === "number" ? SOLIDARITE[annee] : annee.solidarite);
   const couple = nbAdultes === 2;
   const voletTVQ = p.tvqBase + (couple ? p.tvqConjoint : p.tvqAdditionnelSeule);
   const voletLogement = (couple ? p.logementCouple : p.logementSeule) + nbEnfants * p.logementParEnfant;
@@ -82,7 +83,7 @@ export function creditSolidarite(
 }
 
 /** Crédit pour la solidarité du ménage (= QC_sol). */
-export function creditSolidariteMenage(menage: Menage, revenuFamilialNet: number, annee: Annee): number {
+export function creditSolidariteMenage(menage: Menage, revenuFamilialNet: number, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   return creditSolidarite(revenuFamilialNet, nbAdultes, menage.enfants.length, annee);
 }

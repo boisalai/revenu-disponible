@@ -16,6 +16,7 @@
 // ===========================================================================
 
 import { Annee, Menage } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsACE {
   maxJeune: number; // montant maximal par enfant de moins de 6 ans ($)
@@ -58,10 +59,10 @@ export function allocationCanadienneEnfants(
   revenuFamilialNetAjuste: number,
   nbEnfants: number,
   nbEnfantsMoins6: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   if (nbEnfants <= 0) return 0;
-  const p = ACE[annee];
+  const p = (typeof annee === "number" ? ACE[annee] : annee.ace);
   const maxBenefit = nbEnfantsMoins6 * p.maxJeune + (nbEnfants - nbEnfantsMoins6) * p.maxAine;
   const i = Math.min(nbEnfants, 4) - 1; // index du taux : 1, 2, 3, 4+ enfants
   const bande1 = Math.max(0, Math.min(revenuFamilialNetAjuste - p.seuil1, p.seuil2 - p.seuil1));
@@ -74,7 +75,7 @@ export function allocationCanadienneEnfants(
 export function allocationCanadienneEnfantsMenage(
   menage: Menage,
   revenuFamilialNetAjuste: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   const nbEnfants = menage.enfants.length;
   const nbEnfantsMoins6 = menage.enfants.filter((e) => e.age < 6).length;

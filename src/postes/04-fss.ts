@@ -8,6 +8,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS, revenusAdultes } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsFSS {
   seuil1: number; // seuil de la 1ʳᵉ tranche ($)
@@ -24,15 +25,15 @@ export const FSS: Record<Annee, ParamsFSS> = {
 };
 
 /** Cotisation FSS d'un particulier sur son revenu assujetti (deux tranches additives, chacune plafonnée). */
-export function cotisationFSS(revenuAssujetti: number, annee: Annee): number {
-  const p = FSS[annee];
+export function cotisationFSS(revenuAssujetti: number, annee: Annee | Parametres): number {
+  const p = (typeof annee === "number" ? FSS[annee] : annee.fss);
   const t1 = Math.min(Math.max(0, revenuAssujetti - p.seuil1) * p.taux1, p.plafond1);
   const t2 = Math.min(Math.max(0, revenuAssujetti - p.seuil2) * p.taux2, p.plafond2);
   return t1 + t2; // maximum = plafond1 + plafond2 = 1 000 $
 }
 
 /** Cotisation FSS du ménage (= QC_fss). */
-export function fssMenage(menage: Menage, annee: Annee): number {
+export function fssMenage(menage: Menage, annee: Annee | Parametres): number {
   // Le revenu d'emploi est exclu du revenu assujetti (art. 38-40 R-5) : dans ce modèle,
   // seuls les ménages retraités ont une base FSS (revenu de retraite).
   if (!SITUATIONS[menage.situation].retraite) return 0;
