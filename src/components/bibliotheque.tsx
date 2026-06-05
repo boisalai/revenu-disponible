@@ -14,7 +14,7 @@ import {
 } from "@/lib/bibliotheque";
 import { appliquerParams } from "@/lib/partage";
 import { UI, type Lang } from "@/lib/i18n";
-import { aDeuxAdultes, type MenageEtat } from "@/lib/menage-etat";
+import { aDeuxAdultes, normaliserMenageEtat, type MenageEtat } from "@/lib/menage-etat";
 import { SelecteurLangue } from "@/components/calculateur";
 import { BarreCompte } from "@/components/compte/barre-compte";
 import { AuthDialog } from "@/components/compte/auth-dialog";
@@ -30,7 +30,8 @@ function resumeMenage(e: MenageEtat, lang: Lang): string {
   const montants = aDeuxAdultes(e.situation)
     ? `${fmt(e.revenu1, lang)} + ${fmt(e.revenu2, lang)}`
     : fmt(e.revenu1, lang);
-  const enf = e.agesEnfants.length ? ` · ${e.agesEnfants.length} enf.` : "";
+  const nb = e.enfants?.length ?? 0;
+  const enf = nb ? ` · ${nb} enf.` : "";
   return `${sit} · ${montants}${enf}`;
 }
 
@@ -124,7 +125,7 @@ export function Bibliotheque() {
                           size="icon"
                           variant="ghost"
                           aria-label={UI.modifier[lang]}
-                          onClick={() => setMDlg({ open: true, initial: { id: m.id, name: m.name, etat: m.data } })}
+                          onClick={() => setMDlg({ open: true, initial: { id: m.id, name: m.name, etat: normaliserMenageEtat(m.data) } })}
                         >
                           <Pencil className="size-4" />
                         </Button>

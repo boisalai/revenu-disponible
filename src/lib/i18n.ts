@@ -161,4 +161,11 @@ export const UI = {
   menagePersonnalise: { fr: "Ménage personnalisé", en: "Custom household" },
   enregistrerCeMenage: { fr: "Enregistrer ce ménage", en: "Save this household" },
   enregistrerCeJeu: { fr: "Enregistrer ce jeu", en: "Save this set" },
+
+  // Frais de garde par enfant
+  enfant: { fr: "Enfant", en: "Child" },
+  fraisGarde: { fr: "Frais de garde", en: "Childcare fees" },
+  serviceGarde: { fr: "Service de garde", en: "Childcare service" },
+  subventionne: { fr: "Subventionné", en: "Subsidized" },
+  nonSubventionne: { fr: "Non subventionné", en: "Non-subsidized" },
 } as const;

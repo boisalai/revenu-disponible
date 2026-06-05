@@ -8,7 +8,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
-import type { MenageEtat } from "@/lib/menage-etat";
+import { normaliserMenageEtat, type MenageEtat } from "@/lib/menage-etat";
 
 async function utilisateurCourant() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -25,7 +25,9 @@ const MenageEtatSchema = z.object({
   age1: z.number().finite(),
   revenu2: z.number().finite(),
   age2: z.number().finite(),
-  agesEnfants: z.array(z.number().finite()).max(8),
+  enfants: z
+    .array(z.object({ age: z.number().finite(), fraisGarde: z.number().finite().min(0).max(15_000), typeGarde: z.number().int() }))
+    .max(5),
 });
 
 export interface MenageResume {
@@ -44,7 +46,8 @@ export async function listerMenages(): Promise<MenageResume[]> {
     orderBy: { updatedAt: "desc" },
     select: SELECT_MENAGE,
   });
-  return rows.map((r) => ({ ...r, data: r.data as unknown as MenageEtat }));
+  // normaliserMenageEtat gère la rétro-compat (ménages sauvegardés avant `enfants[]`).
+  return rows.map((r) => ({ ...r, data: normaliserMenageEtat(r.data) }));
 }
 
 export async function enregistrerMenage(nom: string, etat: unknown): Promise<MenageResume> {

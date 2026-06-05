@@ -5,7 +5,7 @@ import { Save } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { listerMenages, type MenageResume } from "@/lib/bibliotheque";
 import { UI, type Lang } from "@/lib/i18n";
-import { type MenageEtat } from "@/lib/menage-etat";
+import { normaliserMenageEtat, type MenageEtat } from "@/lib/menage-etat";
 import { MenageDialog } from "@/components/menage-dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -49,7 +49,7 @@ export function MenagePicker({
         <Select
           onValueChange={(id) => {
             const m = menages.find((x) => x.id === id);
-            if (m) onCharger(m.data);
+            if (m) onCharger(normaliserMenageEtat(m.data));
           }}
         >
           <SelectTrigger className="w-full">

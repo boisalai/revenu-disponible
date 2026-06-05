@@ -1,8 +1,8 @@
 // Partage d'un scénario par URL : on encode l'état (ménage + paramètres) dans un paramètre `?s=`.
 // Pour garder l'URL courte, on n'encode que les ÉCARTS des paramètres par rapport à l'officiel.
 
-import { PARAMETRES_OFFICIELS, Situation, type Annee, type Parametres } from "@/index";
-import { MENAGE_DEFAUT, type MenageEtat } from "./menage-etat";
+import { PARAMETRES_OFFICIELS, type Annee, type Parametres } from "@/index";
+import { MENAGE_DEFAUT, normaliserMenageEtat, type MenageEtat } from "./menage-etat";
 
 // --- base64url (état ASCII : nombres + clés latines) ---
 function enc(obj: unknown): string {
@@ -18,20 +18,9 @@ function dec<T>(s: string): T | null {
   }
 }
 
-// --- nettoyage défensif d'un ménage décodé (entrée non fiable venant de l'URL) ---
-function nettoyerMenage(m: unknown): MenageEtat {
-  const o = (m ?? {}) as Record<string, unknown>;
-  const s = Number(o.situation);
-  const n = (v: unknown, d = 0) => (Number.isFinite(Number(v)) ? Number(v) : d);
-  return {
-    situation: (s >= 0 && s <= 4 ? s : 0) as Situation,
-    revenu1: n(o.revenu1),
-    age1: n(o.age1, 40),
-    revenu2: n(o.revenu2),
-    age2: n(o.age2, 40),
-    agesEnfants: Array.isArray(o.agesEnfants) ? o.agesEnfants.slice(0, 5).map((a) => n(a, 5)) : [],
-  };
-}
+// --- nettoyage défensif d'un ménage décodé (entrée non fiable : URL, base) ---
+// Géré par menage-etat (gère aussi l'ancienne forme `agesEnfants`).
+const nettoyerMenage = normaliserMenageEtat;
 
 // --- écarts de paramètres (par groupe) ---
 export function diffParams(bundle: Parametres, base: Parametres): Record<string, unknown> {

@@ -1,8 +1,15 @@
 "use client";
 
-import { Situation, SITUATIONS } from "@/index";
+import { Situation, SITUATIONS, TypeGarde } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
-import { aDeuxAdultes, peutAvoirEnfants, type MenageEtat } from "@/lib/menage-etat";
+import {
+  aDeuxAdultes,
+  peutAvoirEnfants,
+  ENFANT_DEFAUT,
+  FRAIS_GARDE_MAX,
+  type EnfantEtat,
+  type MenageEtat,
+} from "@/lib/menage-etat";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,7 +22,19 @@ const SITUATIONS_ORDRE: Situation[] = [
   Situation.CoupleRetraites,
 ];
 
-function ChampMontant({ id, label, valeur, onChange }: { id: string; label: string; valeur: number; onChange: (n: number) => void }) {
+function ChampMontant({
+  id,
+  label,
+  valeur,
+  onChange,
+  max,
+}: {
+  id: string;
+  label: string;
+  valeur: number;
+  onChange: (n: number) => void;
+  max?: number;
+}) {
   return (
     <div className="grid gap-1.5">
       <Label htmlFor={id}>{label}</Label>
@@ -24,9 +43,10 @@ function ChampMontant({ id, label, valeur, onChange }: { id: string; label: stri
         type="number"
         inputMode="numeric"
         min={0}
+        max={max}
         value={valeur === 0 ? "" : valeur}
         placeholder="0"
-        onChange={(e) => onChange(Number(e.target.value) || 0)}
+        onChange={(e) => onChange(Math.min(max ?? Infinity, Number(e.target.value) || 0))}
       />
     </div>
   );
@@ -46,26 +66,28 @@ export function FormulaireMenage({
 }) {
   const meta = SITUATIONS[etat.situation];
   const couple = aDeuxAdultes(etat.situation);
-  const enfants = peutAvoirEnfants(etat.situation);
+  const aEnfants = peutAvoirEnfants(etat.situation);
   const maj = (p: Partial<MenageEtat>) => onChange({ ...etat, ...p });
+  const majEnfant = (i: number, patch: Partial<EnfantEtat>) =>
+    maj({ enfants: etat.enfants.map((e, j) => (j === i ? { ...e, ...patch } : e)) });
 
   const changerSituation = (v: string) => {
     const s = Number(v) as Situation;
     const m = SITUATIONS[s];
     const age = m.retraite ? 70 : 40;
     const peut = s === Situation.FamilleMonoparentale || s === Situation.Couple;
-    onChange({ ...etat, situation: s, age1: age, age2: age, agesEnfants: peut ? etat.agesEnfants : [] });
+    onChange({ ...etat, situation: s, age1: age, age2: age, enfants: peut ? etat.enfants : [] });
   };
 
   const changerNbEnfants = (n: number) =>
-    maj({ agesEnfants: Array.from({ length: Math.max(0, Math.min(5, n)) }, (_, i) => etat.agesEnfants[i] ?? 5) });
+    maj({ enfants: Array.from({ length: Math.max(0, Math.min(5, n)) }, (_, i) => etat.enfants[i] ?? ENFANT_DEFAUT) });
 
   return (
     <div className="grid gap-5">
       <div className="grid gap-1.5">
         <Label>{UI.typeMenage[lang]}</Label>
         <Select value={String(etat.situation)} onValueChange={changerSituation}>
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -90,22 +112,32 @@ export function FormulaireMenage({
         </div>
       )}
 
-      {enfants && (
+      {aEnfants && (
         <div className="grid gap-3">
-          <ChampMontant id={`${prefixe}nbEnf`} label={UI.nbEnfants[lang]} valeur={etat.agesEnfants.length} onChange={changerNbEnfants} />
-          {etat.agesEnfants.length > 0 && (
-            <div className="grid grid-cols-3 gap-2">
-              {etat.agesEnfants.map((age, i) => (
-                <ChampMontant
-                  key={i}
-                  id={`${prefixe}enf${i}`}
-                  label={`${UI.ageEnfant[lang]} ${i + 1}`}
-                  valeur={age}
-                  onChange={(n) => maj({ agesEnfants: etat.agesEnfants.map((a, j) => (j === i ? n : a)) })}
-                />
-              ))}
+          <ChampMontant id={`${prefixe}nbEnf`} label={UI.nbEnfants[lang]} valeur={etat.enfants.length} onChange={changerNbEnfants} />
+          {etat.enfants.map((enf, i) => (
+            <div key={i} className="grid gap-2 rounded-lg border bg-muted/30 p-2.5">
+              <p className="text-xs font-medium text-muted-foreground">
+                {UI.enfant[lang]} {i + 1}
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <ChampMontant id={`${prefixe}enfAge${i}`} label={UI.age[lang]} valeur={enf.age} onChange={(a) => majEnfant(i, { age: a })} />
+                <ChampMontant id={`${prefixe}enfFrais${i}`} label={UI.fraisGarde[lang]} valeur={enf.fraisGarde} max={FRAIS_GARDE_MAX} onChange={(f) => majEnfant(i, { fraisGarde: f })} />
+              </div>
+              <div className="grid gap-1.5">
+                <Label htmlFor={`${prefixe}enfType${i}`}>{UI.serviceGarde[lang]}</Label>
+                <Select value={String(enf.typeGarde)} onValueChange={(v) => majEnfant(i, { typeGarde: Number(v) })}>
+                  <SelectTrigger id={`${prefixe}enfType${i}`} className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={String(TypeGarde.Subventionne)}>{UI.subventionne[lang]}</SelectItem>
+                    <SelectItem value={String(TypeGarde.NonSubventionne)}>{UI.nonSubventionne[lang]}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          )}
+          ))}
         </div>
       )}
     </div>

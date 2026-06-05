@@ -19,7 +19,7 @@ function construireSections(rG: ResultatRevenuDisponible, rD: ResultatRevenuDisp
   const lp = (cle: string, a: number, b: number): Ligne => ({ cle, vG: a, vD: b });
   const ll = (label: Bilingue, a: number, b: number): Ligne => ({ label, vG: a, vD: b });
 
-  return [
+  const sections: Section[] = [
     { titre: null, lignes: [ll(UI.revenu, rG.composantes.revenu, rD.composantes.revenu)] },
     {
       titre: UI.cotisations,
@@ -39,6 +39,11 @@ function construireSections(rG: ResultatRevenuDisponible, rD: ResultatRevenuDisp
     },
     { titre: UI.impotFederal, lignes: [lp("impotFederal", -rG.detail.impotFederal, -rD.detail.impotFederal)] },
   ];
+  // Coût des frais de garde (réduit le RD) — affiché seulement s'il y en a.
+  if (rG.detail.fraisGardeCout > 0 || rD.detail.fraisGardeCout > 0) {
+    sections.push({ titre: null, lignes: [ll(UI.fraisGarde, -rG.detail.fraisGardeCout, -rD.detail.fraisGardeCout)] });
+  }
+  return sections;
 }
 
 function CelluleMontant({ valeur, lang, fort = false }: { valeur: number; lang: Lang; fort?: boolean }) {
