@@ -1,14 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, type Annee, type Parametres } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
+import { encoderBudget, decoderBudget } from "@/lib/partage";
+import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { EditeurParametres } from "@/components/editeur-parametres";
 import { SelecteurLangue } from "@/components/calculateur";
+import { BoutonPartage } from "@/components/bouton-partage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -70,6 +73,22 @@ export function Budget() {
   const changerAnneeA = (a: Annee) => { setAnneeA(a); setBundleA(cloner(a)); };
   const changerAnneeB = (a: Annee) => { setAnneeB(a); setBundleB(cloner(a)); };
 
+  const encoded = useMemo(
+    () => encoderBudget({ etat, anneeA, bundleA, anneeB, bundleB }),
+    [etat, anneeA, bundleA, anneeB, bundleB],
+  );
+  const onCharger = useCallback((s: string) => {
+    const d = decoderBudget(s);
+    if (d) {
+      setEtat(d.etat);
+      setAnneeA(d.anneeA);
+      setBundleA(d.bundleA);
+      setAnneeB(d.anneeB);
+      setBundleB(d.bundleB);
+    }
+  }, []);
+  usePartageURL(encoded, onCharger);
+
   const menage = useMemo(() => versMenage(etat), [etat]);
   const rA = useMemo(() => calculerRevenuDisponible(menage, bundleA), [menage, bundleA]);
   const rB = useMemo(() => calculerRevenuDisponible(menage, bundleB), [menage, bundleB]);
@@ -85,7 +104,10 @@ export function Budget() {
             <Link href="/comparaison" className="underline-offset-4 hover:underline">{UI.navComparaison[lang]}</Link>
           </div>
         </div>
-        <SelecteurLangue lang={lang} onChange={setLang} />
+        <div className="flex shrink-0 items-center gap-2">
+          <BoutonPartage lang={lang} />
+          <SelecteurLangue lang={lang} onChange={setLang} />
+        </div>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
