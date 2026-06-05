@@ -521,6 +521,26 @@ describe("Parité référence — ORCHESTRATEUR de bout en bout (ménage → RD)
       // bases de revenu reconstruites
       expect(calculerRevenuDisponible(m, 2025).revenuNetFamilial).toBeCloseTo(co._rfn_old, 2);
       expect(calculerRevenuDisponible(m, 2025).afni).toBeCloseTo(co._afni_old, 2);
+      // ventilation poste par poste (montants positifs vs sorties de référence, en négatif pour
+      // cotisations et impôts)
+      const d = calculerRevenuDisponible(m, 2025).detail;
+      expect(d.cotisations.rrq).toBeCloseTo(-co.CA_rrq_old, 2);
+      expect(d.cotisations.rqap).toBeCloseTo(-co.QC_rqap_old, 2);
+      expect(d.cotisations.assuranceEmploi).toBeCloseTo(-co.CA_ae_old, 2);
+      expect(d.cotisations.fss).toBeCloseTo(-co.QC_fss_old, 2);
+      expect(d.cotisations.ramq).toBeCloseTo(-co.QC_ramq_old, 2);
+      expect(d.transfertsQuebec.allocationFamille).toBeCloseTo(co.QC_sae_old, 2);
+      expect(d.transfertsQuebec.primeTravail).toBeCloseTo(co.QC_pt_old, 2);
+      expect(d.transfertsQuebec.solidarite).toBeCloseTo(co.QC_sol_old, 2);
+      expect(d.transfertsQuebec.allocationLogement).toBeCloseTo(co.QC_al_old, 2);
+      expect(d.transfertsQuebec.soutienAines).toBeCloseTo(co.QC_aines_old, 2);
+      expect(d.transfertsQuebec.aideSociale).toBeCloseTo(co.QC_adr_old, 2);
+      expect(d.impotQuebec).toBeCloseTo(-co.QC_impot_old, 2);
+      expect(d.transfertsFederaux.allocationEnfants).toBeCloseTo(co.CA_ace_old, 2);
+      expect(d.transfertsFederaux.creditTPS).toBeCloseTo(co.CA_tps_old, 2);
+      expect(d.transfertsFederaux.allocationTravailleurs).toBeCloseTo(co.CA_pfrt_old, 2);
+      expect(d.transfertsFederaux.securiteVieillesse).toBeCloseTo(co.CA_psv_old, 2);
+      expect(d.impotFederal).toBeCloseTo(-co.CA_impot_old, 2);
       // revenu disponible de bout en bout (le RD de la référence n'est pas arrondi ; on compare au cent)
       expect(calculerRevenuDisponible(m, 2025).revenuDisponible).toBeCloseTo(round2(co.RD_old), 2);
       expect(calculerRevenuDisponible(m, 2026).revenuDisponible).toBeCloseTo(round2(co.RD_new), 2);
