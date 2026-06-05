@@ -81,4 +81,17 @@ export const UI = {
   scenarioA: { fr: "Scénario A", en: "Scenario A" },
   scenarioB: { fr: "Scénario B", en: "Scenario B" },
   annee: { fr: "Année", en: "Year" },
+
+  // Éditeur de paramètres (budget)
+  navBudget: { fr: "Simuler un budget", en: "Simulate a budget" },
+  budgetTitre: { fr: "Simuler un changement de paramètres", en: "Simulate a parameter change" },
+  budgetDesc: {
+    fr: "Partez des paramètres officiels d'une année, modifiez ce que vous voulez (montants, taux, seuils, paliers) et voyez l'effet sur le revenu disponible — comme l'annonce d'un budget.",
+    en: "Start from an official year's parameters, change anything you like (amounts, rates, thresholds, brackets) and see the effect on disposable income — like a budget announcement.",
+  },
+  anneeBase: { fr: "Année de base", en: "Base year" },
+  parametres: { fr: "Paramètres", en: "Parameters" },
+  officiel: { fr: "Officiel", en: "Official" },
+  modifie: { fr: "Modifié", en: "Modified" },
+  reinitialiser: { fr: "Réinitialiser", en: "Reset" },
 } as const;
