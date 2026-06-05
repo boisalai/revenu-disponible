@@ -14,48 +14,43 @@ import { SelecteurLangue } from "@/components/calculateur";
 import { BoutonPartage } from "@/components/bouton-partage";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 import { BarreCompte } from "@/components/compte/barre-compte";
+import { MenagePicker } from "@/components/menage-picker";
+import { JeuPicker, cleOfficiel } from "@/components/jeu-picker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const ANNEES: Annee[] = [2025, 2026];
 const cloner = (a: Annee): Parametres => structuredClone(PARAMETRES_OFFICIELS[a]);
 
-/** Contrôles + éditeur d'un scénario de paramètres (année de base, réinitialisation, édition). */
+/** Un côté de la comparaison de paramètres : sélection d'un jeu + édition + réinitialisation. */
 function PanneauParametres({
+  cle,
   annee,
   bundle,
-  onAnnee,
+  onChoisir,
   onBundle,
   lang,
 }: {
+  cle: string;
   annee: Annee;
   bundle: Parametres;
-  onAnnee: (a: Annee) => void;
+  onChoisir: (cle: string, bundle: Parametres, annee: Annee) => void;
   onBundle: (b: Parametres) => void;
   lang: Lang;
 }) {
   return (
     <div className="grid gap-4">
-      <div className="flex items-end justify-between gap-3">
-        <div className="grid gap-1.5">
-          <Label>{UI.anneeBase[lang]}</Label>
-          <Select value={String(annee)} onValueChange={(v) => onAnnee(Number(v) as Annee)}>
-            <SelectTrigger className="w-28">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {ANNEES.map((a) => (
-                <SelectItem key={a} value={String(a)}>
-                  {a}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Button variant="outline" size="sm" onClick={() => onBundle(cloner(annee))}>
+      <JeuPicker
+        lang={lang}
+        valeur={cle}
+        onCharger={onChoisir}
+        bundleCourant={bundle}
+        anneeCourante={annee}
+        avecEnregistrer
+        label={UI.selectJeu[lang]}
+      />
+      <div className="flex justify-end">
+        <Button variant="ghost" size="sm" onClick={() => onBundle(cloner(annee))}>
           {UI.reinitialiser[lang]}
         </Button>
       </div>
@@ -69,11 +64,21 @@ export function Budget() {
   const [etat, setEtat] = useState<MenageEtat>(MENAGE_DEFAUT);
   const [anneeA, setAnneeA] = useState<Annee>(2025);
   const [bundleA, setBundleA] = useState<Parametres>(() => cloner(2025));
+  const [cleA, setCleA] = useState<string>(cleOfficiel(2025));
   const [anneeB, setAnneeB] = useState<Annee>(2026);
   const [bundleB, setBundleB] = useState<Parametres>(() => cloner(2026));
+  const [cleB, setCleB] = useState<string>(cleOfficiel(2026));
 
-  const changerAnneeA = (a: Annee) => { setAnneeA(a); setBundleA(cloner(a)); };
-  const changerAnneeB = (a: Annee) => { setAnneeB(a); setBundleB(cloner(a)); };
+  const choisirA = (cle: string, b: Parametres, a: Annee) => {
+    setCleA(cle);
+    setBundleA(b);
+    setAnneeA(a);
+  };
+  const choisirB = (cle: string, b: Parametres, a: Annee) => {
+    setCleB(cle);
+    setBundleB(b);
+    setAnneeB(a);
+  };
 
   const encoded = useMemo(
     () => encoderBudget({ etat, anneeA, bundleA, anneeB, bundleB }),
@@ -81,13 +86,14 @@ export function Budget() {
   );
   const onCharger = useCallback((s: string) => {
     const d = decoderBudget(s);
-    if (d) {
-      setEtat(d.etat);
-      setAnneeA(d.anneeA);
-      setBundleA(d.bundleA);
-      setAnneeB(d.anneeB);
-      setBundleB(d.bundleB);
-    }
+    if (!d) return;
+    setEtat(d.etat);
+    setAnneeA(d.anneeA);
+    setBundleA(d.bundleA);
+    setCleA(cleOfficiel(d.anneeA));
+    setAnneeB(d.anneeB);
+    setBundleB(d.bundleB);
+    setCleB(cleOfficiel(d.anneeB));
   }, []);
   usePartageURL(encoded, onCharger);
 
@@ -101,9 +107,10 @@ export function Budget() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{UI.budgetTitre[lang]}</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">{UI.budgetDesc[lang]}</p>
-          <div className="mt-3 flex gap-4 text-sm font-medium text-primary">
+          <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-primary">
             <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
             <Link href="/comparaison" className="underline-offset-4 hover:underline">{UI.navComparaison[lang]}</Link>
+            <Link href="/bibliotheque" className="underline-offset-4 hover:underline">{UI.navBibliotheque[lang]}</Link>
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
@@ -120,7 +127,8 @@ export function Budget() {
             <CardHeader>
               <CardTitle>{UI.situationMenage[lang]}</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid gap-4">
+              <MenagePicker lang={lang} etatCourant={etat} onCharger={setEtat} />
               <FormulaireMenage etat={etat} onChange={setEtat} lang={lang} />
             </CardContent>
           </Card>
@@ -136,10 +144,10 @@ export function Budget() {
                   <TabsTrigger value="b" className="flex-1">{`${UI.scenarioB[lang]} (${anneeB})`}</TabsTrigger>
                 </TabsList>
                 <TabsContent value="a">
-                  <PanneauParametres annee={anneeA} bundle={bundleA} onAnnee={changerAnneeA} onBundle={setBundleA} lang={lang} />
+                  <PanneauParametres cle={cleA} annee={anneeA} bundle={bundleA} onChoisir={choisirA} onBundle={setBundleA} lang={lang} />
                 </TabsContent>
                 <TabsContent value="b">
-                  <PanneauParametres annee={anneeB} bundle={bundleB} onAnnee={changerAnneeB} onBundle={setBundleB} lang={lang} />
+                  <PanneauParametres cle={cleB} annee={anneeB} bundle={bundleB} onChoisir={choisirB} onBundle={setBundleB} lang={lang} />
                 </TabsContent>
               </Tabs>
             </CardContent>

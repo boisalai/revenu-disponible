@@ -129,4 +129,36 @@ export const UI = {
   typeCalculateur: { fr: "Calculateur", en: "Calculator" },
   typeComparaison: { fr: "Comparaison", en: "Comparison" },
   typeBudget: { fr: "Budget", en: "Budget" },
+
+  // Bibliothèque (ménages types + jeux de paramètres)
+  navBibliotheque: { fr: "Bibliothèque", en: "Library" },
+  bibliothequeTitre: { fr: "Ma bibliothèque", en: "My library" },
+  bibliothequeDesc: {
+    fr: "Crée et gère des ménages types et des jeux de paramètres réutilisables, puis combine-les dans les comparaisons.",
+    en: "Create and manage reusable household templates and parameter sets, then combine them in the comparisons.",
+  },
+  mesMenages: { fr: "Mes ménages types", en: "My household templates" },
+  mesJeux: { fr: "Mes jeux de paramètres", en: "My parameter sets" },
+  nouveauMenage: { fr: "Nouveau ménage type", en: "New household template" },
+  nouveauJeu: { fr: "Nouveau jeu de paramètres", en: "New parameter set" },
+  modifierMenageTitre: { fr: "Modifier le ménage type", en: "Edit household template" },
+  modifierJeuTitre: { fr: "Modifier le jeu de paramètres", en: "Edit parameter set" },
+  nomMenage: { fr: "Nom du ménage type", en: "Household template name" },
+  nomJeu: { fr: "Nom du jeu de paramètres", en: "Parameter set name" },
+  aucunMenage: { fr: "Aucun ménage type enregistré.", en: "No saved household templates." },
+  aucunJeu: { fr: "Aucun jeu de paramètres enregistré.", en: "No saved parameter sets." },
+  modifier: { fr: "Modifier", en: "Edit" },
+  connexionRequiseBibliotheque: {
+    fr: "Connecte-toi pour créer et gérer ta bibliothèque.",
+    en: "Sign in to create and manage your library.",
+  },
+  uneModif: { fr: "modification", en: "change" },
+  desModifs: { fr: "modifications", en: "changes" },
+
+  // Sélecteurs (budget / comparaison)
+  selectMenage: { fr: "Ménage", en: "Household" },
+  selectJeu: { fr: "Jeu de paramètres", en: "Parameter set" },
+  menagePersonnalise: { fr: "Ménage personnalisé", en: "Custom household" },
+  enregistrerCeMenage: { fr: "Enregistrer ce ménage", en: "Save this household" },
+  enregistrerCeJeu: { fr: "Enregistrer ce jeu", en: "Save this set" },
 } as const;
