@@ -15,6 +15,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsSoutienAines {
   montantParAine: number; // montant maximal par aîné admissible ($)
@@ -42,9 +43,9 @@ export function montantSoutienAines(
   nbAdultes: 1 | 2,
   age1: number,
   age2: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = SOUTIEN_AINES[annee];
+  const p = (typeof annee === "number" ? SOUTIEN_AINES[annee] : annee.soutienAines);
   const nbAines = (age1 >= p.ageAdmissible ? 1 : 0) + (nbAdultes === 2 && age2 >= p.ageAdmissible ? 1 : 0);
   if (nbAines === 0) return 0; // aucun adulte de 70 ans et plus
   const montantMax = nbAines * p.montantParAine;
@@ -54,7 +55,7 @@ export function montantSoutienAines(
 }
 
 /** Crédit pour soutien aux aînés du ménage (= QC_aines). */
-export function montantSoutienAinesMenage(menage: Menage, revenuFamilialNet: number, annee: Annee): number {
+export function montantSoutienAinesMenage(menage: Menage, revenuFamilialNet: number, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   return montantSoutienAines(
     revenuFamilialNet,

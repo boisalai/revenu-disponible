@@ -33,3 +33,6 @@ export * from "./postes/19-impot";
 
 // Agrégation finale (poste 20)
 export * from "./postes/20-revenu-disponible";
+
+// Bundle de paramètres (scénarios « sur mesure ») + préréglages officiels
+export * from "./parametres";

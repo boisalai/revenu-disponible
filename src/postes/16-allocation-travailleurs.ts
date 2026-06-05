@@ -18,6 +18,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsTypeACT {
   tauxPhaseIn: number; // taux d'accumulation sur le revenu de travail
@@ -84,9 +85,9 @@ export function allocationTravailleurs(
   revenuFamilialNetAjuste: number,
   nbAdultes: 1 | 2,
   aDesEnfants: boolean,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = ACT[annee];
+  const p = (typeof annee === "number" ? ACT[annee] : annee.act);
   const t = p.parType[nbAdultes][aDesEnfants ? "avecEnfants" : "sansEnfants"];
   const exclusion = nbAdultes === 2 ? p.exclusionCouple : p.exclusionSeul;
   const phaseIn = Math.min(Math.max(0, revenuTravail - exclusion) * t.tauxPhaseIn, t.primeMax);
@@ -99,7 +100,7 @@ export function allocationTravailleurs(
 export function allocationTravailleursMenage(
   menage: Menage,
   revenuFamilialNetAjuste: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   const r1 = menage.revenu1;

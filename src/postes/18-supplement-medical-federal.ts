@@ -22,6 +22,7 @@
 // ===========================================================================
 
 import { Annee } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsSupplementMedical {
   taux: number; // taux du supplément sur les frais admissibles (25 %)
@@ -56,9 +57,9 @@ export function supplementFraisMedicaux(
   revenuTravailMax: number,
   revenuNet: number,
   afni: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = SUPPLEMENT_MEDICAL[annee];
+  const p = (typeof annee === "number" ? SUPPLEMENT_MEDICAL[annee] : annee.supplementMedical);
   if (revenuTravailMax < p.revenuTravailMin) return 0; // admissibilité : revenu de travail minimal
   const plancher = Math.min(p.seuilFrais * revenuNet, p.plafondSeuilFrais);
   const fraisAdmissibles = Math.max(0, fraisMedicaux - plancher); // ligne 33200 (au-delà de 3 %, plafonné)

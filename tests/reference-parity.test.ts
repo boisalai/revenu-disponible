@@ -43,6 +43,7 @@ import {
   supplementFournituresScolaires,
   revenuDisponible,
   calculerRevenuDisponible,
+  PARAMETRES_OFFICIELS,
 } from "../src/index";
 
 function menage(p: Partial<Menage> & Pick<Menage, "situation">): Menage {
@@ -544,6 +545,29 @@ describe("Parité référence — ORCHESTRATEUR de bout en bout (ménage → RD)
       // revenu disponible de bout en bout (le RD de la référence n'est pas arrondi ; on compare au cent)
       expect(calculerRevenuDisponible(m, 2025).revenuDisponible).toBeCloseTo(round2(co.RD_old), 2);
       expect(calculerRevenuDisponible(m, 2026).revenuDisponible).toBeCloseTo(round2(co.RD_new), 2);
+    });
+  }
+});
+
+describe("Paramétrage (phase 4a) — le bundle officiel reproduit exactement le chemin par année", () => {
+  const cas: Menage[] = [
+    menage({ situation: Situation.PersonneSeule, revenu1: 8000, ageAdulte1: 40 }),
+    menage({ situation: Situation.PersonneSeule, revenu1: 50_000, ageAdulte1: 40 }),
+    menage({ situation: Situation.FamilleMonoparentale, revenu1: 25_000, ageAdulte1: 40, enfants: [enfant(5), enfant(10)] }),
+    menage({ situation: Situation.Couple, revenu1: 60_000, revenu2: 30_000, ageAdulte1: 40, ageAdulte2: 40 }),
+    menage({ situation: Situation.RetraiteSeul, revenu1: 30_000, ageAdulte1: 72 }),
+    menage({ situation: Situation.CoupleRetraites, revenu1: 20_000, revenu2: 20_000, ageAdulte1: 70, ageAdulte2: 70 }),
+  ];
+  for (const m of cas) {
+    it(`${nomCas(m)}`, () => {
+      for (const an of [2025, 2026] as const) {
+        const parAnnee = calculerRevenuDisponible(m, an);
+        const parBundle = calculerRevenuDisponible(m, PARAMETRES_OFFICIELS[an]);
+        expect(parBundle.revenuDisponible).toBe(parAnnee.revenuDisponible);
+        expect(parBundle.detail).toEqual(parAnnee.detail);
+        expect(parBundle.revenuNetFamilial).toBe(parAnnee.revenuNetFamilial);
+        expect(parBundle.afni).toBe(parAnnee.afni);
+      }
     });
   }
 });

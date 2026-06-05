@@ -24,6 +24,7 @@
 // ===========================================================================
 
 import { Annee } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsFraisMedicaux {
   taux: number; // taux du crédit sur les frais admissibles
@@ -55,9 +56,9 @@ export function creditFraisMedicaux(
   fraisMedicaux: number,
   revenuTravailMax: number,
   revenuFamilialNet: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = FRAIS_MEDICAUX[annee];
+  const p = (typeof annee === "number" ? FRAIS_MEDICAUX[annee] : annee.fraisMedicaux);
   if (revenuTravailMax < p.revenuTravailMin) return 0; // admissibilité : revenu de travail minimal
   const fraisAdmissibles = Math.max(0, fraisMedicaux - p.seuilFrais * revenuFamilialNet);
   const credit = Math.min(p.taux * fraisAdmissibles, p.creditMax);

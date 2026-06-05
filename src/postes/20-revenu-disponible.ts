@@ -32,6 +32,7 @@ import { creditTPSMenage } from "./15-credit-tps";
 import { allocationTravailleursMenage } from "./16-allocation-travailleurs";
 import { securiteVieillesseMenage } from "./17-securite-vieillesse";
 import { impotFederalMenage, impotQuebecMenage, IMPOT_QUEBEC } from "./19-impot";
+import { FACTEUR_AL, type Parametres } from "../parametres";
 
 export interface ComposantesRevenuDisponible {
   revenu: number; // revenu de travail/retraite du ménage (revenu1 + revenu2)
@@ -62,12 +63,6 @@ export function revenuDisponible(c: ComposantesRevenuDisponible): number {
 // ---------------------------------------------------------------------------
 // ORCHESTRATEUR de bout en bout : ménage (entrées brutes) → tous les postes → RD
 // ---------------------------------------------------------------------------
-
-// Facteur d'ajustement du revenu pour l'allocation-logement (pensions, c2M241/c2M242).
-const FACTEUR_AL: Record<Annee, { seul: number; couple: number }> = {
-  2025: { seul: 0.0496305081653133, couple: 0.0496840465993831 },
-  2026: { seul: 0.0389070256249721, couple: 0.0389042222091726 },
-};
 
 /** Détail poste par poste (montants positifs ; clés alignées sur les sorties de la référence). */
 export interface DetailRevenuDisponible {
@@ -118,7 +113,7 @@ export interface ResultatRevenuDisponible {
  *  - **revenu pour l'allocation-logement** = revenu net familial moins une fraction de la PSV.
  * Cœur de calcul de l'application interactive.
  */
-export function calculerRevenuDisponible(menage: Menage, annee: Annee): ResultatRevenuDisponible {
+export function calculerRevenuDisponible(menage: Menage, annee: Annee | Parametres): ResultatRevenuDisponible {
   const { nbAdultes, retraite } = SITUATIONS[menage.situation];
   const revenus = revenusAdultes(menage);
   const revenuBrut = revenus.reduce((a, b) => a + b, 0);
@@ -135,12 +130,12 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee): Resultat
   const aideSociale = aideSocialeMenage(menage, annee);
 
   // Bases de revenu internes.
-  const p = IMPOT_QUEBEC[annee];
+  const p = typeof annee === "number" ? IMPOT_QUEBEC[annee] : annee.impotQuebec;
   const dedTravailleur = retraite ? 0 : revenus.reduce((s, r) => s + Math.min(p.deducTravailleurTaux * r, p.deducTravailleurMax), 0);
   const revenuTotal = revenuBrut + psv + aideSociale;
   const revenuNetFamilial = revenuTotal - dedTravailleur - rrq.supplementaire;
   const afni = revenuTotal - rrq.supplementaire;
-  const f = FACTEUR_AL[annee];
+  const f = typeof annee === "number" ? FACTEUR_AL[annee] : annee.facteurAL;
   const revenuAL = revenuNetFamilial - psv * (nbAdultes === 1 ? f.seul : f.couple);
 
   // Cotisation RAMQ (sur le revenu net familial).

@@ -22,6 +22,7 @@
 // ===========================================================================
 
 import { Annee, Menage, SITUATIONS } from "../socle";
+import type { Parametres } from "../parametres";
 
 export interface ParamsAllocationLogement {
   /** Loyer mensuel imputé par le modèle, par nombre d'adultes puis tranche d'enfants (0,1,2,3+). */
@@ -87,9 +88,9 @@ export function allocationLogement(
   ageMaxAdulte: number,
   nbAdultes: 1 | 2,
   nbEnfants: number,
-  annee: Annee,
+  annee: Annee | Parametres,
 ): number {
-  const p = ALLOCATION_LOGEMENT[annee];
+  const p = (typeof annee === "number" ? ALLOCATION_LOGEMENT[annee] : annee.allocationLogement);
   const admissible = ageMaxAdulte >= p.ageAdmissible || nbEnfants > 0;
   if (!admissible) return 0;
   const loyer = loyerImpute(nbAdultes, nbEnfants, p);
@@ -100,7 +101,7 @@ export function allocationLogement(
 }
 
 /** Allocation-logement du ménage (= QC_al). */
-export function allocationLogementMenage(menage: Menage, revenuAL: number, annee: Annee): number {
+export function allocationLogementMenage(menage: Menage, revenuAL: number, annee: Annee | Parametres): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   const ageMaxAdulte = Math.max(menage.ageAdulte1, nbAdultes === 2 ? menage.ageAdulte2 : 0);
   return allocationLogement(revenuAL, ageMaxAdulte, nbAdultes, menage.enfants.length, annee);
