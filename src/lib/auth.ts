@@ -19,6 +19,18 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   emailAndPassword: { enabled: true },
   ...(socialProviders ? { socialProviders } : {}),
+  account: {
+    // Lie automatiquement une connexion Google à un compte courriel/mot de passe
+    // de même courriel (Google vérifie le courriel). Sans cela : « account_not_linked ».
+    // requireLocalEmailVerified:false car la vérification courriel est désactivée ici
+    // (POC sans service d'envoi) — sinon Better Auth exige le courriel local vérifié
+    // avant de lier. En prod réelle : activer la vérification courriel plutôt que ce drapeau.
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
+      requireLocalEmailVerified: false,
+    },
+  },
   // nextCookies() en dernier : gère les cookies de session côté serveur (Next.js).
   plugins: [nextCookies()],
 });
