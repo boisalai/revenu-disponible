@@ -4,8 +4,15 @@ dist/
 .DS_Store
 coverage/
 
+# Secrets / variables d'environnement — JAMAIS committer
+.env
+.env.*
+!.env.example
+
 # Next.js
 /.next/
 /out/
 /build
 next-env.d.ts
+
+/src/generated/prisma
