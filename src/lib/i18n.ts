@@ -98,4 +98,35 @@ export const UI = {
   // Partage par URL
   copierLien: { fr: "Copier le lien", en: "Copy link" },
   lienCopie: { fr: "Lien copié", en: "Link copied" },
+
+  // Comptes et scénarios sauvegardés
+  seConnecter: { fr: "Se connecter", en: "Sign in" },
+  seDeconnecter: { fr: "Se déconnecter", en: "Sign out" },
+  connexion: { fr: "Connexion", en: "Sign in" },
+  inscription: { fr: "Inscription", en: "Sign up" },
+  champNom: { fr: "Nom", en: "Name" },
+  champCourriel: { fr: "Courriel", en: "Email" },
+  champMotDePasse: { fr: "Mot de passe", en: "Password" },
+  continuerGoogle: { fr: "Continuer avec Google", en: "Continue with Google" },
+  ou: { fr: "ou", en: "or" },
+  erreurAuth: { fr: "Courriel ou mot de passe invalide.", en: "Invalid email or password." },
+  erreurGenerique: { fr: "Une erreur est survenue.", en: "Something went wrong." },
+  annuler: { fr: "Annuler", en: "Cancel" },
+  chargement: { fr: "Chargement…", en: "Loading…" },
+
+  mesScenarios: { fr: "Mes scénarios", en: "My scenarios" },
+  enregistrer: { fr: "Enregistrer", en: "Save" },
+  enregistrerScenarioTitre: { fr: "Enregistrer le scénario", en: "Save scenario" },
+  nomScenario: { fr: "Nom du scénario", en: "Scenario name" },
+  scenarioEnregistre: { fr: "Scénario enregistré.", en: "Scenario saved." },
+  connexionRequiseSauvegarde: {
+    fr: "Connecte-toi pour enregistrer et retrouver tes scénarios.",
+    en: "Sign in to save and reopen your scenarios.",
+  },
+  ouvrir: { fr: "Ouvrir", en: "Open" },
+  supprimer: { fr: "Supprimer", en: "Delete" },
+  aucunScenario: { fr: "Aucun scénario enregistré pour l'instant.", en: "No saved scenarios yet." },
+  typeCalculateur: { fr: "Calculateur", en: "Calculator" },
+  typeComparaison: { fr: "Comparaison", en: "Comparison" },
+  typeBudget: { fr: "Budget", en: "Budget" },
 } as const;

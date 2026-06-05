@@ -11,6 +11,8 @@ import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
 import { BoutonPartage } from "@/components/bouton-partage";
+import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
+import { BarreCompte } from "@/components/compte/barre-compte";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 /** Bascule de langue FR/EN. */
@@ -59,8 +61,10 @@ export function Calculateur() {
             <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+          <BoutonEnregistrer type="CALCULATEUR" encoded={encoded} lang={lang} />
           <BoutonPartage lang={lang} />
+          <BarreCompte lang={lang} />
           <SelecteurLangue lang={lang} onChange={setLang} />
         </div>
       </header>
