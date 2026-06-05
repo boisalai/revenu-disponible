@@ -94,4 +94,8 @@ export const UI = {
   officiel: { fr: "Officiel", en: "Official" },
   modifie: { fr: "Modifié", en: "Modified" },
   reinitialiser: { fr: "Réinitialiser", en: "Reset" },
+
+  // Partage par URL
+  copierLien: { fr: "Copier le lien", en: "Copy link" },
+  lienCopie: { fr: "Lien copié", en: "Link copied" },
 } as const;

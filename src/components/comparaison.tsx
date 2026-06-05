@@ -1,13 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible, Situation, type Annee } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
+import { encoderComparaison, decoderComparaison } from "@/lib/partage";
+import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { SelecteurLangue } from "@/components/calculateur";
+import { BoutonPartage } from "@/components/bouton-partage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -74,6 +77,18 @@ export function Comparaison() {
   const [etatB, setEtatB] = useState<MenageEtat>(DEFAUT_B);
   const [anneeB, setAnneeB] = useState<Annee>(2025);
 
+  const encoded = useMemo(() => encoderComparaison({ etatA, anneeA, etatB, anneeB }), [etatA, anneeA, etatB, anneeB]);
+  const onCharger = useCallback((s: string) => {
+    const d = decoderComparaison(s);
+    if (d) {
+      setEtatA(d.etatA);
+      setAnneeA(d.anneeA);
+      setEtatB(d.etatB);
+      setAnneeB(d.anneeB);
+    }
+  }, []);
+  usePartageURL(encoded, onCharger);
+
   const rA = useMemo(() => calculerRevenuDisponible(versMenage(etatA), anneeA), [etatA, anneeA]);
   const rB = useMemo(() => calculerRevenuDisponible(versMenage(etatB), anneeB), [etatB, anneeB]);
 
@@ -88,7 +103,10 @@ export function Comparaison() {
             <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
           </div>
         </div>
-        <SelecteurLangue lang={lang} onChange={setLang} />
+        <div className="flex shrink-0 items-center gap-2">
+          <BoutonPartage lang={lang} />
+          <SelecteurLangue lang={lang} onChange={setLang} />
+        </div>
       </header>
 
       <div className="grid gap-6 md:grid-cols-2">

@@ -1,13 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
+import { encoderMenage, decoderMenage } from "@/lib/partage";
+import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
+import { BoutonPartage } from "@/components/bouton-partage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 /** Bascule de langue FR/EN. */
@@ -34,6 +37,13 @@ export function Calculateur() {
   const [lang, setLang] = useState<Lang>("fr");
   const [etat, setEtat] = useState<MenageEtat>(MENAGE_DEFAUT);
 
+  const encoded = useMemo(() => encoderMenage(etat), [etat]);
+  const onCharger = useCallback((s: string) => {
+    const m = decoderMenage(s);
+    if (m) setEtat(m);
+  }, []);
+  usePartageURL(encoded, onCharger);
+
   const menage = useMemo(() => versMenage(etat), [etat]);
   const r25 = useMemo(() => calculerRevenuDisponible(menage, 2025), [menage]);
   const r26 = useMemo(() => calculerRevenuDisponible(menage, 2026), [menage]);
@@ -49,7 +59,10 @@ export function Calculateur() {
             <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
           </div>
         </div>
-        <SelecteurLangue lang={lang} onChange={setLang} />
+        <div className="flex shrink-0 items-center gap-2">
+          <BoutonPartage lang={lang} />
+          <SelecteurLangue lang={lang} onChange={setLang} />
+        </div>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
