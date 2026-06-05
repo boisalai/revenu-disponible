@@ -59,6 +59,7 @@ export function Calculateur() {
           <div className="mt-3 flex gap-4 text-sm font-medium text-primary">
             <Link href="/comparaison" className="underline-offset-4 hover:underline">{UI.navComparaison[lang]}</Link>
             <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
+            <Link href="/bibliotheque" className="underline-offset-4 hover:underline">{UI.navBibliotheque[lang]}</Link>
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
