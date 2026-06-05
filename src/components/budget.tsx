@@ -13,24 +13,66 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ANNEES: Annee[] = [2025, 2026];
 const cloner = (a: Annee): Parametres => structuredClone(PARAMETRES_OFFICIELS[a]);
 
+/** Contrôles + éditeur d'un scénario de paramètres (année de base, réinitialisation, édition). */
+function PanneauParametres({
+  annee,
+  bundle,
+  onAnnee,
+  onBundle,
+  lang,
+}: {
+  annee: Annee;
+  bundle: Parametres;
+  onAnnee: (a: Annee) => void;
+  onBundle: (b: Parametres) => void;
+  lang: Lang;
+}) {
+  return (
+    <div className="grid gap-4">
+      <div className="flex items-end justify-between gap-3">
+        <div className="grid gap-1.5">
+          <Label>{UI.anneeBase[lang]}</Label>
+          <Select value={String(annee)} onValueChange={(v) => onAnnee(Number(v) as Annee)}>
+            <SelectTrigger className="w-28">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {ANNEES.map((a) => (
+                <SelectItem key={a} value={String(a)}>
+                  {a}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => onBundle(cloner(annee))}>
+          {UI.reinitialiser[lang]}
+        </Button>
+      </div>
+      <EditeurParametres bundle={bundle} officiel={PARAMETRES_OFFICIELS[annee]} onChange={onBundle} lang={lang} />
+    </div>
+  );
+}
+
 export function Budget() {
   const [lang, setLang] = useState<Lang>("fr");
   const [etat, setEtat] = useState<MenageEtat>(MENAGE_DEFAUT);
-  const [anneeBase, setAnneeBase] = useState<Annee>(2025);
-  const [bundle, setBundle] = useState<Parametres>(() => cloner(2025));
+  const [anneeA, setAnneeA] = useState<Annee>(2025);
+  const [bundleA, setBundleA] = useState<Parametres>(() => cloner(2025));
+  const [anneeB, setAnneeB] = useState<Annee>(2026);
+  const [bundleB, setBundleB] = useState<Parametres>(() => cloner(2026));
 
-  const changerAnnee = (a: Annee) => {
-    setAnneeBase(a);
-    setBundle(cloner(a)); // repartir des paramètres officiels de la nouvelle année de base
-  };
+  const changerAnneeA = (a: Annee) => { setAnneeA(a); setBundleA(cloner(a)); };
+  const changerAnneeB = (a: Annee) => { setAnneeB(a); setBundleB(cloner(a)); };
 
   const menage = useMemo(() => versMenage(etat), [etat]);
-  const rOfficiel = useMemo(() => calculerRevenuDisponible(menage, PARAMETRES_OFFICIELS[anneeBase]), [menage, anneeBase]);
-  const rModifie = useMemo(() => calculerRevenuDisponible(menage, bundle), [menage, bundle]);
+  const rA = useMemo(() => calculerRevenuDisponible(menage, bundleA), [menage, bundleA]);
+  const rB = useMemo(() => calculerRevenuDisponible(menage, bundleB), [menage, bundleB]);
 
   return (
     <div>
@@ -52,35 +94,28 @@ export function Budget() {
             <CardHeader>
               <CardTitle>{UI.situationMenage[lang]}</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-5">
+            <CardContent>
               <FormulaireMenage etat={etat} onChange={setEtat} lang={lang} />
-              <div className="grid gap-1.5">
-                <Label>{UI.anneeBase[lang]}</Label>
-                <Select value={String(anneeBase)} onValueChange={(v) => changerAnnee(Number(v) as Annee)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ANNEES.map((a) => (
-                      <SelectItem key={a} value={String(a)}>
-                        {a}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardHeader>
               <CardTitle>{UI.parametres[lang]}</CardTitle>
-              <Button variant="outline" size="sm" onClick={() => setBundle(cloner(anneeBase))}>
-                {UI.reinitialiser[lang]}
-              </Button>
             </CardHeader>
             <CardContent>
-              <EditeurParametres bundle={bundle} officiel={PARAMETRES_OFFICIELS[anneeBase]} onChange={setBundle} lang={lang} />
+              <Tabs defaultValue="a">
+                <TabsList className="mb-4 w-full">
+                  <TabsTrigger value="a" className="flex-1">{`${UI.scenarioA[lang]} (${anneeA})`}</TabsTrigger>
+                  <TabsTrigger value="b" className="flex-1">{`${UI.scenarioB[lang]} (${anneeB})`}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="a">
+                  <PanneauParametres annee={anneeA} bundle={bundleA} onAnnee={changerAnneeA} onBundle={setBundleA} lang={lang} />
+                </TabsContent>
+                <TabsContent value="b">
+                  <PanneauParametres annee={anneeB} bundle={bundleB} onAnnee={changerAnneeB} onBundle={setBundleB} lang={lang} />
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
@@ -91,11 +126,11 @@ export function Budget() {
           </CardHeader>
           <CardContent>
             <TableauResultats
-              rGauche={rOfficiel}
-              rDroite={rModifie}
+              rGauche={rA}
+              rDroite={rB}
               lang={lang}
-              enteteGauche={`${UI.officiel[lang]} ${anneeBase}`}
-              enteteDroite={UI.modifie[lang]}
+              enteteGauche={`${UI.scenarioA[lang]} (${anneeA})`}
+              enteteDroite={`${UI.scenarioB[lang]} (${anneeB})`}
             />
           </CardContent>
         </Card>
