@@ -83,9 +83,10 @@ export function Comparaison() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{UI.comparaisonTitre[lang]}</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">{UI.comparaisonDesc[lang]}</p>
-          <Link href="/" className="mt-3 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline">
-            ← {UI.navCalculateur[lang]}
-          </Link>
+          <div className="mt-3 flex gap-4 text-sm font-medium text-primary">
+            <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
+            <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
+          </div>
         </div>
         <SelecteurLangue lang={lang} onChange={setLang} />
       </header>
