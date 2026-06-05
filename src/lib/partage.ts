@@ -34,7 +34,7 @@ function nettoyerMenage(m: unknown): MenageEtat {
 }
 
 // --- écarts de paramètres (par groupe) ---
-function diffParams(bundle: Parametres, base: Parametres): Record<string, unknown> {
+export function diffParams(bundle: Parametres, base: Parametres): Record<string, unknown> {
   const d: Record<string, unknown> = {};
   const b = bundle as unknown as Record<string, unknown>;
   const o = base as unknown as Record<string, unknown>;
@@ -42,7 +42,7 @@ function diffParams(bundle: Parametres, base: Parametres): Record<string, unknow
   return d;
 }
 
-function appliquerParams(annee: Annee, diff: Record<string, unknown> | undefined): Parametres {
+export function appliquerParams(annee: Annee, diff: Record<string, unknown> | undefined): Parametres {
   const base = structuredClone(PARAMETRES_OFFICIELS[annee]) as unknown as Record<string, unknown>;
   for (const [k, v] of Object.entries(diff ?? {})) {
     if (k in base) {
@@ -65,20 +65,21 @@ export function decoderMenage(s: string): MenageEtat | null {
   return o?.m ? nettoyerMenage(o.m) : null;
 }
 
-// --- Comparaison : deux ménages + deux années ---
+// --- Comparaison : deux ménages sur UN même jeu de paramètres ---
 export interface PartageComparaison {
   etatA: MenageEtat;
-  anneeA: Annee;
   etatB: MenageEtat;
-  anneeB: Annee;
+  anneeJeu: Annee;
+  bundleJeu: Parametres;
 }
 export function encoderComparaison(p: PartageComparaison): string {
-  return enc({ a: { m: p.etatA, y: p.anneeA }, b: { m: p.etatB, y: p.anneeB } });
+  return enc({ a: p.etatA, b: p.etatB, y: p.anneeJeu, d: diffParams(p.bundleJeu, PARAMETRES_OFFICIELS[p.anneeJeu]) });
 }
 export function decoderComparaison(s: string): PartageComparaison | null {
-  const o = dec<{ a?: { m?: unknown; y?: unknown }; b?: { m?: unknown; y?: unknown } }>(s);
+  const o = dec<{ a?: unknown; b?: unknown; y?: unknown; d?: Record<string, unknown> }>(s);
   if (!o?.a || !o?.b) return null;
-  return { etatA: nettoyerMenage(o.a.m), anneeA: annee(o.a.y), etatB: nettoyerMenage(o.b.m), anneeB: annee(o.b.y) };
+  const y = annee(o.y);
+  return { etatA: nettoyerMenage(o.a), etatB: nettoyerMenage(o.b), anneeJeu: y, bundleJeu: appliquerParams(y, o.d) };
 }
 
 // --- Budget : un ménage + deux jeux de paramètres (écarts) ---

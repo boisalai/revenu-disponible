@@ -24,9 +24,11 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  sessions  Session[]
-  accounts  Account[]
-  scenarios Scenario[]
+  sessions       Session[]
+  accounts       Account[]
+  scenarios      Scenario[]
+  menages        Menage[]
+  jeuxParametres JeuParametres[]
 }
 
 model Session {
@@ -87,6 +89,40 @@ model Scenario {
   userId    String
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ───────────────────── Bibliothèque réutilisable ─────────────────────
+// Blocs nommés et rattachés à un utilisateur, combinables dans /budget et
+// /comparaison.
+
+// Un ménage type sauvegardé. `data` = MenageEtat (situation, âges, revenus, enfants).
+model Menage {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Un jeu de paramètres socio-fiscaux. `data` = ÉCARTS (diff) vs l'officiel de
+// `anneeBase` (cf. diffParams/appliquerParams de src/lib/partage.ts) → compact.
+model JeuParametres {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  anneeBase Int
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
