@@ -57,6 +57,8 @@ npm run typecheck   # tsc --noEmit
 - ✅ **Phase 1 (MVP)** : formulaire (5 situations, âges, revenus, enfants) + tableau **2025 vs 2026** ventilé par poste avec sous-totaux et écart.
 - ✅ **Phase 2 (pédagogie, bilingue FR/EN)** : i18n léger (`src/lib/i18n.ts`), registre par poste (`src/lib/postes-info.ts` — nom, description, objectif, règle, références en FR+EN), sélecteur de langue, panneaux `Dialog` « En savoir plus » par poste.
 - ✅ **Phase 3 (taux marginaux implicites)** : `src/lib/taux-marginal.ts` (TMI = `1 − dRD/dr` par différences finies sur le revenu, décomposé par catégorie) + graphique d'aires empilées Recharts via shadcn (`src/components/graphique-taux-marginal.tsx`), avec courbe cumulative et repère au revenu actuel.
-- Prochaines phases : comparaison de 2 scénarios (écarts par poste), extensions hors-MFQ, couche IA, déploiement.
+- ✅ **Phase 4a (moteur paramétrable)** : `src/parametres.ts` — type `Parametres` (tous les postes) + `PARAMETRES_OFFICIELS`. Les fonctions acceptent `Annee | Parametres` (numéro ⇒ officiel ; bundle ⇒ sur mesure). Permet de modéliser des changements de paramètres (budget).
+- ✅ **Phase 4b (comparaison)** : route `/comparaison` — deux scénarios (ménage + année) côte à côte, écart par poste. Composants réutilisables extraits (`formulaire-menage.tsx`, `tableau-resultats.tsx`, `menage-etat.ts`).
+- Prochaines phases : **4c** éditeur de paramètres (scénario « budget » modifiable, sur la base de la 4a) ; déploiement ; comptes/sauvegarde (Better Auth + Prisma + Postgres) ; extensions hors-MFQ ; couche IA.
 
 **Toujours lancer `npm test` + `npm run typecheck` ; le build se vérifie avec `npm run build`.**
