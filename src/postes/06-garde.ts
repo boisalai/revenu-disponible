@@ -36,6 +36,14 @@ export interface ParamsGarde {
   plafondAutre: number;
   /** Âge d'admissibilité (exclusif) : enfant admissible si âge < ageMax. 16 (2025) ; 14 (2026 et suiv.). */
   ageMax: number;
+  /** Déduction FÉDÉRALE — plafond annuel par enfant « jeune » (âge ≤ 5), $. */
+  plafondFedJeune: number;
+  /** Déduction fédérale — plafond annuel par enfant admissible plus âgé, $. */
+  plafondFedAutre: number;
+  /** Déduction fédérale — âge d'admissibilité (exclusif) : enfant admissible si âge < ageMaxFed. */
+  ageMaxFed: number;
+  /** Déduction fédérale — fraction du revenu de travail (du conjoint le moins payé) qui borne la déduction. */
+  fractionRevenuFed: number;
 }
 
 export const GARDE: Record<Annee, ParamsGarde> = {
@@ -53,6 +61,10 @@ export const GARDE: Record<Annee, ParamsGarde> = {
     plafondJeune: 12_275,
     plafondAutre: 6_180,
     ageMax: 16,
+    plafondFedJeune: 8_000,
+    plafondFedAutre: 5_000,
+    ageMaxFed: 16,
+    fractionRevenuFed: 2 / 3,
   },
   2026: {
     taux: [
@@ -68,6 +80,10 @@ export const GARDE: Record<Annee, ParamsGarde> = {
     plafondJeune: 12_525,
     plafondAutre: 6_305,
     ageMax: 14,
+    plafondFedJeune: 8_000,
+    plafondFedAutre: 5_000,
+    ageMaxFed: 16,
+    fractionRevenuFed: 2 / 3,
   },
 };
 
@@ -123,4 +139,51 @@ export function creditFraisGarde(
   );
   const fraisTotal = enfants.reduce((s, e) => s + e.fraisAdmissibles, 0);
   return Math.round(taux * Math.min(plafondTotal, fraisTotal) * 100) / 100;
+}
+
+// ─────────────── Déduction FÉDÉRALE pour frais de garde + coût total ───────────────
+// Effets des frais de garde sur le revenu disponible, EN PLUS du crédit QC ci-dessus :
+//  • déduction fédérale : réduit le revenu net fédéral (AFNI) → ↑ ACE/crédit TPS, ↓ impôt fédéral ;
+//  • coût total des frais payés : soustrait du revenu disponible.
+// Traçage : coût = c2D84 = c2T433 = (frais subv. + frais non subv.) ; Frais_garde = −c2D84.
+//   Déduction fédérale (dans c2T121 → _afni) : Σ min(frais, plafond_âge) borné à ⅔ du revenu de
+//   travail du conjoint le moins payé. Plafonds c2*310 (8000, âge ≤ 5) / c2*311 (5000, 6-15 ans).
+
+export interface EnfantFrais {
+  age: number;
+  fraisGarde: number; // frais payés ($), subventionnés OU non
+}
+
+/** Plafond annuel de la DÉDUCTION FÉDÉRALE pour un enfant, selon son âge (seuil ≤ 5 comme le crédit QC). */
+export function plafondFederalEnfant(age: number, annee: Annee | Parametres): number {
+  const p = typeof annee === "number" ? GARDE[annee] : annee.garde;
+  if (age <= 5) return p.plafondFedJeune; // « moins de 7 ans » au sens du fichier (âge ≤ 5)
+  if (age < p.ageMaxFed) return p.plafondFedAutre; // 6 à 15 ans
+  return 0; // 16 ans et plus : non admissible au fédéral
+}
+
+/**
+ * Déduction fédérale pour frais de garde d'enfants — réduit le revenu net fédéral (AFNI).
+ *
+ *   déduction = min( Σ frais , Σ plafond_fédéral(âge) , fraction × revenuTravailAdmissible )
+ *
+ * ⚠️ Plafonnement **agrégé** (fidèle au fichier, comme le crédit QC) : on additionne les
+ * plafonds des enfants ayant des frais, puis on borne la **somme** des frais — au lieu de
+ * borner enfant par enfant. S'applique aux frais subventionnés ET non subventionnés.
+ * `revenuTravailAdmissible` = revenu de travail du conjoint le moins payé (= revenu1 si un adulte).
+ */
+export function deductionFraisGardeFederale(
+  enfants: EnfantFrais[],
+  revenuTravailAdmissible: number,
+  annee: Annee | Parametres,
+): number {
+  const fraction = (typeof annee === "number" ? GARDE[annee] : annee.garde).fractionRevenuFed;
+  const plafondTotal = enfants.reduce((s, e) => s + (e.fraisGarde > 0 ? plafondFederalEnfant(e.age, annee) : 0), 0);
+  const fraisTotal = enfants.reduce((s, e) => s + e.fraisGarde, 0);
+  return Math.min(fraisTotal, plafondTotal, fraction * revenuTravailAdmissible);
+}
+
+/** Coût total des frais de garde payés (tous services) — soustrait du revenu disponible. */
+export function fraisGardeTotal(enfants: EnfantFrais[]): number {
+  return enfants.reduce((s, e) => s + e.fraisGarde, 0);
 }

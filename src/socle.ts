@@ -29,9 +29,12 @@ export const SITUATIONS: Record<
 
 export interface Enfant {
   age: number;
-  fraisGarde: number; // frais de garde annuels payés ($)
-  typeGarde: number; // code du type de garde
+  fraisGarde: number; // frais de garde annuels payés ($) — subventionnés OU non (max 15 000/enfant)
+  typeGarde: number; // service de garde : voir TypeGarde
 }
+
+/** Service de garde (Enfant.typeGarde). Seuls les frais NON subventionnés ouvrent droit au crédit QC. */
+export const TypeGarde = { Subventionne: 0, NonSubventionne: 1 } as const;
 
 export interface Menage {
   situation: Situation;

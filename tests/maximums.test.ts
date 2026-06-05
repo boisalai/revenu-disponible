@@ -692,6 +692,7 @@ describe("Poste 20 — Revenu disponible / RD (agrégation)", () => {
       impotQuebec: 3996.4,
       transfertsFederaux: 332.3, // crédit TPS
       impotFederal: 3453.3,
+      fraisGarde: 0,
     });
     expect(rd).toBeCloseTo(39_169.2, 2);
   });

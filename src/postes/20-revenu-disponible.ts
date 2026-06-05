@@ -14,13 +14,13 @@
 //   RD = revenu − cotisations + transferts QC − impôt QC + transferts fédéraux − impôt fédéral
 // ===========================================================================
 
-import { Annee, Menage, SITUATIONS, revenusAdultes } from "../socle";
+import { Annee, Menage, SITUATIONS, TypeGarde, revenusAdultes } from "../socle";
 import { rrqMenage } from "./01-rrq";
 import { rqapMenage } from "./02-rqap";
 import { aeMenage } from "./03-ae";
 import { fssMenage } from "./04-fss";
 import { ramqMenage } from "./05-ramq";
-import { creditFraisGarde } from "./06-garde";
+import { creditFraisGarde, deductionFraisGardeFederale, fraisGardeTotal } from "./06-garde";
 import { allocationFamilleMenage, supplementFournituresScolaires } from "./07-allocation-famille";
 import { primeAuTravailMenage } from "./08-prime-travail";
 import { creditSolidariteMenage } from "./09-solidarite";
@@ -42,6 +42,7 @@ export interface ComposantesRevenuDisponible {
   impotQuebec: number; // impôt du Québec (positif)
   transfertsFederaux: number; // ACE, crédit TPS, ACT, sécurité de la vieillesse, supplément médical
   impotFederal: number; // impôt fédéral (positif)
+  fraisGarde: number; // coût total des frais de garde payés (positif ; réduit le RD) = Frais_garde
 }
 
 /**
@@ -56,7 +57,8 @@ export function revenuDisponible(c: ComposantesRevenuDisponible): number {
     c.transfertsQuebec -
     c.impotQuebec +
     c.transfertsFederaux -
-    c.impotFederal;
+    c.impotFederal -
+    c.fraisGarde;
   return Math.round(rd * 100) / 100;
 }
 
@@ -93,6 +95,7 @@ export interface DetailRevenuDisponible {
     supplementMedical: number; // CA_medic (≡ 0)
   };
   impotFederal: number; // CA_impot
+  fraisGardeCout: number; // Frais_garde : coût des frais de garde payés (positif ; réduit le RD)
 }
 
 export interface ResultatRevenuDisponible {
@@ -134,7 +137,11 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee | Parametr
   const dedTravailleur = retraite ? 0 : revenus.reduce((s, r) => s + Math.min(p.deducTravailleurTaux * r, p.deducTravailleurMax), 0);
   const revenuTotal = revenuBrut + psv + aideSociale;
   const revenuNetFamilial = revenuTotal - dedTravailleur - rrq.supplementaire;
-  const afni = revenuTotal - rrq.supplementaire;
+  // Déduction fédérale pour frais de garde (réduit l'AFNI) : bornée à ⅔ du revenu de travail du
+  // conjoint le moins payé (= revenu1 si un seul adulte). Nulle sans enfants/frais.
+  const revenuTravailAdmissible = retraite ? 0 : Math.min(...revenus);
+  const deductionGardeFed = deductionFraisGardeFederale(menage.enfants, revenuTravailAdmissible, annee);
+  const afni = revenuTotal - rrq.supplementaire - deductionGardeFed;
   const f = typeof annee === "number" ? FACTEUR_AL[annee] : annee.facteurAL;
   const revenuAL = revenuNetFamilial - psv * (nbAdultes === 1 ? f.seul : f.couple);
 
@@ -143,10 +150,15 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee | Parametr
 
   // Impôts (les couples ont besoin de la prime RAMQ pour le crédit médical).
   const impotQuebec = impotQuebecMenage(menage, annee, ramq);
-  const impotFederal = impotFederalMenage(menage, annee, ramq);
+  const impotFederal = impotFederalMenage(menage, annee, ramq, deductionGardeFed);
 
   // Ventilation poste par poste.
-  const enfantsGarde = menage.enfants.map((e) => ({ age: e.age, fraisAdmissibles: e.fraisGarde }));
+  // Crédit QC : seuls les frais NON subventionnés sont admissibles.
+  const enfantsGarde = menage.enfants.map((e) => ({
+    age: e.age,
+    fraisAdmissibles: e.typeGarde === TypeGarde.NonSubventionne ? e.fraisGarde : 0,
+  }));
+  const coutGarde = fraisGardeTotal(menage.enfants);
   const revenuTravail = retraite ? 0 : revenuBrut;
   const detail: DetailRevenuDisponible = {
     cotisations: { rrq: rrq.total, rqap, assuranceEmploi: ae, fss, ramq },
@@ -171,6 +183,7 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee | Parametr
       supplementMedical: 0, // CA_medic ≡ 0 dans le modèle (voir poste 18)
     },
     impotFederal,
+    fraisGardeCout: coutGarde,
   };
 
   const somme = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
@@ -181,6 +194,7 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee | Parametr
     impotQuebec,
     transfertsFederaux: somme(detail.transfertsFederaux),
     impotFederal,
+    fraisGarde: coutGarde,
   };
   return { revenuDisponible: revenuDisponible(composantes), composantes, detail, revenuNetFamilial, afni, revenuAL };
 }

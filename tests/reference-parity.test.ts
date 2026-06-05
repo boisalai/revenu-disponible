@@ -19,6 +19,7 @@ import { calcReference } from "./reference/load-reference";
 import {
   Situation,
   SITUATIONS,
+  TypeGarde,
   Menage,
   rrqMenage,
   rqapMenage,
@@ -60,7 +61,11 @@ function entrees(m: Menage) {
     AgeAdulte1: m.ageAdulte1,
     Revenu2: m.revenu2,
     AgeAdulte2: m.ageAdulte2,
-    enfants: m.enfants.map((e) => ({ age: e.age, frais: e.fraisGarde, typeGarde: "" })),
+    enfants: m.enfants.map((e) => ({
+      age: e.age,
+      frais: e.fraisGarde,
+      typeGarde: e.fraisGarde > 0 ? (e.typeGarde === TypeGarde.NonSubventionne ? "Non subventionnée" : "Subventionnée") : "",
+    })),
   };
 }
 
@@ -495,6 +500,7 @@ describe("Parité référence — revenu disponible (poste 20 : agrégation fina
           impotQuebec: -g("QC_impot"),
           transfertsFederaux: g("CA_ace") + g("CA_tps") + g("CA_pfrt") + g("CA_psv") + g("CA_medic"),
           impotFederal: -g("CA_impot"),
+          fraisGarde: -g("Frais_garde"),
         });
         expect(rd).toBeCloseTo(g("RD"), 2);
       }
@@ -516,6 +522,14 @@ describe("Parité référence — ORCHESTRATEUR de bout en bout (ménage → RD)
     cas.push(menage({ situation: Situation.RetraiteSeul, revenu1: r, ageAdulte1: 72 }));
     cas.push(menage({ situation: Situation.CoupleRetraites, revenu1: r, revenu2: 0, ageAdulte1: 70, ageAdulte2: 70 }));
   }
+  // Frais de garde > 0 : coût (RD) + déduction fédérale (AFNI → ACE/TPS/impôt féd.) + crédit QC (non subv. seulement).
+  const NON = TypeGarde.NonSubventionne;
+  const SUB = TypeGarde.Subventionne;
+  cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: 50_000, ageAdulte1: 35, enfants: [{ age: 3, fraisGarde: 9000, typeGarde: NON }] }));
+  cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: 35_000, ageAdulte1: 35, enfants: [{ age: 3, fraisGarde: 9000, typeGarde: NON }, { age: 8, fraisGarde: 6000, typeGarde: NON }] }));
+  cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: 50_000, ageAdulte1: 35, enfants: [{ age: 4, fraisGarde: 9000, typeGarde: SUB }] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 50_000, revenu2: 6000, ageAdulte1: 35, ageAdulte2: 35, enfants: [{ age: 4, fraisGarde: 12_000, typeGarde: NON }] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 90_000, revenu2: 30_000, ageAdulte1: 40, ageAdulte2: 40, enfants: [{ age: 2, fraisGarde: 11_000, typeGarde: NON }, { age: 10, fraisGarde: 4000, typeGarde: SUB }] }));
   for (const m of cas) {
     it(`${nomCas(m)} — ${m.revenu1}/${m.revenu2}`, () => {
       const co = calcReference(entrees(m));
@@ -542,6 +556,8 @@ describe("Parité référence — ORCHESTRATEUR de bout en bout (ménage → RD)
       expect(d.transfertsFederaux.allocationTravailleurs).toBeCloseTo(co.CA_pfrt_old, 2);
       expect(d.transfertsFederaux.securiteVieillesse).toBeCloseTo(co.CA_psv_old, 2);
       expect(d.impotFederal).toBeCloseTo(-co.CA_impot_old, 2);
+      expect(d.transfertsQuebec.fraisGarde).toBeCloseTo(co.QC_garde_old, 2); // crédit QC (frais non subv.)
+      expect(d.fraisGardeCout).toBeCloseTo(-co.Frais_garde_old, 2); // coût des frais de garde
       // revenu disponible de bout en bout (le RD de la référence n'est pas arrondi ; on compare au cent)
       expect(calculerRevenuDisponible(m, 2025).revenuDisponible).toBeCloseTo(round2(co.RD_old), 2);
       expect(calculerRevenuDisponible(m, 2026).revenuDisponible).toBeCloseTo(round2(co.RD_new), 2);

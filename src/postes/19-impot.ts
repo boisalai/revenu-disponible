@@ -66,13 +66,13 @@ interface ComposantesFederales {
 }
 
 /** Composantes fédérales d'un adulte (revenus, impôt brut, crédits) — base commune seul/couple. */
-function composantesFederales(revenu: number, age: number, retraite: boolean, annee: Annee | Parametres): ComposantesFederales {
+function composantesFederales(revenu: number, age: number, retraite: boolean, annee: Annee | Parametres, deduction = 0): ComposantesFederales {
   const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
   const rrq = retraite ? { base: 0, supplementaire: 0 } : cotisationRRQ(revenu, annee);
   const rqap = retraite ? 0 : cotisationRQAP(revenu, annee);
   const ae = retraite ? 0 : cotisationAE(revenu, annee);
   const psvImpos = psvImposable(age, revenu, annee); // PSV imposable (SRG/supplément exclus, non imposables)
-  const net = revenu + psvImpos - rrq.supplementaire; // ≈ ligne 23600 (SRG ≈ 0 aux seuils concernés)
+  const net = revenu + psvImpos - rrq.supplementaire - deduction; // ≈ ligne 23600 ; déduction frais de garde incluse
   return {
     taxable: net,
     net,
@@ -89,9 +89,9 @@ function composantesFederales(revenu: number, age: number, retraite: boolean, an
  * `proche` = vrai si l'adulte demande le **montant pour un proche admissible** (parent seul) —
  * un second montant personnel de base (ligne 30400), soumis à la même réduction de bonification.
  */
-export function impotFederalAdulte(revenu: number, age: number, retraite: boolean, proche: boolean, annee: Annee | Parametres): number {
+export function impotFederalAdulte(revenu: number, age: number, retraite: boolean, proche: boolean, annee: Annee | Parametres, deduction = 0): number {
   const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
-  const c = composantesFederales(revenu, age, retraite, annee);
+  const c = composantesFederales(revenu, age, retraite, annee, deduction);
   const credits = c.horsAgePension + c.age + c.pension + (proche ? bpaFederal(c.net, p) : 0);
   const impotNet = Math.max(0, c.brut - credits * (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)[0].taux);
   return Math.round(impotNet * (1 - p.abattementQc) * 100) / 100; // après abattement du Québec
@@ -107,12 +107,13 @@ export function impotFederalAdulte(revenu: number, age: number, retraite: boolea
  */
 export function impotFederalCouple(
   revenu1: number, age1: number, revenu2: number, age2: number,
-  retraite: boolean, ramqPremium: number, annee: Annee | Parametres,
+  retraite: boolean, ramqPremium: number, annee: Annee | Parametres, deduction = 0,
 ): number {
   const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
   const taux = (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)[0].taux;
-  const c1 = composantesFederales(revenu1, age1, retraite, annee);
-  const c2 = composantesFederales(revenu2, age2, retraite, annee);
+  // La déduction pour frais de garde est réclamée par le conjoint au revenu de travail le moins élevé.
+  const c1 = composantesFederales(revenu1, age1, retraite, annee, revenu1 <= revenu2 ? deduction : 0);
+  const c2 = composantesFederales(revenu2, age2, retraite, annee, revenu1 <= revenu2 ? 0 : deduction);
 
   // (1) Montant pour conjoint (l'un des deux seulement est non nul).
   const conjoint1 = Math.max(0, bpaFederal(c1.net, p) - c2.taxable);
@@ -149,13 +150,13 @@ export function impotFederalCouple(
  * `ramqPremium` = prime RAMQ du ménage (poste 5), nécessaire au crédit médical des couples
  * (≡ 0 pour 1 adulte, où le crédit médical est toujours nul — voir poste 12).
  */
-export function impotFederalMenage(menage: Menage, annee: Annee | Parametres, ramqPremium = 0): number {
+export function impotFederalMenage(menage: Menage, annee: Annee | Parametres, ramqPremium = 0, deductionGarde = 0): number {
   const { nbAdultes, retraite } = SITUATIONS[menage.situation];
   if (nbAdultes === 2) {
-    return impotFederalCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee);
+    return impotFederalCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee, deductionGarde);
   }
   const proche = menage.situation === Situation.FamilleMonoparentale; // parent seul → proche admissible
-  return impotFederalAdulte(menage.revenu1, menage.ageAdulte1, retraite, proche, annee);
+  return impotFederalAdulte(menage.revenu1, menage.ageAdulte1, retraite, proche, annee, deductionGarde);
 }
 
 // ---------------------------------------------------------------------------
