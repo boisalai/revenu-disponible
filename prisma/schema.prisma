@@ -1,0 +1,94 @@
+// Schéma Prisma — comptes (Better Auth) + sauvegarde de scénarios.
+// Prisma 7 : générateur `prisma-client` (sortie src/generated/prisma) ; l'URL de
+// connexion vit dans prisma.config.ts (CLI) et dans l'adaptateur pg (runtime).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────── Better Auth ───────────────────────────
+// Schéma de base requis par Better Auth (cf. doc « Concepts → Database »).
+// Les noms de champs (camelCase) doivent rester tels quels.
+
+model User {
+  id            String   @id
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions  Session[]
+  accounts  Account[]
+  scenarios Scenario[]
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─────────────────────────── Scénarios ───────────────────────────
+// Un scénario sauvegardé = le code de partage (base64url, même format que ?s=)
+// + son type, rattaché à un utilisateur. On réutilise ainsi l'encodage existant.
+
+enum ScenarioType {
+  CALCULATEUR
+  COMPARAISON
+  BUDGET
+}
+
+model Scenario {
+  id        String       @id @default(cuid())
+  name      String
+  type      ScenarioType
+  payload   String // code de partage encodé (cf. src/lib/partage.ts)
+  userId    String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
