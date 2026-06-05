@@ -72,8 +72,8 @@ export const UI = {
 
   // Navigation et comparaison
   navCalculateur: { fr: "Calculateur", en: "Calculator" },
-  navComparaison: { fr: "Comparer", en: "Compare" },
-  comparaisonTitre: { fr: "Comparer deux scénarios", en: "Compare two scenarios" },
+  navComparaison: { fr: "Comparer des ménages", en: "Compare households" },
+  comparaisonTitre: { fr: "Comparer deux ménages", en: "Compare two households" },
   comparaisonDesc: {
     fr: "Mettez deux ménages (ou deux années) côte à côte et voyez l'écart de revenu disponible, poste par poste.",
     en: "Place two households (or two years) side by side and see the difference in disposable income, item by item.",
@@ -82,12 +82,12 @@ export const UI = {
   scenarioB: { fr: "Scénario B", en: "Scenario B" },
   annee: { fr: "Année", en: "Year" },
 
-  // Éditeur de paramètres (budget)
-  navBudget: { fr: "Simuler un budget", en: "Simulate a budget" },
-  budgetTitre: { fr: "Simuler un changement de paramètres", en: "Simulate a parameter change" },
+  // Comparaison de paramètres (budget)
+  navBudget: { fr: "Comparer des paramètres", en: "Compare parameters" },
+  budgetTitre: { fr: "Comparer deux jeux de paramètres", en: "Compare two parameter sets" },
   budgetDesc: {
-    fr: "Partez des paramètres officiels d'une année, modifiez ce que vous voulez (montants, taux, seuils, paliers) et voyez l'effet sur le revenu disponible — comme l'annonce d'un budget.",
-    en: "Start from an official year's parameters, change anything you like (amounts, rates, thresholds, brackets) and see the effect on disposable income — like a budget announcement.",
+    fr: "Sur un même ménage, comparez deux ensembles de paramètres socio-fiscaux (impôts, cotisations, transferts). Partez d'une année officielle de chaque côté, modifiez ce que vous voulez (montants, taux, seuils, paliers) et voyez l'écart de revenu disponible, poste par poste — comme l'annonce d'un budget.",
+    en: "For the same household, compare two sets of socio-fiscal parameters (taxes, contributions, transfers). Start from an official year on each side, change anything you like (amounts, rates, thresholds, brackets) and see the difference in disposable income, item by item — like a budget announcement.",
   },
   anneeBase: { fr: "Année de base", en: "Base year" },
   parametres: { fr: "Paramètres", en: "Parameters" },
