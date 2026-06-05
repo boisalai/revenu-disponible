@@ -69,9 +69,41 @@ const FACTEUR_AL: Record<Annee, { seul: number; couple: number }> = {
   2026: { seul: 0.0389070256249721, couple: 0.0389042222091726 },
 };
 
+/** Détail poste par poste (montants positifs ; clés alignées sur les sorties de la référence). */
+export interface DetailRevenuDisponible {
+  cotisations: {
+    rrq: number; // CA_rrq
+    rqap: number; // QC_rqap
+    assuranceEmploi: number; // CA_ae
+    fss: number; // QC_fss
+    ramq: number; // QC_ramq
+  };
+  transfertsQuebec: {
+    allocationFamille: number; // QC_sae
+    fournituresScolaires: number; // SFS
+    primeTravail: number; // QC_pt
+    solidarite: number; // QC_sol
+    allocationLogement: number; // QC_al
+    soutienAines: number; // QC_aines
+    fraisGarde: number; // QC_garde
+    fraisMedicaux: number; // QC_medic (≡ 0)
+    aideSociale: number; // QC_adr
+  };
+  impotQuebec: number; // QC_impot
+  transfertsFederaux: {
+    allocationEnfants: number; // CA_ace
+    creditTPS: number; // CA_tps
+    allocationTravailleurs: number; // CA_pfrt
+    securiteVieillesse: number; // CA_psv
+    supplementMedical: number; // CA_medic (≡ 0)
+  };
+  impotFederal: number; // CA_impot
+}
+
 export interface ResultatRevenuDisponible {
   revenuDisponible: number;
   composantes: ComposantesRevenuDisponible;
+  detail: DetailRevenuDisponible; // ventilation poste par poste (pour l'affichage)
   revenuNetFamilial: number; // base des transferts/cotisations québécois (rfn, = c2T271)
   afni: number; // revenu net rajusté fédéral (base des transferts fédéraux, = c2T124)
   revenuAL: number; // revenu aux fins de l'allocation-logement (= c2T357)
@@ -114,38 +146,46 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee): Resultat
   // Cotisation RAMQ (sur le revenu net familial).
   const ramq = ramqMenage(menage, revenuNetFamilial, annee);
 
-  // Transferts québécois.
-  const enfantsGarde = menage.enfants.map((e) => ({ age: e.age, fraisAdmissibles: e.fraisGarde }));
-  const revenuTravail = retraite ? 0 : revenuBrut;
-  const transfertsQuebec =
-    allocationFamilleMenage(menage, revenuNetFamilial, annee) +
-    supplementFournituresScolaires(menage, annee) +
-    primeAuTravailMenage(menage, revenuTravail, revenuNetFamilial, annee) +
-    creditSolidariteMenage(menage, revenuNetFamilial, annee) +
-    allocationLogementMenage(menage, revenuAL, annee) +
-    montantSoutienAinesMenage(menage, revenuNetFamilial, annee) +
-    creditFraisGarde(revenuNetFamilial, enfantsGarde, annee) +
-    aideSociale; // (frais médicaux QC ≡ 0)
-
-  // Transferts fédéraux. L'ACT (prime au travail fédérale) exige un revenu de TRAVAIL → nulle pour
-  // un retraité (sinon la pension serait prise pour un revenu de travail).
-  const transfertsFederaux =
-    allocationCanadienneEnfantsMenage(menage, afni, annee) +
-    creditTPSMenage(menage, afni, annee) +
-    (retraite ? 0 : allocationTravailleursMenage(menage, afni, annee)) +
-    psv; // (supplément médical fédéral ≡ 0)
-
   // Impôts (les couples ont besoin de la prime RAMQ pour le crédit médical).
   const impotQuebec = impotQuebecMenage(menage, annee, ramq);
   const impotFederal = impotFederalMenage(menage, annee, ramq);
 
-  const composantes: ComposantesRevenuDisponible = {
-    revenu: revenuBrut,
-    cotisations: rrq.total + rqap + ae + fss + ramq,
-    transfertsQuebec,
+  // Ventilation poste par poste.
+  const enfantsGarde = menage.enfants.map((e) => ({ age: e.age, fraisAdmissibles: e.fraisGarde }));
+  const revenuTravail = retraite ? 0 : revenuBrut;
+  const detail: DetailRevenuDisponible = {
+    cotisations: { rrq: rrq.total, rqap, assuranceEmploi: ae, fss, ramq },
+    transfertsQuebec: {
+      allocationFamille: allocationFamilleMenage(menage, revenuNetFamilial, annee),
+      fournituresScolaires: supplementFournituresScolaires(menage, annee),
+      primeTravail: primeAuTravailMenage(menage, revenuTravail, revenuNetFamilial, annee),
+      solidarite: creditSolidariteMenage(menage, revenuNetFamilial, annee),
+      allocationLogement: allocationLogementMenage(menage, revenuAL, annee),
+      soutienAines: montantSoutienAinesMenage(menage, revenuNetFamilial, annee),
+      fraisGarde: creditFraisGarde(revenuNetFamilial, enfantsGarde, annee),
+      fraisMedicaux: 0, // QC_medic ≡ 0 dans le modèle (voir poste 12)
+      aideSociale,
+    },
     impotQuebec,
-    transfertsFederaux,
+    transfertsFederaux: {
+      allocationEnfants: allocationCanadienneEnfantsMenage(menage, afni, annee),
+      creditTPS: creditTPSMenage(menage, afni, annee),
+      // L'ACT exige un revenu de TRAVAIL → nulle pour un retraité (sinon la pension serait prise pour tel).
+      allocationTravailleurs: retraite ? 0 : allocationTravailleursMenage(menage, afni, annee),
+      securiteVieillesse: psv,
+      supplementMedical: 0, // CA_medic ≡ 0 dans le modèle (voir poste 18)
+    },
     impotFederal,
   };
-  return { revenuDisponible: revenuDisponible(composantes), composantes, revenuNetFamilial, afni, revenuAL };
+
+  const somme = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
+  const composantes: ComposantesRevenuDisponible = {
+    revenu: revenuBrut,
+    cotisations: somme(detail.cotisations),
+    transfertsQuebec: somme(detail.transfertsQuebec),
+    impotQuebec,
+    transfertsFederaux: somme(detail.transfertsFederaux),
+    impotFederal,
+  };
+  return { revenuDisponible: revenuDisponible(composantes), composantes, detail, revenuNetFamilial, afni, revenuAL };
 }
