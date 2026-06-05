@@ -59,4 +59,14 @@ export const UI = {
   objectif: { fr: "Objectif", en: "Purpose" },
   regleCalcul: { fr: "Règle de calcul", en: "Calculation rule" },
   references: { fr: "Références", en: "References" },
+
+  // Taux marginaux
+  tauxMarginalTitre: { fr: "Taux marginal implicite de taxation", en: "Effective marginal tax rate" },
+  tauxMarginalDesc: {
+    fr: "Part d'un dollar de revenu de travail supplémentaire qui n'aboutit pas au revenu disponible (impôts et cotisations en plus, transferts récupérés). Calculé en faisant varier le revenu de travail, pour la situation choisie.",
+    en: "Share of an additional dollar of employment income that does not reach disposable income (added taxes and contributions, clawed-back transfers). Computed by varying employment income, for the selected situation.",
+  },
+  tauxAxe: { fr: "Taux marginal", en: "Marginal rate" },
+  tauxTotal: { fr: "Taux marginal total", en: "Total marginal rate" },
+  revenuActuel: { fr: "Revenu actuel", en: "Current income" },
 } as const;

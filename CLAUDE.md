@@ -56,6 +56,7 @@ npm run typecheck   # tsc --noEmit
 **Application Web.** Stack : Next.js 16 (App Router, **webpack** — `dev`/`build` avec `--webpack`), TypeScript strict, Tailwind 4, shadcn/ui sur Radix. Moteur dans `src/postes…` ; app dans `src/app` + `src/components` (`calculateur.tsx`) + `src/lib`, alias `@/* → src/*`. Calcul **100 % client** (aucune DB/auth/tRPC). `npm run dev` (port 3000, ou autre si occupé par le site Docusaurus de l'utilisateur).
 - ✅ **Phase 1 (MVP)** : formulaire (5 situations, âges, revenus, enfants) + tableau **2025 vs 2026** ventilé par poste avec sous-totaux et écart.
 - ✅ **Phase 2 (pédagogie, bilingue FR/EN)** : i18n léger (`src/lib/i18n.ts`), registre par poste (`src/lib/postes-info.ts` — nom, description, objectif, règle, références en FR+EN), sélecteur de langue, panneaux `Dialog` « En savoir plus » par poste.
-- Prochaines phases : graphique des taux marginaux implicites (par poste + cumulatif), comparaison de 2 scénarios, extensions hors-MFQ, couche IA, déploiement.
+- ✅ **Phase 3 (taux marginaux implicites)** : `src/lib/taux-marginal.ts` (TMI = `1 − dRD/dr` par différences finies sur le revenu, décomposé par catégorie) + graphique d'aires empilées Recharts via shadcn (`src/components/graphique-taux-marginal.tsx`), avec courbe cumulative et repère au revenu actuel.
+- Prochaines phases : comparaison de 2 scénarios (écarts par poste), extensions hors-MFQ, couche IA, déploiement.
 
 **Toujours lancer `npm test` + `npm run typecheck` ; le build se vérifie avec `npm run build`.**
