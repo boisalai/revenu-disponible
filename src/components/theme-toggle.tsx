@@ -1,0 +1,22 @@
+"use client";
+
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+
+/** Bascule clair/sombre. L'icône suit le thème via CSS (pas de décalage d'hydratation). */
+export function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      className="size-9 shrink-0"
+      aria-label="Basculer le thème clair/sombre"
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+    >
+      <Sun className="size-4 dark:hidden" />
+      <Moon className="hidden size-4 dark:block" />
+    </Button>
+  );
+}

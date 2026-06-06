@@ -17,6 +17,7 @@ import { UI, type Lang } from "@/lib/i18n";
 import { aDeuxAdultes, normaliserMenageEtat, type MenageEtat } from "@/lib/menage-etat";
 import { SelecteurLangue } from "@/components/calculateur";
 import { BarreCompte } from "@/components/compte/barre-compte";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthDialog } from "@/components/compte/auth-dialog";
 import { MenageDialog, type MenageInitial } from "@/components/menage-dialog";
 import { JeuDialog, type JeuInitial } from "@/components/jeu-dialog";
@@ -75,7 +76,7 @@ export function Bibliotheque() {
     <div>
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{UI.bibliothequeTitre[lang]}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{UI.bibliothequeTitre[lang]}</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">{UI.bibliothequeDesc[lang]}</p>
           <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-primary">
             <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
@@ -85,6 +86,7 @@ export function Bibliotheque() {
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <BarreCompte lang={lang} />
+          <ThemeToggle />
           <SelecteurLangue lang={lang} onChange={setLang} />
         </div>
       </header>

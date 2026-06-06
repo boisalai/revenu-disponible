@@ -46,15 +46,32 @@ function construireSections(rG: ResultatRevenuDisponible, rD: ResultatRevenuDisp
   return sections;
 }
 
-function CelluleMontant({ valeur, lang, fort = false }: { valeur: number; lang: Lang; fort?: boolean }) {
+function CelluleMontant({
+  valeur,
+  lang,
+  fort = false,
+  ecart = false,
+}: {
+  valeur: number;
+  lang: Lang;
+  fort?: boolean;
+  ecart?: boolean;
+}) {
   const nul = Math.round(valeur) === 0;
+  // Colonnes normales : montants négatifs (cotisations, impôts, coût) en rouge.
+  // Colonne écart : gain en vert, perte en rouge.
+  const couleur = nul
+    ? "text-muted-foreground"
+    : ecart
+      ? valeur > 0
+        ? "text-emerald-600 dark:text-emerald-400"
+        : "text-red-600 dark:text-red-400"
+      : valeur < 0
+        ? "text-red-600 dark:text-red-400"
+        : "";
   return (
-    <TableCell
-      className={`text-right tabular-nums ${fort ? "font-semibold" : ""} ${
-        nul ? "text-muted-foreground" : valeur < 0 ? "text-red-600 dark:text-red-400" : ""
-      }`}
-    >
-      {nul ? "—" : dollars(valeur, lang)}
+    <TableCell className={`text-right tabular-nums ${fort ? "font-semibold" : ""} ${couleur}`}>
+      {nul ? "—" : `${ecart && valeur > 0 ? "+" : ""}${dollars(valeur, lang)}`}
     </TableCell>
   );
 }
@@ -117,7 +134,7 @@ function SectionLignes({ section, lang }: { section: Section; lang: Lang }) {
           </TableCell>
           <CelluleMontant valeur={l.vG} lang={lang} />
           <CelluleMontant valeur={l.vD} lang={lang} />
-          <CelluleMontant valeur={l.vD - l.vG} lang={lang} />
+          <CelluleMontant valeur={l.vD - l.vG} lang={lang} ecart />
         </TableRow>
       ))}
       {section.total && (
@@ -125,7 +142,7 @@ function SectionLignes({ section, lang }: { section: Section; lang: Lang }) {
           <TableCell className="pl-6 text-sm">{section.total.label![lang]}</TableCell>
           <CelluleMontant valeur={section.total.vG} lang={lang} fort />
           <CelluleMontant valeur={section.total.vD} lang={lang} fort />
-          <CelluleMontant valeur={section.total.vD - section.total.vG} lang={lang} fort />
+          <CelluleMontant valeur={section.total.vD - section.total.vG} lang={lang} fort ecart />
         </TableRow>
       )}
     </>
@@ -152,7 +169,7 @@ export function TableauResultats({
 
   return (
     <div>
-      <div className="mb-6 grid grid-cols-3 gap-4 rounded-lg border bg-muted/30 p-4 text-center">
+      <div className="mb-6 grid grid-cols-3 gap-4 rounded-xl border bg-card p-5 text-center shadow-[0_1px_2px_rgb(15_23_42/0.04),0_3px_12px_-4px_rgb(15_23_42/0.08)]">
         {[
           { t: enteteGauche, v: rdG, ecart: false },
           { t: enteteDroite, v: rdD, ecart: false },
@@ -160,7 +177,11 @@ export function TableauResultats({
         ].map((c) => (
           <div key={c.t}>
             <div className="text-xs uppercase tracking-wide text-muted-foreground">{c.t}</div>
-            <div className={`mt-1 text-2xl font-semibold tabular-nums ${c.ecart && c.v < 0 ? "text-red-600 dark:text-red-400" : ""}`}>
+            <div
+              className={`mt-1 text-2xl font-semibold tabular-nums ${
+                c.ecart ? (c.v > 0 ? "text-emerald-600 dark:text-emerald-400" : c.v < 0 ? "text-red-600 dark:text-red-400" : "") : "text-foreground"
+              }`}
+            >
               {c.ecart && c.v > 0 ? "+" : ""}
               {dollars(c.v, lang)}
             </div>
@@ -185,7 +206,7 @@ export function TableauResultats({
             <TableCell>{UI.revenuDisponible[lang]}</TableCell>
             <CelluleMontant valeur={rdG} lang={lang} fort />
             <CelluleMontant valeur={rdD} lang={lang} fort />
-            <CelluleMontant valeur={rdD - rdG} lang={lang} fort />
+            <CelluleMontant valeur={rdD - rdG} lang={lang} fort ecart />
           </TableRow>
         </TableBody>
       </Table>

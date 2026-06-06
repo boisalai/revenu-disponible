@@ -13,6 +13,7 @@ import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
 import { BoutonPartage } from "@/components/bouton-partage";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 import { BarreCompte } from "@/components/compte/barre-compte";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 /** Bascule de langue FR/EN. */
@@ -54,7 +55,7 @@ export function Calculateur() {
     <div>
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{UI.titre[lang]}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{UI.titre[lang]}</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">{UI.sousTitre[lang]}</p>
           <div className="mt-3 flex gap-4 text-sm font-medium text-primary">
             <Link href="/comparaison" className="underline-offset-4 hover:underline">{UI.navComparaison[lang]}</Link>
@@ -66,6 +67,7 @@ export function Calculateur() {
           <BoutonEnregistrer type="CALCULATEUR" encoded={encoded} lang={lang} />
           <BoutonPartage lang={lang} />
           <BarreCompte lang={lang} />
+          <ThemeToggle />
           <SelecteurLangue lang={lang} onChange={setLang} />
         </div>
       </header>

@@ -13,6 +13,7 @@ import { SelecteurLangue } from "@/components/calculateur";
 import { BoutonPartage } from "@/components/bouton-partage";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 import { BarreCompte } from "@/components/compte/barre-compte";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { MenagePicker } from "@/components/menage-picker";
 import { JeuPicker, cleOfficiel } from "@/components/jeu-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,7 +86,7 @@ export function Comparaison() {
     <div>
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{UI.comparaisonTitre[lang]}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{UI.comparaisonTitre[lang]}</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">{UI.comparaisonDesc[lang]}</p>
           <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-primary">
             <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
@@ -97,6 +98,7 @@ export function Comparaison() {
           <BoutonEnregistrer type="COMPARAISON" encoded={encoded} lang={lang} />
           <BoutonPartage lang={lang} />
           <BarreCompte lang={lang} />
+          <ThemeToggle />
           <SelecteurLangue lang={lang} onChange={setLang} />
         </div>
       </header>
