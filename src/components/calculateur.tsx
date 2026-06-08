@@ -9,6 +9,7 @@ import { encoderMenage, decoderMenage } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
+import { BoutonsExport } from "@/components/boutons-export";
 import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
 import { BoutonPartage } from "@/components/bouton-partage";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
@@ -84,8 +85,9 @@ export function Calculateur() {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
             <CardTitle>{UI.revenuDisponible[lang]}</CardTitle>
+            <BoutonsExport etat={etat} r25={r25} r26={r26} lang={lang} />
           </CardHeader>
           <CardContent>
             <TableauResultats rGauche={r25} rDroite={r26} lang={lang} enteteGauche="2025" enteteDroite="2026" />

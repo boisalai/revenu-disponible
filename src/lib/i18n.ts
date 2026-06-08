@@ -177,4 +177,8 @@ export const UI = {
     en: "red zones where the marginal rate exceeds 80% — an extra dollar of employment income yields less than $0.20 of disposable income.",
   },
   axeRevenu: { fr: "Revenu de travail (brut)", en: "Gross employment income" },
+
+  // Export
+  exportCsv: { fr: "Exporter en CSV", en: "Export to CSV" },
+  exportPdf: { fr: "Exporter en PDF", en: "Export to PDF" },
 } as const;
