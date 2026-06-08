@@ -53,3 +53,27 @@ export function courbeTauxMarginal(menage: Menage, annee: Annee, opts: OptionsTM
   }
   return points;
 }
+
+/** Seuil de TMI au-delà duquel on parle de « trappe à la pauvreté » (%). */
+export const SEUIL_TRAPPE = 80;
+
+/**
+ * Plages de revenu où le TMI total dépasse `seuil` — les **trappes à la pauvreté** : un dollar de
+ * revenu de travail supplémentaire y rapporte moins de (100 − seuil) cents de revenu disponible.
+ * Chaque point couvre la tranche [revenu, revenu + pas] ; on fusionne les tranches contiguës.
+ */
+export function zonesTrappe(points: PointTMI[], seuil = SEUIL_TRAPPE): { debut: number; fin: number }[] {
+  const pas = points.length > 1 ? points[1].revenu - points[0].revenu : 1000;
+  const zones: { debut: number; fin: number }[] = [];
+  let debut: number | null = null;
+  for (let i = 0; i < points.length; i++) {
+    if (points[i].total > seuil) {
+      if (debut === null) debut = points[i].revenu;
+    } else if (debut !== null) {
+      zones.push({ debut, fin: points[i - 1].revenu + pas });
+      debut = null;
+    }
+  }
+  if (debut !== null) zones.push({ debut, fin: points[points.length - 1].revenu + pas });
+  return zones;
+}

@@ -168,4 +168,13 @@ export const UI = {
   serviceGarde: { fr: "Service de garde", en: "Childcare service" },
   subventionne: { fr: "Subventionné", en: "Subsidized" },
   nonSubventionne: { fr: "Non subventionné", en: "Non-subsidized" },
+
+  // Trappes à la pauvreté (graphique de taux marginal)
+  trappePauvrete: { fr: "Trappe à la pauvreté", en: "Poverty trap" },
+  trappeSeuil: { fr: "Seuil de trappe (> 80 %)", en: "Trap threshold (> 80%)" },
+  trappeNote: {
+    fr: "zones rouges où le taux marginal dépasse 80 % — un dollar de revenu de travail supplémentaire y rapporte moins de 0,20 $ de revenu disponible.",
+    en: "red zones where the marginal rate exceeds 80% — an extra dollar of employment income yields less than $0.20 of disposable income.",
+  },
+  axeRevenu: { fr: "Revenu de travail (brut)", en: "Gross employment income" },
 } as const;
