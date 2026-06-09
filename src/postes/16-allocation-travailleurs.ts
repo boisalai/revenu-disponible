@@ -19,6 +19,7 @@
 
 import { Annee, Menage, SITUATIONS } from "../socle";
 import type { Parametres } from "../parametres";
+import { cotisationRRQ } from "./01-rrq";
 
 export interface ParamsTypeACT {
   tauxPhaseIn: number; // taux d'accumulation sur le revenu de travail
@@ -105,9 +106,14 @@ export function allocationTravailleursMenage(
   const { nbAdultes } = SITUATIONS[menage.situation];
   const r1 = menage.revenu1;
   const r2 = nbAdultes === 2 ? menage.revenu2 : 0;
+  // Accumulation (phase-in) : revenu de travail BRUT. Exemption du 2e revenu : revenu de travail du
+  // conjoint le moins payé NET de la cotisation RRQ supplémentaire (déductible) — cf. réf.
+  // arr2xT62T62/arr2xT94T94 = brut − RRQ suppl. (n'a d'effet que lorsque ce revenu < exemption).
+  const moindre = Math.min(r1, r2);
+  const moindreNet = moindre - cotisationRRQ(moindre, annee).supplementaire;
   return allocationTravailleurs(
     r1 + r2,
-    Math.min(r1, r2),
+    moindreNet,
     revenuFamilialNetAjuste,
     nbAdultes,
     menage.enfants.length > 0,

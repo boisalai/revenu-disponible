@@ -25,7 +25,7 @@ import type { Parametres } from "../parametres";
 import { cotisationRRQ } from "./01-rrq";
 import { cotisationRQAP } from "./02-rqap";
 import { cotisationAE } from "./03-ae";
-import { securiteVieillesse, psvImposable } from "./17-securite-vieillesse";
+import { securiteVieillesse, psvImposable, svNonImposableParAdulte } from "./17-securite-vieillesse";
 import { PALIERS_FEDERAL, PALIERS_QC } from "../impot/parametres";
 
 export interface ParamsImpotFederal {
@@ -65,18 +65,21 @@ interface ComposantesFederales {
   pension: number; // montant pour revenu de pension
 }
 
-/** Composantes fédérales d'un adulte (revenus, impôt brut, crédits) — base commune seul/couple. */
-function composantesFederales(revenu: number, age: number, retraite: boolean, annee: Annee | Parametres, deduction = 0): ComposantesFederales {
+/** Composantes fédérales d'un adulte (revenus, impôt brut, crédits) — base commune seul/couple.
+ * `svNonImposable` = SRG + Allocation (non imposables) de l'adulte : exclus du revenu IMPOSABLE
+ * (impôt brut) mais inclus dans le revenu NET servant aux crédits modulés (fiche 110113). */
+function composantesFederales(revenu: number, age: number, retraite: boolean, annee: Annee | Parametres, deduction = 0, svNonImposable = 0): ComposantesFederales {
   const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
   const rrq = retraite ? { base: 0, supplementaire: 0 } : cotisationRRQ(revenu, annee);
   const rqap = retraite ? 0 : cotisationRQAP(revenu, annee);
   const ae = retraite ? 0 : cotisationAE(revenu, annee);
   const psvImpos = psvImposable(age, revenu, annee); // PSV imposable (SRG/supplément exclus, non imposables)
-  const net = revenu + psvImpos - rrq.supplementaire - deduction; // ≈ ligne 23600 ; déduction frais de garde incluse
+  const taxable = revenu + psvImpos - rrq.supplementaire - deduction; // revenu imposable (frais de garde déduits)
+  const net = taxable + svNonImposable; // ≈ ligne 23600 : SRG/Allocation non imposables INCLUS (crédits modulés)
   return {
-    taxable: net,
+    taxable,
     net,
-    brut: impotProgressif(net, (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)),
+    brut: impotProgressif(taxable, (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)),
     horsAgePension: bpaFederal(net, p) + rrq.base + rqap + ae + (retraite ? 0 : Math.min(p.emploiCanadaMax, revenu)),
     age: age >= 65 ? Math.max(0, p.ageMontant - p.ageTaux * Math.max(0, net - p.ageSeuil)) : 0,
     pension: retraite ? Math.min(p.pensionMax, revenu) : 0,
@@ -89,9 +92,9 @@ function composantesFederales(revenu: number, age: number, retraite: boolean, an
  * `proche` = vrai si l'adulte demande le **montant pour un proche admissible** (parent seul) —
  * un second montant personnel de base (ligne 30400), soumis à la même réduction de bonification.
  */
-export function impotFederalAdulte(revenu: number, age: number, retraite: boolean, proche: boolean, annee: Annee | Parametres, deduction = 0): number {
+export function impotFederalAdulte(revenu: number, age: number, retraite: boolean, proche: boolean, annee: Annee | Parametres, deduction = 0, svNonImposable = 0): number {
   const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
-  const c = composantesFederales(revenu, age, retraite, annee, deduction);
+  const c = composantesFederales(revenu, age, retraite, annee, deduction, svNonImposable);
   const credits = c.horsAgePension + c.age + c.pension + (proche ? bpaFederal(c.net, p) : 0);
   const impotNet = Math.max(0, c.brut - credits * (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)[0].taux);
   return Math.round(impotNet * (1 - p.abattementQc) * 100) / 100; // après abattement du Québec
@@ -108,16 +111,18 @@ export function impotFederalAdulte(revenu: number, age: number, retraite: boolea
 export function impotFederalCouple(
   revenu1: number, age1: number, revenu2: number, age2: number,
   retraite: boolean, ramqPremium: number, annee: Annee | Parametres, deduction = 0,
+  svNonImp1 = 0, svNonImp2 = 0,
 ): number {
   const p = (typeof annee === "number" ? IMPOT_FEDERAL[annee] : annee.impotFederal);
   const taux = (typeof annee === "number" ? PALIERS_FEDERAL[annee] : annee.paliersFederal)[0].taux;
   // La déduction pour frais de garde est réclamée par le conjoint au revenu de travail le moins élevé.
-  const c1 = composantesFederales(revenu1, age1, retraite, annee, revenu1 <= revenu2 ? deduction : 0);
-  const c2 = composantesFederales(revenu2, age2, retraite, annee, revenu1 <= revenu2 ? 0 : deduction);
+  const c1 = composantesFederales(revenu1, age1, retraite, annee, revenu1 <= revenu2 ? deduction : 0, svNonImp1);
+  const c2 = composantesFederales(revenu2, age2, retraite, annee, revenu1 <= revenu2 ? 0 : deduction, svNonImp2);
 
-  // (1) Montant pour conjoint (l'un des deux seulement est non nul).
-  const conjoint1 = Math.max(0, bpaFederal(c1.net, p) - c2.taxable);
-  const conjoint2 = Math.max(0, bpaFederal(c2.net, p) - c1.taxable);
+  // (1) Montant pour conjoint (l'un des deux seulement est non nul) : réduit par le revenu NET du
+  // conjoint (SRG/Allocation non imposables inclus), et non son seul revenu imposable.
+  const conjoint1 = Math.max(0, bpaFederal(c1.net, p) - c2.net);
+  const conjoint2 = Math.max(0, bpaFederal(c2.net, p) - c1.net);
   const hors1 = c1.horsAgePension + conjoint1; // crédits hors âge/pension/médical
   const hors2 = c2.horsAgePension + conjoint2;
 
@@ -152,11 +157,12 @@ export function impotFederalCouple(
  */
 export function impotFederalMenage(menage: Menage, annee: Annee | Parametres, ramqPremium = 0, deductionGarde = 0): number {
   const { nbAdultes, retraite } = SITUATIONS[menage.situation];
+  const [sv1, sv2] = svNonImposableParAdulte(menage, annee); // SRG/Allocation non imposables, par adulte
   if (nbAdultes === 2) {
-    return impotFederalCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee, deductionGarde);
+    return impotFederalCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee, deductionGarde, sv1, sv2);
   }
   const proche = menage.situation === Situation.FamilleMonoparentale; // parent seul → proche admissible
-  return impotFederalAdulte(menage.revenu1, menage.ageAdulte1, retraite, proche, annee, deductionGarde);
+  return impotFederalAdulte(menage.revenu1, menage.ageAdulte1, retraite, proche, annee, deductionGarde, sv1);
 }
 
 // ---------------------------------------------------------------------------
@@ -229,6 +235,7 @@ function imposableQuebec(revenu: number, age: number, retraite: boolean, p: Para
 export function impotQuebecCouple(
   revenu1: number, age1: number, revenu2: number, age2: number,
   retraite: boolean, ramqPremium: number, annee: Annee | Parametres,
+  svNonImp1 = 0, svNonImp2 = 0,
 ): number {
   const p = (typeof annee === "number" ? IMPOT_QUEBEC[annee] : annee.impotQuebec);
   const taux = (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec)[0].taux; // 0,14
@@ -236,7 +243,9 @@ export function impotQuebecCouple(
   const t2 = imposableQuebec(revenu2, age2, retraite, p, annee);
   const brut1 = impotProgressif(t1, (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec));
   const brut2 = impotProgressif(t2, (typeof annee === "number" ? PALIERS_QC[annee] : annee.paliersQuebec));
-  const revenuNetFamilial = t1 + t2;
+  // Revenu net familial : SRG/Allocation non imposables INCLUS (réduit le montant combiné et le crédit
+  // médical, modulés sur le revenu net — fiche 110113). Cohérent avec l'adulte seul (caPsv inclus).
+  const revenuNetFamilial = t1 + t2 + svNonImp1 + svNonImp2;
 
   // (1) Montant combiné (âge + pension des DEUX conjoints), réclamé par l'adulte 1.
   const montant = (revenu: number, age: number) =>
@@ -268,7 +277,8 @@ export function impotQuebecCouple(
 export function impotQuebecMenage(menage: Menage, annee: Annee | Parametres, ramqPremium = 0): number {
   const { nbAdultes, retraite } = SITUATIONS[menage.situation];
   if (nbAdultes === 2) {
-    return impotQuebecCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee);
+    const [sv1, sv2] = svNonImposableParAdulte(menage, annee); // SRG/Allocation non imposables, par adulte
+    return impotQuebecCouple(menage.revenu1, menage.ageAdulte1, menage.revenu2, menage.ageAdulte2, retraite, ramqPremium, annee, sv1, sv2);
   }
   return impotQuebecAdulte(menage.revenu1, menage.ageAdulte1, retraite, true, annee);
 }

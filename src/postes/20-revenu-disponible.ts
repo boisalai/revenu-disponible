@@ -30,7 +30,7 @@ import { aideSocialeMenage } from "./13-aide-sociale";
 import { allocationCanadienneEnfantsMenage } from "./14-allocation-canadienne-enfants";
 import { creditTPSMenage } from "./15-credit-tps";
 import { allocationTravailleursMenage } from "./16-allocation-travailleurs";
-import { securiteVieillesseMenage } from "./17-securite-vieillesse";
+import { exonerationRamqSRG, securiteVieillesseMenage } from "./17-securite-vieillesse";
 import { impotFederalMenage, impotQuebecMenage, IMPOT_QUEBEC } from "./19-impot";
 import { FACTEUR_AL, type Parametres } from "../parametres";
 
@@ -145,8 +145,11 @@ export function calculerRevenuDisponible(menage: Menage, annee: Annee | Parametr
   const f = typeof annee === "number" ? FACTEUR_AL[annee] : annee.facteurAL;
   const revenuAL = revenuNetFamilial - psv * (nbAdultes === 1 ? f.seul : f.couple);
 
-  // Cotisation RAMQ (sur le revenu net familial).
-  const ramq = ramqMenage(menage, revenuNetFamilial, annee);
+  // Cotisation RAMQ (sur le revenu net familial). Un adulte en est exonéré s'il reçoit l'aide de
+  // dernier recours, ou s'il a 65 ans et plus et touche le SRG maximal (≥ 94 %) → prime nulle.
+  const exoSRG = exonerationRamqSRG(menage, annee);
+  const exoAide = aideSociale > 0;
+  const ramq = ramqMenage(menage, revenuNetFamilial, annee, [exoAide || exoSRG[0], exoAide || exoSRG[1]]);
 
   // Impôts (les couples ont besoin de la prime RAMQ pour le crédit médical).
   const impotQuebec = impotQuebecMenage(menage, annee, ramq);

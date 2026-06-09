@@ -71,6 +71,7 @@ La sortie `…_bonif` = `c2 − c4`. Elle est donc **nulle en 2025** (taux ident
 | S24 | Emploi et Développement social Canada — *Sécurité de la vieillesse* ; ARC — *Impôt de récupération de la PSV* (**art. 180.2**, ligne 23500) ; RRQ ; RCGT (*planiguide*) ; CFFP ; *Loi sur la sécurité de la vieillesse* (LRC 1985, ch. **O-9**) ; **données ouvertes — montants maximaux mensuels par trimestre** | PSV/SRG : base légale, montants **trimestriels** (moyennés sur 4 trimestres), supplément 75 ans et +, récupération (15 % dès 93 454 $), tranches du SRG |
 | S25 | Agence du revenu du Canada — *Ligne 45200 — Supplément remboursable pour frais médicaux* (canada.ca) ; *Loi de l'impôt sur le revenu* (LRC 1985, ch. 1 (5ᵉ suppl.)), **art. 122.51(1)** ; TaxTips.ca — *Refundable Medical Expense Supplement* (table d'indexation par année) | Supplément médical remboursable fédéral : max (1 504/1 534 $), taux 25 %, revenu de travail min. (4 390/4 478 $), seuil de réduction sur l'AFNI (33 294/33 960 $), réduction 5 %, plancher de 3 % plafonné (2 834/2 890 $) |
 | S26 | Agence du revenu du Canada — *Montants personnels fédéraux* (annexe 1 / ligne 30000s) ; *Loi de l'impôt sur le revenu*, **art. 118** (crédits personnels), **art. 118(2)** (âge), **art. 118(3)** (pension), **art. 118(10)** (emploi Canada), **art. 120(2)** (abattement QC 16,5 %) | Crédits non remboursables fédéraux : montant de base (16 129/16 452 $, bonification incluse), montant pour proche admissible (= base), âge (9 028/9 208 $, seuil 45 522/46 432 $), pension (2 000 $), emploi Canada (1 471/1 501 $) — valeurs extraites du code, montants 2025 conformes aux barèmes ARC, **validées par parité** |
+| S27 | Ministère des Finances du Québec — *Dépenses fiscales*, **fiche 110113** (budget.finances.gouv.qc.ca/.../fiche-110113.asp) | SRG et **Allocation au conjoint** non imposables, **mais inclus dans le revenu net** servant à réduire les crédits d'impôt modulés (montant pour conjoint, etc.) **et** à déterminer la prime du régime public d'assurance médicaments |
 
 *(De nouvelles sources seront ajoutées à chaque poste.)*
 
@@ -578,7 +579,7 @@ et le total du ménage `c2T376 = round( (exonéré₁ ? 0 : c2T375) + (couple ? 
 - `QC_ramq` = prime calculée sur le **revenu familial net** (`c2T271 = c2T223 + c2T249` = somme des **lignes 275** des adultes), **plafonnée par adulte** ; un **couple paie 2 ×** la prime (le barème « avec conjoint » est à **demi-taux**, et la même prime `c2T375` s'applique aux deux conjoints).
 - **Deux tranches** au-dessus de l'exonération : 1ʳᵉ tranche sur les premiers **5 000 $** (`arr2x…278`), 2ᵉ tranche sur l'excédent ; le total est plafonné à la **prime maximale** (`arr2x…273`).
 - L'**exonération** dépend de la composition : `c2C11` (= nb d'adultes, 1 ou 2) et `c2C38` (= nb d'enfants, regroupés 0 / 1 / 2+). Les 6 seuils sont sélectionnés par les indices `arr2x…366-371` (lignes 20902-20965).
-- **Exonérations individuelles** (prime forcée à 0 pour un adulte) : aide financière de **dernier recours** (`c2T302 > 0`) ; ou **65 ans ou plus** touchant le **SRG maximal** — ou ≥ 94 % de celui-ci (`âge ≥ 65 ET c2T31 ≥ 0,94 × c2T24`), lignes 22897-22934. Confirmées par RAMQ/Revenu Québec (S11, S12).
+- **Exonérations individuelles** (prime forcée à 0 pour un adulte) : aide financière de **dernier recours** (`c2T302 > 0`) ; ou **65 ans ou plus** touchant le **SRG maximal** — ou ≥ 94 % de celui-ci (`âge ≥ 65 ET c2T31 ≥ 0,94 × c2T24`), lignes 22897-22934. Confirmées par RAMQ/Revenu Québec (S11, S12) ; **appliquées par l'orchestrateur** (poste 20) via `exonerationRamqSRG` (poste 17).
 - Le code stocke le total en négatif (réduit le revenu disponible) ; calculé en positif ci-dessous.
 - Convention de colonnes : **2025 = colonne T** (paramètres col. M) ; **2026 = colonne S** (paramètres col. L).
 
@@ -1214,6 +1215,8 @@ export function creditFraisMedicaux(fraisMedicaux: number, revenuTravailMax: num
 
 > 🔗 **Poste-intrant.** `QC_adr = c2T302` est la **cellule même** qui sert d'exonération à la **RAMQ** (poste 5) et à l'**allocation-logement** (poste 10) : l'aide sociale alimente d'autres postes. C'est aussi le premier poste à **dépendre d'autres postes** (cotisations RRQ/RQAP/AE, déduites du revenu compté).
 
+> ➕ **Deux raffinements vérifiés par parité** (révélés par le balayage dense). (1) **Contrainte temporaire à l'emploi** : un **parent seul** d'un **enfant de moins de 5 ans** reçoit l'ajustement de 166/169 $/mois (réf. `c2E38 > 0` gardé à la monoparentale ; même montant `c2M173` que l'ajustement « 58 ans et plus », via une condition OR). (2) **Retraité de moins de 65 ans** : sa **pension** est comptée en **revenu « autre »** (réduction pleine, sans exemption de 200/300 $ ni incitation au travail de 25 %), et non en revenu de travail (réf. `c2T299`).
+
 #### Structure (confirmée dans le code)
 
 Traçage : `QC_adr` = `c2T302` (2025) / `c2S302` (2026) = `arr2xD53D58[1][0]` = `arr2xT414T422[1][0]` (lignes 22014, 21997). Et :
@@ -1464,7 +1467,7 @@ export function allocationTravailleurs(revenuTravail: number, revenuTravailMoind
 }
 ```
 
-> **Notes** : (1) Crédit **remboursable**. (2) Le revenu de travail (accumulation) et l'AFNI (réduction) sont **fournis en entrée**. (3) Le **supplément pour invalidité** de l'ACT n'est pas modélisé (aucune entrée). (4) L'AFNI incluant l'aide sociale, un ménage sans travail mais avec aide sociale voit son ACT réduite.
+> **Notes** : (1) Crédit **remboursable**. (2) L'**accumulation** porte sur le revenu de travail **brut**, mais l'**exemption du second revenu** prend le revenu de travail du conjoint le moins payé **net de la cotisation RRQ supplémentaire** (déductible ; réf. `arr2xT62T62`/`arr2xT94T94` = brut − RRQ suppl.) — n'a d'effet que lorsque ce revenu est inférieur à l'exemption (16 386 $). L'AFNI (réduction) est fournie en entrée. (3) Le **supplément pour invalidité** de l'ACT n'est pas modélisé (aucune entrée). (4) L'AFNI incluant l'aide sociale, un ménage sans travail mais avec aide sociale voit son ACT réduite.
 
 ---
 
@@ -1482,12 +1485,12 @@ Traçage : `CA_psv` = `round(c2T41 + c2T42 + c2T51 + c2T52 + c2T43 + c2T53, 2)` 
 - **PSV** (`c2T41`/`c2T51`) = `max(0, base − récupération)` ; base = 8 791,14 $ + (75 ans et + : 879,15 $) ; récupération = `max(0, (revenu + base) − 93 454 $) × 15 %`.
 - **SRG** (`c2T42`/`c2T52`) = `max(0, SRG_max − revenuArrondi × taux)`. `SRG_max` = 11 096,85 $ (seul) / 7 327,65 $ par adulte (couple) ; taux = 50 % (seul) / 25 % (couple). Le revenu est **arrondi à la tranche inférieure** (24 $ seul / 48 $ couple — le SRG se calcule par paliers).
 - **Supplément complémentaire** du SRG (`c2T43`/`c2T53`, « top-up ») = `max(0, max − revenuArrondi × 25 %)` ; max = 2 033,97 $ (seul) / 1 152,60 $ (couple) ; revenu arrondi à la tranche **supérieure** (48/96 $) au-delà d'une exemption (2 047,99 / 4 095,99 $).
-- **Allocation** (`c2T30`, à la place du SRG pour le conjoint de **60-64 ans** dont l'autre a 65 ans et plus) = `max(0, alloc_max − min(revenuArrondi₂₄, seuil) × 75 % − (revenu au-delà du seuil, arrondi) × 25 %)` ; `alloc_max` = 16 695,09 $ (2025) / 17 028,99 $ (2026) ; seuil = 11 760 $ / 12 000 $.
+- **Allocation** (`c2T30`, à la place du SRG pour le conjoint de **60-64 ans** dont l'autre a 65 ans et plus) = `max(0, alloc_max − min(revenuArrondi₄₈, seuil) × 75 % − (revenu au-delà du seuil, arrondi₂₄) × 25 %)` ; **1ʳᵉ réduction par tranche de 48 $**, 2ᵉ par tranche de 24 $ ; `alloc_max` = 16 695,09 $ (2025) / 17 028,99 $ (2026) ; seuil = 11 760 $ / 12 000 $.
 - Convention de colonnes : 2025 = T (paramètres M) ; 2026 = S (paramètres L).
 
 **Couple mixte (un conjoint 60-64, l'autre 65 ans et plus)** — désormais modélisé : le conjoint 65+ touche sa PSV + un **SRG calculé sur le revenu combiné au-delà du seuil de l'Allocation** (arrondi **supérieur**, tranche 48 $), et le conjoint 60-64 touche l'**Allocation**.
 
-> ⚠️ **Deux artefacts du fichier reproduits pour la parité.** (1) Le seuil du SRG du conjoint 65+ est diminué d'**un cent** dans le fichier (`c2T25` = 11 759,99 $, soit seuil − 0,01) ; sans ce cent, l'arrondi supérieur divergerait aux multiples exacts. (2) **Asymétrie** : le supplément complémentaire est **entier** lorsque le conjoint de 65 ans et plus est l'**adulte 1** (`c2T43`), mais **réduit de moitié** lorsqu'il est l'**adulte 2** (`c2T53`) — les deux cellules n'ont pas le même multiplicateur. Vraisemblablement un défaut du modèle MFQ, sans portée pratique (cas-types symétriques). PSV, SRG et Allocation, eux, sont symétriques.
+> ⚠️ **Deux artefacts du fichier reproduits pour la parité.** (1) Le seuil du SRG du conjoint 65+ est diminué d'**un cent** dans le fichier (`c2T25` = 11 759,99 $, soit seuil − 0,01) ; sans ce cent, l'arrondi supérieur divergerait aux multiples exacts. (2) **Asymétrie** du supplément complémentaire (`c2T43`/`c2T53`), sans justification économique, **reproduite exactement par instrumentation** : le **total** vaut **½ ×** le supplément « couple » quand le conjoint de 65 ans et plus est l'**adulte 2** ; quand c'est l'**adulte 1**, **1 ×** (conjoint allocataire de **60 ans**) ou **2 ×** (conjoint allocataire de **61-64 ans**). Défaut du modèle MFQ. PSV, SRG et Allocation, eux, sont symétriques.
 
 #### Paramètres vérifiés (`c2M/L34-73`)
 
@@ -1528,15 +1531,15 @@ export function securiteVieillesse(age1, age2, revenu1, revenu2, nbAdultes, anne
   } else if (allocataire) {                            // couple mixte : 65+ → SRG ; 60-64 → Allocation
     const revenuSRG = trancheHaut(Math.max(0, revenu - (p.allocationSeuil - 0.01)), p.srgTrancheCouple);
     total += Math.max(0, p.srgMaxCouple - revenuSRG * p.srgTauxCouple);
-    const supplement = topup(revenu, p.topupMaxCouple, p.topupExemptionCouple, p.topupTrancheCouple, p);
-    total += age1 >= 65 ? supplement : supplement / 2; // ⚠️ asymétrie du fichier (voir ci-dessus)
-    total += allocation(revenu, p);
+    const s = topup(revenu, p.topupMaxCouple, p.topupExemptionCouple, p.topupTrancheCouple, p);
+    total += age1 >= 65 ? (age2 >= 61 ? 2 * s : s) : s / 2; // ⚠️ asymétrie du fichier (voir ci-dessus)
+    total += allocation(revenu, p);            // allocation() : 1ʳᵉ réduction par tranche de 48 $
   }
   return Math.round(total * 100) / 100;
 }
 ```
 
-> **Notes** : (1) PSV/SRG/Allocation **non imposables** pour le revenu disponible (la PSV est toutefois sujette à la récupération de 15 %). (2) Le revenu utilisé est le **revenu de retraite** saisi (`revenu1`/`revenu2`). (3) Poste-**fondation** : ces montants (`c2T41-43`) alimentent l'aide sociale, la RAMQ et le FSS.
+> **Notes** : (1) PSV/SRG/Allocation **non imposables** pour le revenu disponible (la PSV est toutefois sujette à la récupération de 15 %) ; mais le SRG et l'Allocation entrent dans le **revenu net** réduisant les crédits d'impôt modulés (voir poste 19 et S27) — d'où `svNonImposableParAdulte`. (2) Le revenu utilisé est le **revenu de retraite** saisi (`revenu1`/`revenu2`). (3) Poste-**fondation** : ces montants (`c2T41-43`) alimentent l'aide sociale, la RAMQ et le FSS.
 
 ---
 
@@ -1599,6 +1602,8 @@ export function supplementFraisMedicaux(fraisMedicaux, revenuTravailMax, revenuN
 **Base légale :** *Loi de l'impôt sur le revenu* (LRC 1985, ch. 1 (5ᵉ suppl.)) — fédéral ; *Loi sur les impôts* (RLRQ, c. I-3) — Québec ; **abattement du Québec** (16,5 % de l'impôt fédéral), art. 120(2) LIR.
 
 Premier poste **d'assemblage** : il consomme les cotisations (postes 1-3, déductibles ou créditées) et la PSV (poste 17, imposable). Construit **par couches**, chacune validée par parité.
+
+> ➕ **Revenu net « SV-inclus » pour les crédits modulés** (S27, fiche 110113 ; vérifié par parité). Le **SRG** et l'**Allocation au conjoint**, bien que **non imposables** (donc exclus de l'impôt brut), sont **inclus dans le revenu net** servant à réduire les crédits modulés : **montant pour conjoint** (réduit par le revenu net du conjoint, Allocation comprise), **montant en raison de l'âge**, **crédit médical**. Le moteur distingue donc le revenu **imposable** (impôt brut) du revenu **net** (réductions de crédits, `svNonImposableParAdulte` du poste 17). Décisif pour le **couple d'âges mixtes** (un conjoint 65 ans et plus, l'autre 60-64 ans prestataire de l'Allocation).
 
 > 🔨 **Couche 1 (faite) — impôt FÉDÉRAL, ménages à 1 adulte** (actifs + retraités). **Couche 2 (à venir)** — crédits du Québec. **Couche 3 (à venir)** — couples (montant pour conjoint, transferts, PSV conjointe).
 

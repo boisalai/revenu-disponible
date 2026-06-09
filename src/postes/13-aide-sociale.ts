@@ -18,7 +18,7 @@
 //   Convention de colonnes : 2025 = T (paramètres M) ; 2026 = S (paramètres L).
 // ===========================================================================
 
-import { Annee, Menage, SITUATIONS } from "../socle";
+import { Annee, Menage, Situation, SITUATIONS } from "../socle";
 import type { Parametres } from "../parametres";
 import { rrqMenage } from "./01-rrq";
 import { rqapMenage } from "./02-rqap";
@@ -46,14 +46,18 @@ function prestationBase(
   age1: number,
   age2: number,
   nbEnfants: number,
+  nbEnfantsMoins5: number,
   p: ParamsAideSociale,
 ): number {
   const base = nbAdultes === 2 ? p.baseCouple : p.baseSeul;
   const deux58 = nbAdultes === 2 && age1 >= 58 && age2 >= 58;
+  // Contrainte temporaire à l'emploi : parent seul d'un enfant de moins de 5 ans (réf. `c2E38 > 0`
+  // gardé à la monoparentale) → même montant que l'ajustement « 58 ans et + » (c2M173).
+  const contrainteEnfant = nbAdultes === 1 && nbEnfantsMoins5 > 0;
   const un58 = age1 >= 58 || (nbAdultes === 2 && age2 >= 58);
   let ajust = 0;
   if (deux58) ajust = p.ajust58Couple;
-  else if (un58) ajust = p.ajust58Seul;
+  else if (un58 || contrainteEnfant) ajust = p.ajust58Seul;
   else if (nbAdultes === 1 && nbEnfants === 0 && age1 < 50) ajust = p.ajustJeuneSeul;
   return base + ajust;
 }
@@ -61,7 +65,13 @@ function prestationBase(
 /**
  * Aide de dernier recours (= QC_adr), montant ANNUEL. Nulle si un adulte a 65 ans ou plus.
  *
- * @param revenuTravailNet revenu de travail ANNUEL net des cotisations (brut − RRQ − RQAP − AE)
+ * Le **revenu de travail** bénéficie de l'exemption mensuelle (200/300 $) et de l'incitation au
+ * travail (25 % de l'excédent). Le **revenu « autre »** (`autreRevenu`, ex. pension d'un retraité de
+ * moins de 65 ans) réduit la prestation **à plein**, sans exemption ni incitation (réf. `c2T299`).
+ *
+ * @param revenuTravailNet revenu de TRAVAIL annuel net des cotisations (brut − RRQ − RQAP − AE)
+ * @param autreRevenu revenu annuel autre que de travail compté en réduction pleine (ex. pension)
+ * @param nbEnfantsMoins5 nombre d'enfants de moins de 5 ans (contrainte temporaire, parent seul)
  */
 export function aideSociale(
   revenuTravailNet: number,
@@ -70,28 +80,41 @@ export function aideSociale(
   age2: number,
   nbEnfants: number,
   annee: Annee | Parametres,
+  autreRevenu = 0,
+  nbEnfantsMoins5 = 0,
 ): number {
   const p = (typeof annee === "number" ? AIDE_SOCIALE[annee] : annee.aideSociale);
   if (age1 >= 65 || (nbAdultes === 2 && age2 >= 65)) return 0; // 65 ans et + : PSV/SRG, pas d'aide sociale
-  const base = prestationBase(nbAdultes, age1, age2, nbEnfants, p);
+  const base = prestationBase(nbAdultes, age1, age2, nbEnfants, nbEnfantsMoins5, p);
   const exemption = nbAdultes === 2 ? p.exemptionCouple : p.exemptionSeul;
-  const compte = Math.max(0, revenuTravailNet / 12 - exemption); // gains de travail mensuels au-delà de l'exemption
+  const gainsTravail = Math.max(0, revenuTravailNet / 12 - exemption); // travail mensuel au-delà de l'exemption
+  const compte = gainsTravail + autreRevenu / 12; // + revenu « autre » à plein (pension, etc.)
   const prestationNette = Math.max(0, base - compte);
-  const incitation = prestationNette > 0 ? p.tauxIncitation * compte : 0;
+  const incitation = prestationNette > 0 ? p.tauxIncitation * gainsTravail : 0; // sur le travail seul
   return (prestationNette + incitation) * 12;
 }
 
-/** Aide de dernier recours du ménage (= QC_adr). Le revenu de travail est compté net des cotisations. */
+/**
+ * Aide de dernier recours du ménage (= QC_adr). Pour un **actif**, le revenu est un revenu de
+ * travail (net des cotisations, avec exemption + incitation). Pour un **retraité de moins de 65 ans**,
+ * c'est une **pension** comptée en revenu « autre » (réduction pleine). La contrainte temporaire
+ * (enfant < 5 ans) ne vise que la **famille monoparentale**.
+ */
 export function aideSocialeMenage(menage: Menage, annee: Annee | Parametres): number {
-  const { nbAdultes } = SITUATIONS[menage.situation];
+  const { nbAdultes, retraite } = SITUATIONS[menage.situation];
   const brut = menage.revenu1 + (nbAdultes === 2 ? menage.revenu2 : 0);
-  const cotisations = rrqMenage(menage, annee).total + rqapMenage(menage, annee) + aeMenage(menage, annee);
+  const cotisations = retraite ? 0 : rrqMenage(menage, annee).total + rqapMenage(menage, annee) + aeMenage(menage, annee);
+  const revenuTravailNet = retraite ? 0 : brut - cotisations;
+  const autreRevenu = retraite ? brut : 0; // pension : revenu « autre », réduction pleine
+  const nbMoins5 = menage.situation === Situation.FamilleMonoparentale ? menage.enfants.filter((e) => e.age < 5).length : 0;
   return aideSociale(
-    brut - cotisations,
+    revenuTravailNet,
     nbAdultes,
     menage.ageAdulte1,
     nbAdultes === 2 ? menage.ageAdulte2 : 0,
     menage.enfants.length,
     annee,
+    autreRevenu,
+    nbMoins5,
   );
 }

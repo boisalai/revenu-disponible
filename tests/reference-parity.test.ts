@@ -76,6 +76,60 @@ function nomCas(m: Menage): string {
   return parts.join(", ");
 }
 
+/** Étiquette lisible (situation, âges, revenus, enfants) — pour identifier un cas en échec. */
+function nomGrille(m: Menage): string {
+  const couple = m.situation === Situation.Couple || m.situation === Situation.CoupleRetraites;
+  const ages = couple ? `${m.ageAdulte1}/${m.ageAdulte2} ans` : `${m.ageAdulte1} ans`;
+  const rev = m.revenu2 ? `${m.revenu1}+${m.revenu2} $` : `${m.revenu1} $`;
+  const frais = m.enfants.some((e) => e.fraisGarde > 0) ? " +frais" : "";
+  const enf = m.enfants.length ? `, ${m.enfants.length} enf.${frais}` : "";
+  return `${SITUATIONS[m.situation].libelle}, ${ages}, ${rev}${enf}`;
+}
+
+/** Compare au demi-cent si `tolCents = 0` (strict), sinon à `tolCents` cent(s) près. */
+function proche(actual: number, expected: number, tolCents: number) {
+  if (tolCents <= 0) expect(actual).toBeCloseTo(expected, 2);
+  else expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolCents / 100 + 1e-9);
+}
+
+/**
+ * Parité bout-en-bout : bases de revenu, ventilation 2025 par poste, et RD final 2025 + 2026.
+ * `tolCents > 0` absorbe les artéfacts d'arrondi au demi-cent (virgule flottante) ; un vrai écart de
+ * modèle reste ≫ 1 cent (cf. ACT 23 $, RAMQ 155 $). La grille de base reste stricte (`tolCents = 0`).
+ */
+function verifierParite(m: Menage, tolCents = 0) {
+  const co = calcReference(entrees(m));
+  const r25 = calculerRevenuDisponible(m, 2025);
+  const r26 = calculerRevenuDisponible(m, 2026);
+  // bases de revenu reconstruites
+  proche(r25.revenuNetFamilial, co._rfn_old, tolCents);
+  proche(r25.afni, co._afni_old, tolCents);
+  // ventilation poste par poste (nos montants positifs ; réf. négative pour cotisations/impôts)
+  const d = r25.detail;
+  proche(d.cotisations.rrq, -co.CA_rrq_old, tolCents);
+  proche(d.cotisations.rqap, -co.QC_rqap_old, tolCents);
+  proche(d.cotisations.assuranceEmploi, -co.CA_ae_old, tolCents);
+  proche(d.cotisations.fss, -co.QC_fss_old, tolCents);
+  proche(d.cotisations.ramq, -co.QC_ramq_old, tolCents);
+  proche(d.transfertsQuebec.allocationFamille, co.QC_sae_old, tolCents);
+  proche(d.transfertsQuebec.primeTravail, co.QC_pt_old, tolCents);
+  proche(d.transfertsQuebec.solidarite, co.QC_sol_old, tolCents);
+  proche(d.transfertsQuebec.allocationLogement, co.QC_al_old, tolCents);
+  proche(d.transfertsQuebec.soutienAines, co.QC_aines_old, tolCents);
+  proche(d.transfertsQuebec.aideSociale, co.QC_adr_old, tolCents);
+  proche(d.impotQuebec, -co.QC_impot_old, tolCents);
+  proche(d.transfertsFederaux.allocationEnfants, co.CA_ace_old, tolCents);
+  proche(d.transfertsFederaux.creditTPS, co.CA_tps_old, tolCents);
+  proche(d.transfertsFederaux.allocationTravailleurs, co.CA_pfrt_old, tolCents);
+  proche(d.transfertsFederaux.securiteVieillesse, co.CA_psv_old, tolCents);
+  proche(d.impotFederal, -co.CA_impot_old, tolCents);
+  proche(d.transfertsQuebec.fraisGarde, co.QC_garde_old, tolCents); // crédit QC (frais non subv.)
+  proche(d.fraisGardeCout, -co.Frais_garde_old, tolCents); // coût des frais de garde
+  // revenu disponible de bout en bout (RD de la réf. non arrondi ; comparé au cent)
+  proche(r25.revenuDisponible, round2(co.RD_old), tolCents);
+  proche(r26.revenuDisponible, round2(co.RD_new), tolCents);
+}
+
 const ACTIVES = [Situation.PersonneSeule, Situation.FamilleMonoparentale, Situation.Couple];
 // Revenus couvrant exemptions (3 500), seuils (2 000) et maximums (MGA 71 300, MRA 65 700, max RQAP 98 000).
 const REVENUS = [0, 2000, 2001, 30_000, 50_000, 65_700, 71_300, 98_000, 120_000];
@@ -531,38 +585,100 @@ describe("Parité référence — ORCHESTRATEUR de bout en bout (ménage → RD)
   cas.push(menage({ situation: Situation.Couple, revenu1: 50_000, revenu2: 6000, ageAdulte1: 35, ageAdulte2: 35, enfants: [{ age: 4, fraisGarde: 12_000, typeGarde: NON }] }));
   cas.push(menage({ situation: Situation.Couple, revenu1: 90_000, revenu2: 30_000, ageAdulte1: 40, ageAdulte2: 40, enfants: [{ age: 2, fraisGarde: 11_000, typeGarde: NON }, { age: 10, fraisGarde: 4000, typeGarde: SUB }] }));
   for (const m of cas) {
-    it(`${nomCas(m)} — ${m.revenu1}/${m.revenu2}`, () => {
-      const co = calcReference(entrees(m));
-      // bases de revenu reconstruites
-      expect(calculerRevenuDisponible(m, 2025).revenuNetFamilial).toBeCloseTo(co._rfn_old, 2);
-      expect(calculerRevenuDisponible(m, 2025).afni).toBeCloseTo(co._afni_old, 2);
-      // ventilation poste par poste (montants positifs vs sorties de référence, en négatif pour
-      // cotisations et impôts)
-      const d = calculerRevenuDisponible(m, 2025).detail;
-      expect(d.cotisations.rrq).toBeCloseTo(-co.CA_rrq_old, 2);
-      expect(d.cotisations.rqap).toBeCloseTo(-co.QC_rqap_old, 2);
-      expect(d.cotisations.assuranceEmploi).toBeCloseTo(-co.CA_ae_old, 2);
-      expect(d.cotisations.fss).toBeCloseTo(-co.QC_fss_old, 2);
-      expect(d.cotisations.ramq).toBeCloseTo(-co.QC_ramq_old, 2);
-      expect(d.transfertsQuebec.allocationFamille).toBeCloseTo(co.QC_sae_old, 2);
-      expect(d.transfertsQuebec.primeTravail).toBeCloseTo(co.QC_pt_old, 2);
-      expect(d.transfertsQuebec.solidarite).toBeCloseTo(co.QC_sol_old, 2);
-      expect(d.transfertsQuebec.allocationLogement).toBeCloseTo(co.QC_al_old, 2);
-      expect(d.transfertsQuebec.soutienAines).toBeCloseTo(co.QC_aines_old, 2);
-      expect(d.transfertsQuebec.aideSociale).toBeCloseTo(co.QC_adr_old, 2);
-      expect(d.impotQuebec).toBeCloseTo(-co.QC_impot_old, 2);
-      expect(d.transfertsFederaux.allocationEnfants).toBeCloseTo(co.CA_ace_old, 2);
-      expect(d.transfertsFederaux.creditTPS).toBeCloseTo(co.CA_tps_old, 2);
-      expect(d.transfertsFederaux.allocationTravailleurs).toBeCloseTo(co.CA_pfrt_old, 2);
-      expect(d.transfertsFederaux.securiteVieillesse).toBeCloseTo(co.CA_psv_old, 2);
-      expect(d.impotFederal).toBeCloseTo(-co.CA_impot_old, 2);
-      expect(d.transfertsQuebec.fraisGarde).toBeCloseTo(co.QC_garde_old, 2); // crédit QC (frais non subv.)
-      expect(d.fraisGardeCout).toBeCloseTo(-co.Frais_garde_old, 2); // coût des frais de garde
-      // revenu disponible de bout en bout (le RD de la référence n'est pas arrondi ; on compare au cent)
-      expect(calculerRevenuDisponible(m, 2025).revenuDisponible).toBeCloseTo(round2(co.RD_old), 2);
-      expect(calculerRevenuDisponible(m, 2026).revenuDisponible).toBeCloseTo(round2(co.RD_new), 2);
-    });
+    it(`${nomCas(m)} — ${m.revenu1}/${m.revenu2}`, () => verifierParite(m));
   }
+});
+
+describe("Parité référence — grille élargie (ménages types)", () => {
+  const NON = TypeGarde.NonSubventionne;
+  const SUB = TypeGarde.Subventionne;
+  const cas: Menage[] = [];
+
+  // (1) Personne seule (< 65 ans) : âges 18 / 35 / 60, revenu de travail brut de 0 à 150 000 $.
+  for (const age of [18, 35, 60])
+    for (const r of [0, 5_000, 15_000, 25_000, 40_000, 60_000, 90_000, 120_000, 150_000])
+      cas.push(menage({ situation: Situation.PersonneSeule, revenu1: r, ageAdulte1: age }));
+
+  // (2) Couple sans enfants : âges et revenus de travail variés.
+  for (const [a1, a2] of [[35, 35], [40, 30], [55, 45], [60, 25]] as const)
+    for (const [r1, r2] of [[50_000, 30_000], [80_000, 0], [40_000, 40_000], [120_000, 60_000], [25_000, 15_000]] as const)
+      cas.push(menage({ situation: Situation.Couple, revenu1: r1, revenu2: r2, ageAdulte1: a1, ageAdulte2: a2 }));
+
+  // (3) Famille monoparentale : âges/revenus variés, nombre d'enfants variable, sans frais de garde.
+  for (const age of [30, 45])
+    for (const r of [18_000, 35_000, 55_000, 80_000]) {
+      cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: age, enfants: [enfant(4)] }));
+      cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: age, enfants: [enfant(3), enfant(8)] }));
+      cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: age, enfants: [enfant(2), enfant(6), enfant(11)] }));
+    }
+  // (3b) Famille monoparentale avec frais de garde (subventionnés et non subventionnés).
+  for (const r of [30_000, 50_000]) {
+    cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: 35, enfants: [{ age: 3, fraisGarde: 9_000, typeGarde: NON }] }));
+    cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: 35, enfants: [{ age: 3, fraisGarde: 2_800, typeGarde: SUB }] }));
+    cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: 35, enfants: [{ age: 3, fraisGarde: 9_500, typeGarde: NON }, { age: 7, fraisGarde: 6_000, typeGarde: NON }] }));
+    cas.push(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: 35, enfants: [{ age: 4, fraisGarde: 9_000, typeGarde: NON }, { age: 9, fraisGarde: 2_500, typeGarde: SUB }] }));
+  }
+
+  // (4) Couples avec enfants : revenus/âges variés, avec et sans frais de garde.
+  cas.push(menage({ situation: Situation.Couple, revenu1: 45_000, revenu2: 30_000, ageAdulte1: 35, ageAdulte2: 33, enfants: [enfant(4), enfant(9)] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 70_000, revenu2: 0, ageAdulte1: 40, ageAdulte2: 38, enfants: [enfant(2), enfant(6), enfant(12)] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 90_000, revenu2: 55_000, ageAdulte1: 45, ageAdulte2: 42, enfants: [enfant(7)] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 120_000, revenu2: 80_000, ageAdulte1: 50, ageAdulte2: 48, enfants: [enfant(10), enfant(15)] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 50_000, revenu2: 35_000, ageAdulte1: 34, ageAdulte2: 32, enfants: [{ age: 3, fraisGarde: 10_000, typeGarde: NON }, { age: 6, fraisGarde: 7_000, typeGarde: NON }] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 60_000, revenu2: 6_000, ageAdulte1: 35, ageAdulte2: 35, enfants: [{ age: 4, fraisGarde: 12_000, typeGarde: NON }] }));
+  cas.push(menage({ situation: Situation.Couple, revenu1: 80_000, revenu2: 40_000, ageAdulte1: 38, ageAdulte2: 36, enfants: [{ age: 2, fraisGarde: 11_000, typeGarde: NON }, { age: 5, fraisGarde: 3_000, typeGarde: SUB }] }));
+
+  // (5) Personne âgée (65 ans et plus) : revenu de retraite brut varié.
+  for (const age of [65, 70, 75])
+    for (const r of [0, 15_000, 30_000, 50_000, 90_000, 150_000])
+      cas.push(menage({ situation: Situation.RetraiteSeul, revenu1: r, ageAdulte1: age }));
+
+  // (6) Couple de personnes âgées (65 ans et plus), sans enfants : revenus de retraite variés.
+  for (const [a1, a2] of [[65, 65], [70, 68], [75, 72]] as const)
+    for (const [r1, r2] of [[20_000, 20_000], [40_000, 10_000], [30_000, 0], [60_000, 40_000], [90_000, 90_000]] as const)
+      cas.push(menage({ situation: Situation.CoupleRetraites, revenu1: r1, revenu2: r2, ageAdulte1: a1, ageAdulte2: a2 }));
+
+  // tolérance de 1 cent : absorbe les artéfacts d'arrondi au demi-cent (prime au travail, RD) ;
+  // les vrais écarts de modèle restent ≫ 1 cent et échoueraient.
+  for (const m of cas) it(nomGrille(m), () => verifierParite(m, 1));
+});
+
+describe("Parité référence — balayage dense (verrou anti-régression)", () => {
+  // Couvre les coins révélés par l'élargissement : balayage fin du revenu (5 situations), bornes
+  // d'âge des aînés, couples d'âges mixtes (allocataire, LES DEUX ordres), parent seul d'un jeune
+  // enfant. Tolérance 1 cent (artéfacts d'arrondi au demi-cent).
+  it("RD au cent sur grille dense (revenus × situations × âges)", () => {
+    const ecarts: string[] = [];
+    const verifie = (m: Menage) => {
+      const co = calcReference(entrees(m));
+      for (const [suf, an] of [["old", 2025], ["new", 2026]] as const) {
+        const ours = calculerRevenuDisponible(m, an).revenuDisponible;
+        const ref = round2(co[`RD_${suf}`] ?? 0);
+        if (Math.abs(ours - ref) > 0.011) ecarts.push(`${nomGrille(m)} (${an}) : ${ours} vs ${ref}`);
+      }
+    };
+    // Balayage fin du revenu, 5 situations.
+    for (let r = 0; r <= 150_000; r += 2000) {
+      verifie(menage({ situation: Situation.PersonneSeule, revenu1: r }));
+      verifie(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, enfants: [enfant(3), enfant(9)] }));
+      verifie(menage({ situation: Situation.Couple, revenu1: r, revenu2: 15_000 }));
+      verifie(menage({ situation: Situation.RetraiteSeul, revenu1: r, ageAdulte1: 70 }));
+      verifie(menage({ situation: Situation.CoupleRetraites, revenu1: r, revenu2: 10_000, ageAdulte1: 70, ageAdulte2: 70 }));
+    }
+    // Bornes d'âge des aînés (PSV 65, bonus 75, retraité < 65).
+    for (const age of [58, 60, 64, 65, 66, 74, 75]) for (const r of [0, 5000, 20_000, 45_000])
+      verifie(menage({ situation: Situation.RetraiteSeul, revenu1: r, ageAdulte1: age }));
+    // Couples d'âges mixtes (allocataire) — les deux ordres, 1 et 2 revenus, jusqu'à revenu élevé.
+    for (const [a1, a2] of [[65, 60], [65, 62], [66, 64], [62, 65], [64, 66], [70, 63]] as const)
+      for (const r of [0, 5000, 12_000, 20_000, 35_000, 50_000]) {
+        verifie(menage({ situation: Situation.CoupleRetraites, revenu1: r, revenu2: 0, ageAdulte1: a1, ageAdulte2: a2 }));
+        verifie(menage({ situation: Situation.CoupleRetraites, revenu1: Math.round(r / 2), revenu2: Math.round(r / 2), ageAdulte1: a1, ageAdulte2: a2 }));
+      }
+    // Parent seul d'un jeune enfant (contrainte temporaire), faible revenu.
+    for (const r of [0, 5000, 12_000, 20_000]) verifie(menage({ situation: Situation.FamilleMonoparentale, revenu1: r, ageAdulte1: 30, enfants: [enfant(2), enfant(7)] }));
+
+    expect(ecarts).toEqual([]);
+  });
 });
 
 describe("Paramétrage (phase 4a) — le bundle officiel reproduit exactement le chemin par année", () => {

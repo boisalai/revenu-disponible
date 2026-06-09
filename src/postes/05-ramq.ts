@@ -97,13 +97,21 @@ export function primeRAMQparAdulte(
  * revenu familial net doit être fourni (somme des lignes 275 des adultes), car
  * il est produit par le calcul d'impôt en aval (non encore construit).
  *
- * ⚠️ Exonérations individuelles non appliquées ici (un adulte ne paie pas la
- * prime s'il reçoit une aide financière de dernier recours, ou s'il a 65 ans ou
- * plus et touche le SRG maximal — ou ≥ 94 % de celui-ci). Ces conditions
- * dépendent de postes non encore construits (aide sociale ; PSV/SRG, poste 17).
+ * Exonérations individuelles via `exoneres` (`[adulte1, adulte2]`) : un adulte exonéré ne paie
+ * pas la prime (montant nul). Un adulte est exonéré s'il reçoit une aide financière de dernier
+ * recours, ou s'il a 65 ans et plus et touche le SRG maximal (ou ≥ 94 % de celui-ci) — ces
+ * conditions sont assemblées par l'orchestrateur (poste 20 ; cf. `exonerationRamqSRG`, poste 17).
+ * Reproduit `c2T376 = (exonéré₁ ? 0 : c2T375) + (couple ? (exonéré₂ ? 0 : c2T375) : 0)`.
  */
-export function ramqMenage(menage: Menage, revenuFamilialNet: number, annee: Annee | Parametres): number {
+export function ramqMenage(
+  menage: Menage,
+  revenuFamilialNet: number,
+  annee: Annee | Parametres,
+  exoneres: [boolean, boolean] = [false, false],
+): number {
   const { nbAdultes } = SITUATIONS[menage.situation];
   const parAdulte = primeRAMQparAdulte(revenuFamilialNet, nbAdultes, menage.enfants.length, annee);
-  return parAdulte * nbAdultes;
+  let total = exoneres[0] ? 0 : parAdulte;
+  if (nbAdultes === 2) total += exoneres[1] ? 0 : parAdulte;
+  return total;
 }

@@ -81,9 +81,13 @@ export function psvImposable(age: number, revenu: number, annee: Annee | Paramet
   return pensionVieillesse(age, revenu, (typeof annee === "number" ? PSV[annee] : annee.psv));
 }
 
-/** Allocation pour un conjoint de 60-64 ans (réduction à deux taux : 75 % sous le seuil, 25 % au-delà). */
+/**
+ * Allocation pour un conjoint de 60-64 ans (réduction à deux taux). 1ʳᵉ réduction : 75 % par tranche
+ * de **48 $** (= 2 × `allocationTranche`), plafonnée au seuil ; 2ᵉ réduction : 25 % par tranche de
+ * **24 $** au-delà du seuil (réf. `tmp99`/`tmp104`).
+ */
 function allocation(revenu: number, p: ParamsPSV): number {
-  const red1 = Math.min(trancheBas(revenu, p.allocationTranche), p.allocationSeuil) * p.allocationTaux1;
+  const red1 = Math.min(trancheBas(revenu, 2 * p.allocationTranche), p.allocationSeuil) * p.allocationTaux1;
   const red2 =
     Math.max(0, Math.floor((revenu - p.allocationSeuil) / p.allocationTranche - 1) * p.allocationTranche) *
     p.allocationTaux2;
@@ -126,12 +130,12 @@ export function securiteVieillesse(
     // conjoint 60-64 → Allocation. (Le seuil du SRG est diminué d'un cent dans le fichier — voir doc.)
     const revenuSRG = trancheHaut(Math.max(0, revenu - (p.allocationSeuil - 0.01)), p.srgTrancheCouple);
     total += Math.max(0, p.srgMaxCouple - revenuSRG * p.srgTauxCouple);
-    // ⚠️ Asymétrie du fichier MFQ (reproduite pour la parité) : le supplément complémentaire est
-    // ENTIER lorsque le conjoint de 65 ans et plus est l'adulte 1, mais réduit de MOITIÉ lorsqu'il
-    // est l'adulte 2 (les cellules c2T43 et c2T53 n'ont pas le même multiplicateur). Vraisemblablement
-    // un défaut du modèle, sans portée pratique (cas-types symétriques).
-    const supplement = topup(revenu, p.topupMaxCouple, p.topupExemptionCouple, p.topupTrancheCouple, p);
-    total += age1 >= 65 ? supplement : supplement / 2;
+    // Supplément complémentaire — ⚠️ ASYMÉTRIE du fichier MFQ (défaut reproduit pour la parité, voir
+    // doc) : le total vaut ½ × le supplément « couple » quand le conjoint de 65 ans et plus est
+    // l'adulte 2 ; quand c'est l'adulte 1, il vaut 1 × (conjoint allocataire de 60 ans) ou 2 ×
+    // (conjoint allocataire de 61-64 ans). Sans justification économique — cellules c2T43/c2T53.
+    const s = topup(revenu, p.topupMaxCouple, p.topupExemptionCouple, p.topupTrancheCouple, p);
+    total += age1 >= 65 ? (age2 >= 61 ? 2 * s : s) : s / 2;
     total += allocation(revenu, p);
   }
   // Autres cas (conjoint de moins de 60 ans, aucun adulte de 65+) : PSV seule (ou 0).
@@ -154,4 +158,76 @@ export function securiteVieillesseMenage(menage: Menage, annee: Annee | Parametr
     nbAdultes,
     annee,
   );
+}
+
+/**
+ * SRG, Allocation et supplément complémentaire **non imposables**, par adulte. Bien que non
+ * imposables, ces prestations doivent être **incluses dans le revenu net** servant à réduire les
+ * crédits d'impôt modulés (ex. montant pour conjoint) — source : MFQ, *Dépenses fiscales*, fiche
+ * 110113. Reproduit l'attribution par adulte de la référence (cellules c2T42/c2T43 et c2T52/c2T53 ;
+ * la PSV imposable est exclue). Le supplément complémentaire est nul au revenu où les crédits
+ * d'impôt mordent (il s'éteint à bas revenu) ; il est reproduit ici par souci d'exactitude.
+ */
+export function svNonImposableParAdulte(menage: Menage, annee: Annee | Parametres): [number, number] {
+  const p = (typeof annee === "number" ? PSV[annee] : annee.psv);
+  const { nbAdultes } = SITUATIONS[menage.situation];
+  const couple = nbAdultes === 2;
+  const age1 = menage.ageAdulte1;
+  const age2 = couple ? menage.ageAdulte2 : 0;
+  const revenu = menage.revenu1 + (couple ? menage.revenu2 : 0);
+  const nb65 = (age1 >= 65 ? 1 : 0) + (couple && age2 >= 65 ? 1 : 0);
+  const allocataire = couple && ((age1 >= 60 && age1 <= 64 && age2 >= 65) || (age2 >= 60 && age2 <= 64 && age1 >= 65));
+
+  if (!couple && age1 >= 65) {
+    const srg = Math.max(0, p.srgMaxSeul - trancheBas(revenu, p.srgTrancheSeul) * p.srgTauxSeul);
+    return [srg + topup(revenu, p.topupMaxSeul, p.topupExemptionSeul, p.topupTrancheSeul, p), 0];
+  }
+  if (couple && nb65 === 2) {
+    const srg = Math.max(0, p.srgMaxCouple - trancheBas(revenu, p.srgTrancheCouple) * p.srgTauxCouple);
+    const demiTopup = topup(revenu, p.topupMaxCouple, p.topupExemptionCouple, p.topupTrancheCouple, p) / 2;
+    return [srg + demiTopup, srg + demiTopup];
+  }
+  if (allocataire) {
+    const revenuSRG = trancheHaut(Math.max(0, revenu - (p.allocationSeuil - 0.01)), p.srgTrancheCouple);
+    const srg = Math.max(0, p.srgMaxCouple - revenuSRG * p.srgTauxCouple);
+    const alloc = allocation(revenu, p);
+    const s = topup(revenu, p.topupMaxCouple, p.topupExemptionCouple, p.topupTrancheCouple, p);
+    // L'adulte de 65 ans et plus touche le SRG ; l'autre (60-64 ans), l'Allocation. Top-up : voir
+    // l'asymétrie de `securiteVieillesse` (c2T43/c2T53).
+    return [
+      (age1 >= 65 ? srg : alloc) + (age1 >= 65 ? s : 0),
+      (age2 >= 65 ? srg : alloc) + (age2 >= 65 ? s / 2 : age2 >= 61 ? s : 0),
+    ];
+  }
+  return [0, 0];
+}
+
+/**
+ * Exonération de la prime RAMQ liée au SRG, **par adulte** (conditions `tmp1410`/`tmp1417` de la
+ * référence) : l'adulte a **65 ans et plus** ET touche un **SRG ≥ 94 % du SRG maximal** de sa
+ * configuration. Reproduit la comparaison `c2T31 ≥ 0,94 × c2T24` (SRG de base, hors supplément
+ * complémentaire). L'autre motif d'exonération — aide de dernier recours — est appliqué par
+ * l'orchestrateur (poste 20). À 0 $ de revenu, le SRG de base égale son maximum → exonération.
+ */
+export function exonerationRamqSRG(menage: Menage, annee: Annee | Parametres): [boolean, boolean] {
+  const p = (typeof annee === "number" ? PSV[annee] : annee.psv);
+  const { nbAdultes } = SITUATIONS[menage.situation];
+  const couple = nbAdultes === 2;
+  const a1 = menage.ageAdulte1;
+  const a2 = couple ? menage.ageAdulte2 : 0;
+  const revenu = menage.revenu1 + (couple ? menage.revenu2 : 0);
+  const exonere = (age: number, srg: number, max: number) => age >= 65 && srg > 0 && srg >= 0.94 * max;
+
+  if (!couple) {
+    const srg = a1 >= 65 ? Math.max(0, p.srgMaxSeul - trancheBas(revenu, p.srgTrancheSeul) * p.srgTauxSeul) : 0;
+    return [exonere(a1, srg, p.srgMaxSeul), false];
+  }
+  if (a1 >= 65 && a2 >= 65) {
+    const srg = Math.max(0, p.srgMaxCouple - trancheBas(revenu, p.srgTrancheCouple) * p.srgTauxCouple);
+    return [exonere(a1, srg, p.srgMaxCouple), exonere(a2, srg, p.srgMaxCouple)];
+  }
+  // Couple mixte (allocataire) : SRG du conjoint 65+ sur le revenu au-delà du seuil d'Allocation.
+  const revenuSRG = trancheHaut(Math.max(0, revenu - (p.allocationSeuil - 0.01)), p.srgTrancheCouple);
+  const srg65 = Math.max(0, p.srgMaxCouple - revenuSRG * p.srgTauxCouple);
+  return [exonere(a1, a1 >= 65 ? srg65 : 0, p.srgMaxCouple), exonere(a2, a2 >= 65 ? srg65 : 0, p.srgMaxCouple)];
 }
