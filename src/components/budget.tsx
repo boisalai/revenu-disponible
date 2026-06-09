@@ -10,15 +10,11 @@ import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { EditeurParametres } from "@/components/editeur-parametres";
-import { SelecteurLangue } from "@/components/calculateur";
-import { BoutonPartage } from "@/components/bouton-partage";
+import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
-import { BarreCompte } from "@/components/compte/barre-compte";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { MenagePicker } from "@/components/menage-picker";
 import { JeuPicker, cleOfficiel } from "@/components/jeu-picker";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const cloner = (a: Annee): Parametres => structuredClone(PARAMETRES_OFFICIELS[a]);
@@ -103,43 +99,38 @@ export function Budget() {
   const rB = useMemo(() => calculerRevenuDisponible(menage, bundleB), [menage, bundleB]);
 
   return (
-    <div>
-      <header className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">{UI.budgetTitre[lang]}</h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">{UI.budgetDesc[lang]}</p>
-          <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-primary">
-            <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
-            <Link href="/comparaison" className="underline-offset-4 hover:underline">{UI.navComparaison[lang]}</Link>
-            <Link href="/bibliotheque" className="underline-offset-4 hover:underline">{UI.navBibliotheque[lang]}</Link>
-          </div>
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-          <BoutonEnregistrer type="BUDGET" encoded={encoded} lang={lang} />
-          <BoutonPartage lang={lang} />
-          <BarreCompte lang={lang} />
-          <ThemeToggle />
-          <SelecteurLangue lang={lang} onChange={setLang} />
-        </div>
-      </header>
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-        <div className="grid gap-6">
-          <Card className="h-fit">
-            <CardHeader>
-              <CardTitle>{UI.situationMenage[lang]}</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <MenagePicker lang={lang} etatCourant={etat} onCharger={setEtat} />
-              <FormulaireMenage etat={etat} onChange={setEtat} lang={lang} />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>{UI.parametres[lang]}</CardTitle>
-            </CardHeader>
-            <CardContent>
+    <EspaceTravail
+      lang={lang}
+      tailleGauche="34%"
+      header={
+        <BarreSuperieure
+          lang={lang}
+          onLang={setLang}
+          titre={UI.budgetTitre[lang]}
+          sousTitre={UI.budgetDesc[lang]}
+          nav={
+            <>
+              <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
+              <Link href="/comparaison" className="underline-offset-4 hover:underline">{UI.navComparaison[lang]}</Link>
+              <Link href="/bibliotheque" className="underline-offset-4 hover:underline">{UI.navBibliotheque[lang]}</Link>
+            </>
+          }
+          actions={<BoutonEnregistrer type="BUDGET" encoded={encoded} lang={lang} />}
+        />
+      }
+      gauche={{
+        titre: UI.voletMenageParametres[lang],
+        contenu: (
+          <div className="divide-y">
+            <div className="px-5 py-5">
+              <h3 className="mb-3 text-sm font-semibold">{UI.situationMenage[lang]}</h3>
+              <div className="grid gap-4">
+                <MenagePicker lang={lang} etatCourant={etat} onCharger={setEtat} />
+                <FormulaireMenage etat={etat} onChange={setEtat} lang={lang} />
+              </div>
+            </div>
+            <div className="px-5 py-5">
+              <h3 className="mb-3 text-sm font-semibold">{UI.parametres[lang]}</h3>
               <Tabs defaultValue="a">
                 <TabsList className="mb-4 w-full">
                   <TabsTrigger value="a" className="flex-1">{`${UI.scenarioA[lang]} (${anneeA})`}</TabsTrigger>
@@ -152,15 +143,14 @@ export function Budget() {
                   <PanneauParametres cle={cleB} annee={anneeB} bundle={bundleB} onChoisir={choisirB} onBundle={setBundleB} lang={lang} />
                 </TabsContent>
               </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="h-fit">
-          <CardHeader>
-            <CardTitle>{UI.revenuDisponible[lang]}</CardTitle>
-          </CardHeader>
-          <CardContent>
+            </div>
+          </div>
+        ),
+      }}
+      central={{
+        titre: UI.revenuDisponible[lang],
+        contenu: (
+          <div className="px-5 py-5">
             <TableauResultats
               rGauche={rA}
               rDroite={rB}
@@ -168,9 +158,9 @@ export function Budget() {
               enteteGauche={`${UI.scenarioA[lang]} (${anneeA})`}
               enteteDroite={`${UI.scenarioB[lang]} (${anneeB})`}
             />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          </div>
+        ),
+      }}
+    />
   );
 }

@@ -10,8 +10,8 @@ export interface Bilingue {
 export const UI = {
   titre: { fr: "Revenu disponible des ménages — Québec", en: "Household Disposable Income — Quebec" },
   sousTitre: {
-    fr: "Estimez le revenu disponible d'un ménage québécois et sa ventilation par poste, pour 2025 et 2026. Reconstruction vérifiée du calculateur du ministère des Finances du Québec.",
-    en: "Estimate the disposable income of a Quebec household and its breakdown by item, for 2025 and 2026. A verified reconstruction of the Quebec Ministry of Finance calculator.",
+    fr: "Estimez le revenu disponible d'un ménage québécois et sa ventilation par poste, pour 2025 et 2026. Chaque poste est expliqué, vérifié et rattaché à sa source officielle.",
+    en: "Estimate the disposable income of a Quebec household and its breakdown by item, for 2025 and 2026. Each item is explained, verified and linked to its official source.",
   },
 
   // Formulaire
@@ -26,8 +26,8 @@ export const UI = {
   nbEnfants: { fr: "Nombre d'enfants", en: "Number of children" },
   ageEnfant: { fr: "Âge enf.", en: "Child age" },
   disclaimer: {
-    fr: "Outil pédagogique — valeurs indicatives reproduisant le modèle du ministère des Finances du Québec. Ne constitue pas un avis fiscal.",
-    en: "Educational tool — indicative values reproducing the Quebec Ministry of Finance model. Does not constitute tax advice.",
+    fr: "Outil pédagogique — valeurs indicatives. Ne constitue pas un avis fiscal.",
+    en: "Educational tool — indicative values. Does not constitute tax advice.",
   },
 
   // Libellés des situations (alignés sur l'enum Situation : 0..4)
@@ -181,4 +181,33 @@ export const UI = {
   // Export
   exportCsv: { fr: "Exporter en CSV", en: "Export to CSV" },
   exportPdf: { fr: "Exporter en PDF", en: "Export to PDF" },
+
+  // Panneau d'information
+  fermer: { fr: "Fermer", en: "Close" },
+  panneauTitre: { fr: "Détail du poste", en: "Line details" },
+  panneauVide: {
+    fr: "Sélectionnez l'icône ⓘ d'un poste pour afficher ici son explication, sa règle de calcul et sa source officielle.",
+    en: "Select a line's ⓘ icon to show its explanation, calculation rule and official source here.",
+  },
+  piedPage: {
+    fr: "Revenu disponible des ménages québécois (2025-2026) — calculs vérifiés, chaque poste expliqué et rattaché à sa source officielle. Moteur en TypeScript, interface Next.js · Tailwind · shadcn/ui. Outil pédagogique — ne constitue pas un avis fiscal.",
+    en: "Disposable income of Quebec households (2025-2026) — verified calculations, each item explained and linked to its official source. TypeScript engine, Next.js · Tailwind · shadcn/ui interface. Educational tool — not tax advice.",
+  },
+  codeSource: { fr: "Code source", en: "Source code" },
+  voletMenagesCompares: { fr: "Ménages comparés", en: "Compared households" },
+  voletMenageParametres: { fr: "Ménage et paramètres", en: "Household & parameters" },
+  nouveau: { fr: "Nouveau", en: "New" },
+  aide: { fr: "Aide", en: "Help" },
+  bibliothequeAideMenages: {
+    fr: "Un ménage type fige une situation (type de ménage, revenus, âges, enfants, frais de garde) que tu réutilises sans la ressaisir.",
+    en: "A household template captures a situation (type, incomes, ages, children, childcare) you can reuse without re-entering it.",
+  },
+  bibliothequeAideJeux: {
+    fr: "Un jeu de paramètres regroupe des règles socio-fiscales : une année officielle (2025 ou 2026) plus tes modifications (montants, taux, seuils, paliers).",
+    en: "A parameter set bundles socio-fiscal rules: an official year (2025 or 2026) plus your changes (amounts, rates, thresholds, brackets).",
+  },
+  bibliothequeAideUsage: {
+    fr: "Réutilise-les ensuite dans « Comparer des ménages » (1 jeu, 2 ménages) et « Comparer des paramètres » (1 ménage, 2 jeux).",
+    en: "Reuse them in “Compare households” (1 set, 2 households) and “Compare parameters” (1 household, 2 sets).",
+  },
 } as const;

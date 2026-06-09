@@ -3,13 +3,14 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PanneauInfoProvider } from "@/components/panneau-info";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Revenu disponible — Québec",
   description:
-    "Calculateur du revenu disponible des ménages québécois (reconstruction vérifiée du calculateur du ministère des Finances du Québec).",
+    "Calculateur du revenu disponible des ménages québécois pour 2025 et 2026 : calculs vérifiés, chaque poste expliqué et rattaché à sa source officielle.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="h-1 bg-primary" />
-          {children}
+          <PanneauInfoProvider>{children}</PanneauInfoProvider>
         </ThemeProvider>
       </body>
     </html>

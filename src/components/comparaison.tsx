@@ -9,21 +9,17 @@ import { encoderComparaison, decoderComparaison, diffParams } from "@/lib/partag
 import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
-import { SelecteurLangue } from "@/components/calculateur";
-import { BoutonPartage } from "@/components/bouton-partage";
+import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
-import { BarreCompte } from "@/components/compte/barre-compte";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { MenagePicker } from "@/components/menage-picker";
 import { JeuPicker, cleOfficiel } from "@/components/jeu-picker";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DEFAUT_A: MenageEtat = MENAGE_DEFAUT;
 const DEFAUT_B: MenageEtat = { ...MENAGE_DEFAUT, situation: Situation.Couple, revenu2: 30_000 };
 const cloner = (a: Annee): Parametres => structuredClone(PARAMETRES_OFFICIELS[a]);
 
 /** Un côté : ménage (chargé de la bibliothèque ou saisi) sur le jeu de paramètres partagé. */
-function PanneauMenage({
+function SectionMenage({
   titre,
   etat,
   onChange,
@@ -37,15 +33,13 @@ function PanneauMenage({
   prefixe: string;
 }) {
   return (
-    <Card className="h-fit">
-      <CardHeader>
-        <CardTitle>{titre}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
+    <div className="px-5 py-5">
+      <h3 className="mb-3 text-sm font-semibold">{titre}</h3>
+      <div className="grid gap-4">
         <MenagePicker lang={lang} etatCourant={etat} onCharger={onChange} />
         <FormulaireMenage etat={etat} onChange={onChange} lang={lang} prefixe={prefixe} />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -83,51 +77,51 @@ export function Comparaison() {
   const rB = useMemo(() => calculerRevenuDisponible(versMenage(etatB), bundleJeu), [etatB, bundleJeu]);
 
   return (
-    <div>
-      <header className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">{UI.comparaisonTitre[lang]}</h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">{UI.comparaisonDesc[lang]}</p>
-          <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-primary">
-            <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
-            <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
-            <Link href="/bibliotheque" className="underline-offset-4 hover:underline">{UI.navBibliotheque[lang]}</Link>
+    <EspaceTravail
+      lang={lang}
+      tailleGauche="32%"
+      header={
+        <BarreSuperieure
+          lang={lang}
+          onLang={setLang}
+          titre={UI.comparaisonTitre[lang]}
+          sousTitre={UI.comparaisonDesc[lang]}
+          nav={
+            <>
+              <Link href="/" className="underline-offset-4 hover:underline">← {UI.navCalculateur[lang]}</Link>
+              <Link href="/budget" className="underline-offset-4 hover:underline">{UI.navBudget[lang]}</Link>
+              <Link href="/bibliotheque" className="underline-offset-4 hover:underline">{UI.navBibliotheque[lang]}</Link>
+            </>
+          }
+          actions={<BoutonEnregistrer type="COMPARAISON" encoded={encoded} lang={lang} />}
+        />
+      }
+      gauche={{
+        titre: UI.voletMenagesCompares[lang],
+        contenu: (
+          <div className="divide-y">
+            <div className="px-5 py-5">
+              <JeuPicker lang={lang} valeur={cleJeu} onCharger={choisirJeu} label={UI.selectJeu[lang]} />
+            </div>
+            <SectionMenage titre={UI.scenarioA[lang]} etat={etatA} onChange={setEtatA} lang={lang} prefixe="a-" />
+            <SectionMenage titre={UI.scenarioB[lang]} etat={etatB} onChange={setEtatB} lang={lang} prefixe="b-" />
           </div>
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-          <BoutonEnregistrer type="COMPARAISON" encoded={encoded} lang={lang} />
-          <BoutonPartage lang={lang} />
-          <BarreCompte lang={lang} />
-          <ThemeToggle />
-          <SelecteurLangue lang={lang} onChange={setLang} />
-        </div>
-      </header>
-
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <JeuPicker lang={lang} valeur={cleJeu} onCharger={choisirJeu} label={UI.selectJeu[lang]} />
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <PanneauMenage titre={UI.scenarioA[lang]} etat={etatA} onChange={setEtatA} lang={lang} prefixe="a-" />
-        <PanneauMenage titre={UI.scenarioB[lang]} etat={etatB} onChange={setEtatB} lang={lang} prefixe="b-" />
-      </div>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>{UI.revenuDisponible[lang]}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TableauResultats
-            rGauche={rA}
-            rDroite={rB}
-            lang={lang}
-            enteteGauche={UI.scenarioA[lang]}
-            enteteDroite={UI.scenarioB[lang]}
-          />
-        </CardContent>
-      </Card>
-    </div>
+        ),
+      }}
+      central={{
+        titre: UI.revenuDisponible[lang],
+        contenu: (
+          <div className="px-5 py-5">
+            <TableauResultats
+              rGauche={rA}
+              rDroite={rB}
+              lang={lang}
+              enteteGauche={UI.scenarioA[lang]}
+              enteteDroite={UI.scenarioB[lang]}
+            />
+          </div>
+        ),
+      }}
+    />
   );
 }

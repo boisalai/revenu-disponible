@@ -5,7 +5,7 @@ import type { ResultatRevenuDisponible } from "@/index";
 import { UI, type Bilingue, type Lang } from "@/lib/i18n";
 import { POSTES_INFO } from "@/lib/postes-info";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { usePanneauInfo } from "@/components/panneau-info";
 
 const dollars = (n: number, lang: Lang) =>
   n.toLocaleString(lang === "fr" ? "fr-CA" : "en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
@@ -76,34 +76,17 @@ function CelluleMontant({
   );
 }
 
-function PosteDialog({ cle, lang }: { cle: string; lang: Lang }) {
-  const info = POSTES_INFO[cle];
-  if (!info) return null;
-  const champ = (titre: string, texte: string) => (
-    <div>
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{titre}</div>
-      <p className="mt-0.5">{texte}</p>
-    </div>
-  );
+function BoutonInfo({ cle, lang }: { cle: string; lang: Lang }) {
+  const { ouvrir } = usePanneauInfo();
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button type="button" className="text-muted-foreground/70 transition-colors hover:text-foreground" aria-label={UI.enSavoirPlus[lang]}>
-          <Info className="size-3.5" />
-        </button>
-      </DialogTrigger>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{info.nom[lang]}</DialogTitle>
-          <DialogDescription>{info.description[lang]}</DialogDescription>
-        </DialogHeader>
-        <div className="space-y-3 text-sm">
-          {champ(UI.objectif[lang], info.objectif[lang])}
-          {champ(UI.regleCalcul[lang], info.regle[lang])}
-          {champ(UI.references[lang], info.references[lang])}
-        </div>
-      </DialogContent>
-    </Dialog>
+    <button
+      type="button"
+      onClick={() => ouvrir(cle, lang)}
+      className="text-muted-foreground/70 transition-colors hover:text-foreground"
+      aria-label={UI.enSavoirPlus[lang]}
+    >
+      <Info className="size-3.5" />
+    </button>
   );
 }
 
@@ -112,7 +95,7 @@ function LibelleLigne({ ligne, lang }: { ligne: Ligne; lang: Lang }) {
   return (
     <span className="inline-flex items-center gap-1.5">
       {texte}
-      {ligne.cle && POSTES_INFO[ligne.cle] && <PosteDialog cle={ligne.cle} lang={lang} />}
+      {ligne.cle && POSTES_INFO[ligne.cle] && <BoutonInfo cle={ligne.cle} lang={lang} />}
     </span>
   );
 }
