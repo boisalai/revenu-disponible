@@ -24,33 +24,35 @@ export interface OptionsTMI {
   pas?: number; // pas du balayage / Δ des différences finies ($)
 }
 
-/** Courbe du taux marginal implicite en faisant varier le revenu de travail de l'adulte 1. */
+/** TEMI décomposé à un revenu de travail donné (différence finie sur [revenu, revenu+pas]). */
+export function tauxMarginalAu(menage: Menage, annee: Annee, revenu: number, pas = 1000): PointTMI {
+  const a = calculerRevenuDisponible({ ...menage, revenu1: revenu }, annee).composantes;
+  const b = calculerRevenuDisponible({ ...menage, revenu1: revenu + pas }, annee).composantes;
+  const taux = (x: number, y: number) => ((y - x) / pas) * 100;
+
+  const cotisations = taux(a.cotisations, b.cotisations);
+  const transfertsQuebec = -taux(a.transfertsQuebec, b.transfertsQuebec);
+  const impotQuebec = taux(a.impotQuebec, b.impotQuebec);
+  const transfertsFederaux = -taux(a.transfertsFederaux, b.transfertsFederaux);
+  const impotFederal = taux(a.impotFederal, b.impotFederal);
+
+  return {
+    revenu,
+    cotisations,
+    transfertsQuebec,
+    impotQuebec,
+    transfertsFederaux,
+    impotFederal,
+    total: cotisations + transfertsQuebec + impotQuebec + transfertsFederaux + impotFederal,
+  };
+}
+
+/** Courbe du TEMI en faisant varier le revenu de travail de l'adulte 1. */
 export function courbeTauxMarginal(menage: Menage, annee: Annee, opts: OptionsTMI = {}): PointTMI[] {
   const max = opts.max ?? 100_000;
   const pas = opts.pas ?? 1000;
   const points: PointTMI[] = [];
-
-  for (let r = 0; r <= max; r += pas) {
-    const a = calculerRevenuDisponible({ ...menage, revenu1: r }, annee).composantes;
-    const b = calculerRevenuDisponible({ ...menage, revenu1: r + pas }, annee).composantes;
-    const taux = (x: number, y: number) => ((y - x) / pas) * 100;
-
-    const cotisations = taux(a.cotisations, b.cotisations);
-    const transfertsQuebec = -taux(a.transfertsQuebec, b.transfertsQuebec);
-    const impotQuebec = taux(a.impotQuebec, b.impotQuebec);
-    const transfertsFederaux = -taux(a.transfertsFederaux, b.transfertsFederaux);
-    const impotFederal = taux(a.impotFederal, b.impotFederal);
-
-    points.push({
-      revenu: r,
-      cotisations,
-      transfertsQuebec,
-      impotQuebec,
-      transfertsFederaux,
-      impotFederal,
-      total: cotisations + transfertsQuebec + impotQuebec + transfertsFederaux + impotFederal,
-    });
-  }
+  for (let r = 0; r <= max; r += pas) points.push(tauxMarginalAu(menage, annee, r, pas));
   return points;
 }
 

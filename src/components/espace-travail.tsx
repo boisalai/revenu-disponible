@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { UI, type Lang } from "@/lib/i18n";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { cn } from "@/lib/utils";
@@ -91,13 +92,17 @@ export function PiedPage({ lang }: { lang: Lang }) {
       <p className="shrink-0">
         © {annee} <span className="font-medium text-foreground">Alain Boisvert</span>
         {" · "}
+        <Link href="/a-propos" className="font-medium text-primary underline-offset-4 hover:underline">
+          {UI.aProposLien[lang]}
+        </Link>
+        {" · "}
         <a
           href="https://github.com/boisalai/revenu-disponible"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-medium text-primary underline-offset-4 hover:underline"
+          className="font-medium text-primary underline-offset-4 hover:underline"
         >
-          <IconeGithub className="size-3.5" />
+          <IconeGithub className="mr-1 inline-block size-3.5 align-text-bottom" />
           {UI.codeSource[lang]}
         </a>
       </p>

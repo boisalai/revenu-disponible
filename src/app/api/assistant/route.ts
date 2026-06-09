@@ -105,7 +105,7 @@ export async function POST(req: Request) {
     "- Les chiffres du SCÉNARIO ci-dessous et ceux des outils sont EXACTS et FONT AUTORITÉ. Recopie-les tels quels.",
     "- NE RECALCULE JAMAIS un total, un écart ou le revenu disponible toi-même : utilise les valeurs fournies (tu fais souvent des erreurs d'arithmétique).",
     "- Pour DÉTAILLER le calcul d'un poste (règle, taux, exemption, plafond, paliers, références), appelle l'outil detail_poste.",
-    "- Pour un autre scénario (« et si… ? ») ou la courbe de taux marginal, appelle l'outil correspondant — n'invente aucun chiffre.",
+    "- Pour un autre scénario (« et si… ? ») ou la courbe du TEMI (taux effectif marginal d'imposition), appelle l'outil correspondant — n'invente aucun chiffre.",
     "- Format pour un PANNEAU ÉTROIT : concis, phrases courtes, listes à puces. Pas de grands tableaux markdown. Markdown léger.",
     "- Reste dans le sujet (ce modèle fiscal). Rappelle au besoin que ce sont des valeurs indicatives, pas un avis fiscal.",
     "",
@@ -174,14 +174,14 @@ export async function POST(req: Request) {
       }),
       taux_marginal: tool({
         description:
-          "Calcule la courbe du taux marginal implicite (%) selon le revenu de travail, de 0 à 100 000 $. Sert à expliquer où le taux grimpe (trappes à la pauvreté).",
+          "Calcule la courbe du taux effectif marginal d'imposition (TEMI, %) selon le revenu de travail, de 0 à 100 000 $. Sert à expliquer où le taux grimpe (trappes à la pauvreté).",
         inputSchema: menageSchema.extend({
           annee: z.union([z.literal(2025), z.literal(2026)]).default(2025),
           pas: z.number().default(5000).describe("intervalle de revenu entre deux points, en $"),
         }),
         execute: async ({ annee, pas, ...m }) => {
           const points = courbeTauxMarginal(versMenage(m as MenageEtat), annee, { max: 100000, pas });
-          return { points: points.map((p) => ({ revenu: p.revenu, tauxMarginalPct: Math.round(p.total) })) };
+          return { points: points.map((p) => ({ revenu: p.revenu, temiPct: Math.round(p.total) })) };
         },
       }),
     },

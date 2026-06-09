@@ -61,14 +61,15 @@ export const UI = {
   references: { fr: "Références", en: "References" },
 
   // Taux marginaux
-  tauxMarginalTitre: { fr: "Taux marginal implicite de taxation", en: "Effective marginal tax rate" },
+  tauxMarginalTitre: { fr: "Taux effectif marginal d'imposition (TEMI)", en: "Effective marginal tax rate (EMTR)" },
   tauxMarginalDesc: {
     fr: "Part d'un dollar de revenu de travail supplémentaire qui n'aboutit pas au revenu disponible (impôts et cotisations en plus, transferts récupérés). Calculé en faisant varier le revenu de travail, pour la situation choisie.",
     en: "Share of an additional dollar of employment income that does not reach disposable income (added taxes and contributions, clawed-back transfers). Computed by varying employment income, for the selected situation.",
   },
   tauxAxe: { fr: "Taux marginal", en: "Marginal rate" },
-  tauxTotal: { fr: "Taux marginal total", en: "Total marginal rate" },
+  tauxTotal: { fr: "TEMI total", en: "Total EMTR" },
   revenuActuel: { fr: "Revenu actuel", en: "Current income" },
+  decompositionTitre: { fr: "Décomposition au revenu actuel", en: "Breakdown at current income" },
 
   // Navigation et comparaison
   navCalculateur: { fr: "Calculateur", en: "Calculator" },
@@ -173,8 +174,8 @@ export const UI = {
   trappePauvrete: { fr: "Trappe à la pauvreté", en: "Poverty trap" },
   trappeSeuil: { fr: "Seuil de trappe (> 80 %)", en: "Trap threshold (> 80%)" },
   trappeNote: {
-    fr: "zones rouges où le taux marginal dépasse 80 % — un dollar de revenu de travail supplémentaire y rapporte moins de 0,20 $ de revenu disponible.",
-    en: "red zones where the marginal rate exceeds 80% — an extra dollar of employment income yields less than $0.20 of disposable income.",
+    fr: "zones rouges où le TEMI dépasse 80 % — un dollar de revenu de travail supplémentaire y rapporte moins de 0,20 $ de revenu disponible.",
+    en: "red zones where the EMTR exceeds 80% — an extra dollar of employment income yields less than $0.20 of disposable income.",
   },
   axeRevenu: { fr: "Revenu de travail (brut)", en: "Gross employment income" },
 
@@ -225,6 +226,41 @@ export const UI = {
     en: "Your key is kept only in this browser and used only for your requests; it is never stored on the server.",
   },
   assistantChangerCle: { fr: "Changer la clé", en: "Change key" },
+
+  // Page « À propos »
+  aProposLien: { fr: "À propos", en: "About" },
+  aProposTitre: { fr: "À propos", en: "About" },
+  aProposSousTitre: { fr: "Le projet, la méthode et l'auteur.", en: "The project, the method and the author." },
+  aProposProjetTitre: { fr: "Le projet", en: "The project" },
+  aProposProjet: {
+    fr: "« Revenu disponible » calcule, pour un ménage québécois, ce qu'il lui reste une fois additionnés ses revenus et ses transferts, puis retranchés ses cotisations et ses impôts — avec la ventilation poste par poste, pour 2025 et 2026. C'est à la fois un moteur de calcul vérifié et une application web pédagogique.",
+    en: "“Disposable income” computes, for a Quebec household, what it keeps once incomes and transfers are added and contributions and taxes subtracted — with the item-by-item breakdown, for 2025 and 2026. It is both a verified calculation engine and a pedagogical web app.",
+  },
+  aProposAuteurTitre: { fr: "L'auteur", en: "The author" },
+  aProposAuteur: {
+    fr: "Mathématicien de formation, titulaire d'un MBA en gestion des technologies de l'information et d'un DESS en intelligence artificielle, je poursuis aujourd'hui des études de droit. J'ai passé plus de trente ans en finances publiques et en gouvernance au gouvernement du Québec, dont une douzaine d'années à des postes de direction et quinze ans au ministère des Finances du Québec — comme analyste expert puis directeur de la modélisation —, où j'ai conçu des modèles de simulation du revenu disponible des ménages. Administrateur à la Chambre des notaires du Québec, je développe des prototypes d'intelligence artificielle appliquée au droit et à la fiscalité, dont ce calculateur.",
+    en: "Trained as a mathematician, holding an MBA in IT management and a graduate diploma in artificial intelligence, I am now studying law. I spent more than thirty years in public finance and governance with the Government of Quebec, including a dozen years in executive roles and fifteen years at the Quebec Ministry of Finance — as a senior analyst and then director of modelling — where I built household disposable-income simulation models. A board member of the Chambre des notaires du Québec, I develop prototypes of AI applied to law and taxation, including this calculator.",
+  },
+  aProposMethodeTitre: { fr: "Méthodologie", en: "Methodology" },
+  aProposMethode: {
+    fr: "Règle stricte : rien n'est posé « de mémoire ». Chaque paramètre est confronté à sa source officielle (Revenu Québec, Agence du revenu du Canada, Retraite Québec, Service Canada) et rattaché à sa disposition légale. Les calculs ont été validés par parité avec le calculateur du revenu disponible du ministère des Finances du Québec : une suite de tests reproduit les maximums et points de contrôle officiels, au cent près.",
+    en: "Strict rule: nothing is set “from memory”. Every parameter is checked against its official source (Revenu Québec, Canada Revenue Agency, Retraite Québec, Service Canada) and tied to its legal provision. The calculations were validated by parity with the Quebec Ministry of Finance disposable-income calculator: a test suite reproduces the official maximums and control points, to the cent.",
+  },
+  aProposTechTitre: { fr: "Technologie", en: "Technology" },
+  aProposTech: {
+    fr: "Moteur en TypeScript strict, sans dépendance externe. Interface Next.js, Tailwind et shadcn/ui ; graphiques Recharts ; comptes et sauvegarde via Better Auth, Prisma et PostgreSQL ; déploiement continu sur Vercel.",
+    en: "Engine in strict TypeScript, with no external dependency. Next.js, Tailwind and shadcn/ui interface; Recharts charts; accounts and storage via Better Auth, Prisma and PostgreSQL; continuous deployment on Vercel.",
+  },
+  aProposIATitre: { fr: "Assistant IA", en: "AI assistant" },
+  aProposIA: {
+    fr: "Un assistant (Claude) explique les résultats, détaille le calcul de chaque poste et crée des ménages types — toujours ancré sur le moteur vérifié, sans inventer de chiffre. Chaque personne utilise sa propre clé API, conservée uniquement dans son navigateur et jamais sur le serveur.",
+    en: "An assistant (Claude) explains results, details how each item is computed, and creates household templates — always grounded in the verified engine, never inventing a figure. Each person uses their own API key, kept only in their browser and never on the server.",
+  },
+  aProposAvertTitre: { fr: "Avertissement", en: "Disclaimer" },
+  aProposAvert: {
+    fr: "Prototype pédagogique : les valeurs sont indicatives et ne constituent pas un avis fiscal. Les démonstrations n'utilisent que des données fictives.",
+    en: "Educational prototype: values are indicative and do not constitute tax advice. Demos use only fictitious data.",
+  },
   assistantBiblioIntro: {
     fr: "Décris un ménage ou un jeu de paramètres à créer, ou choisis :",
     en: "Describe a household or parameter set to create, or pick:",
