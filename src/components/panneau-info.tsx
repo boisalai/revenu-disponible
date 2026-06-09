@@ -1,18 +1,23 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { ExternalLink, X } from "lucide-react";
+import { ExternalLink, Info, Sparkles, X } from "lucide-react";
 import { UI, type Lang } from "@/lib/i18n";
 import { POSTES_INFO } from "@/lib/postes-info";
 import { SOURCE_POSTE } from "@/lib/sources-postes";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { ResizablePanel } from "@/components/ui/resizable";
+
+type ModePanneau = "info" | "assistant";
 
 interface PanneauCtx {
   poste: string | null;
   lang: Lang;
+  mode: ModePanneau;
   ouvrir: (cle: string, lang: Lang) => void;
   fermer: () => void;
+  setMode: (m: ModePanneau) => void;
 }
 
 const Ctx = createContext<PanneauCtx | null>(null);
@@ -24,8 +29,7 @@ export function usePanneauInfo(): PanneauCtx {
   return c;
 }
 
-/** En-tête de volet — hauteur fixe (48 px), titre 16 px, filet inférieur ;
- *  identique pour tous les volets → les filets sont alignés. */
+/** En-tête de volet — hauteur fixe (48 px), titre 16 px, filet inférieur (aligné entre volets). */
 export function EnteteVolet({ titre, children }: { titre: string; children?: ReactNode }) {
   return (
     <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b bg-card px-5">
@@ -99,21 +103,24 @@ function ContenuPanneau({ poste, lang, onClose }: { poste: string; lang: Lang; o
   );
 }
 
-/** Contexte global + tiroir mobile. Sur ordinateur, le panneau est rendu par
- *  <PanneauInfoVolet> (volet toujours ouvert dans l'espace de travail). */
+/** Contexte global + tiroir mobile. Sur ordinateur, le panneau droit est rendu par
+ *  <PanneauInfoVolet> (volet toujours ouvert, modes « info » et « assistant »). */
 export function PanneauInfoProvider({ children }: { children: ReactNode }) {
   const [poste, setPoste] = useState<string | null>(null);
   const [lang, setLang] = useState<Lang>("fr");
+  const [mode, setMode] = useState<ModePanneau>("info");
+
   const ouvrir = (cle: string, l: Lang) => {
     setPoste(cle);
     setLang(l);
+    setMode("info");
   };
   const fermer = () => setPoste(null);
 
   const actif = poste != null && POSTES_INFO[poste] != null;
 
   return (
-    <Ctx.Provider value={{ poste, lang, ouvrir, fermer }}>
+    <Ctx.Provider value={{ poste, lang, mode, ouvrir, fermer, setMode }}>
       {children}
 
       {/* Tiroir mobile (sous md) : plein écran, glisse de droite. */}
@@ -133,22 +140,65 @@ export function PanneauInfoProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/** Volet d'information (toujours ouvert) — à placer en dernier dans un ResizablePanelGroup.
- *  Affiche une invite tant qu'aucun poste n'est sélectionné, sinon le détail du poste. */
-export function PanneauInfoVolet({ lang }: { lang: Lang }) {
-  const { poste, fermer } = usePanneauInfo();
+/** Volet droit (toujours ouvert) — à placer en dernier dans un ResizablePanelGroup.
+ *  Mode « primaire » par défaut = détail du poste (ⓘ) ; surchargeable par `primaire`
+ *  (ex. Aide de la bibliothèque). Si `assistant` est fourni, une bascule alterne primaire ⇄ assistant. */
+export function PanneauInfoVolet({
+  lang,
+  assistant,
+  primaire,
+}: {
+  lang: Lang;
+  assistant?: ReactNode;
+  primaire?: { titre: string; contenu: ReactNode };
+}) {
+  const { poste, mode, fermer, setMode } = usePanneauInfo();
   const aPoste = poste != null && POSTES_INFO[poste] != null;
-  const titre = aPoste ? POSTES_INFO[poste].nom[lang] : UI.panneauTitre[lang];
+  const estAssistant = assistant != null && mode === "assistant";
+  const titrePrimaire = primaire ? primaire.titre : aPoste ? POSTES_INFO[poste].nom[lang] : UI.panneauTitre[lang];
+  const libelleRetour = primaire ? primaire.titre : UI.detailVolet[lang];
 
   return (
-    <ResizablePanel id="info" defaultSize="24%" minSize="18%" maxSize="40%" className="min-w-0">
+    <ResizablePanel id="info" defaultSize="26%" minSize="20%" maxSize="44%" className="min-w-0">
       <div className="flex h-full flex-col">
-        <EnteteVolet titre={titre}>{aPoste && <BoutonFermerPanneau lang={lang} onClose={fermer} />}</EnteteVolet>
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {aPoste ? (
-            <CorpsPanneau poste={poste} lang={lang} />
+        <EnteteVolet titre={estAssistant ? UI.assistantTitre[lang] : titrePrimaire}>
+          {assistant != null ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="gap-1.5"
+              onClick={() => setMode(estAssistant ? "info" : "assistant")}
+            >
+              {estAssistant ? (
+                <>
+                  <Info className="size-4" />
+                  {libelleRetour}
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-4" />
+                  {UI.assistant[lang]}
+                </>
+              )}
+            </Button>
           ) : (
-            <p className="px-5 py-5 text-sm leading-relaxed text-muted-foreground">{UI.panneauVide[lang]}</p>
+            !primaire && aPoste && <BoutonFermerPanneau lang={lang} onClose={fermer} />
+          )}
+        </EnteteVolet>
+
+        <div className="min-h-0 flex-1">
+          {/* Assistant : monté en permanence (la conversation est conservée), masqué hors mode assistant. */}
+          {assistant != null && <div className={cn("h-full", !estAssistant && "hidden")}>{assistant}</div>}
+          {!estAssistant && (
+            <div className="h-full overflow-y-auto">
+              {primaire ? (
+                primaire.contenu
+              ) : aPoste ? (
+                <CorpsPanneau poste={poste} lang={lang} />
+              ) : (
+                <p className="px-5 py-5 text-sm leading-relaxed text-muted-foreground">{UI.panneauVide[lang]}</p>
+              )}
+            </div>
           )}
         </div>
       </div>

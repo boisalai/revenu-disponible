@@ -16,6 +16,7 @@ import { appliquerParams } from "@/lib/partage";
 import { UI, type Lang } from "@/lib/i18n";
 import { aDeuxAdultes, normaliserMenageEtat, type MenageEtat } from "@/lib/menage-etat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
+import { AssistantChat } from "@/components/assistant/assistant-chat";
 import { AuthDialog } from "@/components/compte/auth-dialog";
 import { MenageDialog, type MenageInitial } from "@/components/menage-dialog";
 import { JeuDialog, type JeuInitial } from "@/components/jeu-dialog";
@@ -209,6 +210,17 @@ export function Bibliotheque() {
           contenu: corpsJeux,
         }}
         droite={{ titre: UI.aide[lang], contenu: aide }}
+        assistant={
+          <AssistantChat
+            lang={lang}
+            api="/api/assistant-bibliotheque"
+            corps={{ lang }}
+            intro={UI.assistantBiblioIntro[lang]}
+            actionsRapides={[UI.assistantBiblioQ1[lang], UI.assistantBiblioQ2[lang]]}
+            onTermine={recharger}
+            requiertConnexion
+          />
+        }
       />
 
       <AuthDialog open={authOuvert} onOpenChange={setAuthOuvert} lang={lang} />

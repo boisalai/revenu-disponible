@@ -10,6 +10,7 @@ import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { BoutonsExport } from "@/components/boutons-export";
+import { AssistantChat, BoutonAssistant } from "@/components/assistant/assistant-chat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
@@ -33,6 +34,15 @@ export function Calculateur() {
     <EspaceTravail
       lang={lang}
       tailleGauche="22%"
+      assistant={
+        <AssistantChat
+          lang={lang}
+          api="/api/assistant"
+          corps={{ menage: etat, lang }}
+          intro={UI.assistantIntro[lang]}
+          actionsRapides={[UI.assistantQ1[lang], UI.assistantQ2[lang]]}
+        />
+      }
       header={
         <BarreSuperieure
           lang={lang}
@@ -59,7 +69,12 @@ export function Calculateur() {
       }}
       central={{
         titre: UI.revenuDisponible[lang],
-        actions: <BoutonsExport etat={etat} r25={r25} r26={r26} lang={lang} />,
+        actions: (
+          <div className="flex items-center gap-2">
+            <BoutonAssistant lang={lang} />
+            <BoutonsExport etat={etat} r25={r25} r26={r26} lang={lang} />
+          </div>
+        ),
         contenu: (
           <>
             <div className="px-5 py-5">

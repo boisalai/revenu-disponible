@@ -125,6 +125,7 @@ export function EspaceTravail({
   gauche,
   central,
   droite,
+  assistant,
   tailleGauche = "26%",
 }: {
   lang: Lang;
@@ -133,6 +134,8 @@ export function EspaceTravail({
   central: ContenuVolet;
   /** Volet droit personnalisé. Par défaut = panneau d'info des postes (toujours ouvert). */
   droite?: ContenuVolet;
+  /** Contenu « assistant » du volet droit (mode alterné avec le détail du poste). */
+  assistant?: ReactNode;
   tailleGauche?: string;
 }) {
   const estBureau = useMediaQuery("(min-width: 768px)");
@@ -154,13 +157,7 @@ export function EspaceTravail({
               <VoletScroll {...central} />
             </ResizablePanel>
             <ResizableHandle />
-            {droite ? (
-              <ResizablePanel id="droite" defaultSize="24%" minSize="18%" maxSize="40%" className="min-w-0">
-                <VoletScroll {...droite} />
-              </ResizablePanel>
-            ) : (
-              <PanneauInfoVolet lang={lang} />
-            )}
+            <PanneauInfoVolet lang={lang} assistant={assistant} primaire={droite} />
           </ResizablePanelGroup>
         </div>
       ) : (

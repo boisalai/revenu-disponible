@@ -198,6 +198,45 @@ export const UI = {
   voletMenageParametres: { fr: "Ménage et paramètres", en: "Household & parameters" },
   nouveau: { fr: "Nouveau", en: "New" },
   aide: { fr: "Aide", en: "Help" },
+
+  // Assistant IA
+  assistant: { fr: "Assistant", en: "Assistant" },
+  assistantTitre: { fr: "Assistant IA", en: "AI assistant" },
+  assistantIntro: { fr: "Posez une question sur le scénario affiché, ou choisissez :", en: "Ask about the displayed scenario, or pick:" },
+  assistantQ1: { fr: "Explique-moi ce résultat.", en: "Explain this result to me." },
+  assistantQ2: { fr: "Pourquoi mon taux marginal varie-t-il autant ?", en: "Why does my marginal rate vary so much?" },
+  assistantPlaceholder: { fr: "Votre question…", en: "Your question…" },
+  assistantEnvoyer: { fr: "Envoyer", en: "Send" },
+  assistantReflechit: { fr: "L'assistant réfléchit…", en: "Thinking…" },
+  assistantErreur: { fr: "Assistant indisponible. Réessaie plus tard.", en: "Assistant unavailable. Please try again later." },
+  assistantAvertissement: {
+    fr: "Réponses générées par IA, fondées sur le moteur de calcul — à vérifier. Ne constitue pas un avis fiscal.",
+    en: "AI-generated answers, grounded in the calculation engine — please verify. Not tax advice.",
+  },
+  assistantConnexion: { fr: "Connecte-toi pour utiliser l'assistant.", en: "Sign in to use the assistant." },
+  detailVolet: { fr: "Détail", en: "Details" },
+  assistantCleIntro: {
+    fr: "Entre ta clé API Anthropic pour utiliser l'assistant. Tu n'es facturé que pour ton propre usage.",
+    en: "Enter your Anthropic API key to use the assistant. You are billed only for your own usage.",
+  },
+  assistantCleLien: { fr: "Obtenir une clé sur console.anthropic.com", en: "Get a key at console.anthropic.com" },
+  assistantCleNote: {
+    fr: "Ta clé est conservée uniquement dans ce navigateur et utilisée seulement pour tes requêtes ; elle n'est jamais stockée sur le serveur.",
+    en: "Your key is kept only in this browser and used only for your requests; it is never stored on the server.",
+  },
+  assistantChangerCle: { fr: "Changer la clé", en: "Change key" },
+  assistantBiblioIntro: {
+    fr: "Décris un ménage ou un jeu de paramètres à créer, ou choisis :",
+    en: "Describe a household or parameter set to create, or pick:",
+  },
+  assistantBiblioQ1: {
+    fr: "Crée un couple avec 2 enfants, 60 000 $ et 40 000 $.",
+    en: "Create a couple with 2 children, $60,000 and $40,000.",
+  },
+  assistantBiblioQ2: {
+    fr: "Crée une famille monoparentale, 1 enfant de 4 ans, 35 000 $.",
+    en: "Create a single-parent family, one 4-year-old child, $35,000.",
+  },
   bibliothequeAideMenages: {
     fr: "Un ménage type fige une situation (type de ménage, revenus, âges, enfants, frais de garde) que tu réutilises sans la ressaisir.",
     en: "A household template captures a situation (type, incomes, ages, children, childcare) you can reuse without re-entering it.",
