@@ -14,6 +14,7 @@ import {
 } from "@/lib/bibliotheque";
 import { appliquerParams } from "@/lib/partage";
 import { UI, type Lang } from "@/lib/i18n";
+import { useLangue } from "@/components/lang-provider";
 import { aDeuxAdultes, normaliserMenageEtat, type MenageEtat } from "@/lib/menage-etat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { AssistantChat } from "@/components/assistant/assistant-chat";
@@ -54,7 +55,7 @@ function Vide({ texte }: { texte: string }) {
 }
 
 export function Bibliotheque() {
-  const [lang, setLang] = useState<Lang>("fr");
+  const { lang, setLang } = useLangue();
   const { data: session, isPending } = useSession();
   const [authOuvert, setAuthOuvert] = useState(false);
   const [menages, setMenages] = useState<MenageResume[] | null>(null);

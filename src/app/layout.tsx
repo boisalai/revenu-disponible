@@ -4,6 +4,7 @@ import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PanneauInfoProvider } from "@/components/panneau-info";
+import { LangProvider } from "@/components/lang-provider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="h-1 bg-primary" />
-          <PanneauInfoProvider>{children}</PanneauInfoProvider>
+          <LangProvider>
+            <PanneauInfoProvider>{children}</PanneauInfoProvider>
+          </LangProvider>
         </ThemeProvider>
       </body>
     </html>

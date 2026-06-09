@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, type Annee, type Parametres } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
+import { useLangue } from "@/components/lang-provider";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
 import { encoderBudget, decoderBudget } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
@@ -57,7 +58,7 @@ function PanneauParametres({
 }
 
 export function Budget() {
-  const [lang, setLang] = useState<Lang>("fr");
+  const { lang, setLang } = useLangue();
   const [etat, setEtat] = useState<MenageEtat>(MENAGE_DEFAUT);
   const [anneeA, setAnneeA] = useState<Annee>(2025);
   const [bundleA, setBundleA] = useState<Parametres>(() => cloner(2025));

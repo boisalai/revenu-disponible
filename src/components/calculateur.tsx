@@ -3,7 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible } from "@/index";
-import { UI, type Lang } from "@/lib/i18n";
+import { UI } from "@/lib/i18n";
+import { useLangue } from "@/components/lang-provider";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
 import { encoderMenage, decoderMenage } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
@@ -16,7 +17,7 @@ import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 
 export function Calculateur() {
-  const [lang, setLang] = useState<Lang>("fr");
+  const { lang, setLang } = useLangue();
   const [etat, setEtat] = useState<MenageEtat>(MENAGE_DEFAUT);
 
   const encoded = useMemo(() => encoderMenage(etat), [etat]);

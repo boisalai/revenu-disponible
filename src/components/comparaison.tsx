@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, Situation, type Annee, type Parametres } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
+import { useLangue } from "@/components/lang-provider";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
 import { encoderComparaison, decoderComparaison, diffParams } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
@@ -44,7 +45,7 @@ function SectionMenage({
 }
 
 export function Comparaison() {
-  const [lang, setLang] = useState<Lang>("fr");
+  const { lang, setLang } = useLangue();
   const [etatA, setEtatA] = useState<MenageEtat>(DEFAUT_A);
   const [etatB, setEtatB] = useState<MenageEtat>(DEFAUT_B);
   const [cleJeu, setCleJeu] = useState<string>(cleOfficiel(2025));
