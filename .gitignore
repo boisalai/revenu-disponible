@@ -16,3 +16,6 @@ coverage/
 next-env.d.ts
 
 /src/generated/prisma
+
+# Fichiers de travail (captures d'écran, brouillons) — ne pas versionner
+tmp/
