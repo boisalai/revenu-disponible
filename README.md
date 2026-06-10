@@ -27,7 +27,7 @@ Le calculateur fait cette addition pour vous, **poste par poste**, et explique c
 - **Calculer** le revenu disponible pour 5 situations (personne seule, famille monoparentale, couple, retraité seul, couple de retraités), selon le revenu, l'âge et le nombre d'enfants.
 - **Comparer 2025 et 2026**, poste par poste, avec les écarts.
 - **Comprendre chaque poste** : un panneau présente sa description, son objectif, sa règle de calcul, ses **paramètres officiels (2025 / 2026)** et le lien vers la source.
-- **Voir le taux effectif marginal d'imposition** : un graphique montre, à chaque niveau de revenu, quelle part d'un dollar gagné en plus vous échappe, et repère les **trappes** (plus de 80 %).
+- **Voir le taux effectif marginal d'imposition** : un graphique montre, à chaque niveau de revenu, quelle part d'un dollar gagné en plus vous échappe, et repère les **trappes** (plus de 60 %).
 - **Comparer deux ménages**, ou **deux jeux de paramètres** sur un même ménage (pour simuler un « mini-budget »).
 - **Demander à un assistant IA** (Claude) d'expliquer un résultat ou de répondre à vos questions sur le modèle *(vous fournissez votre propre clé Anthropic)*.
 - **Enregistrer, partager par lien, exporter en CSV ou PDF**, et conserver vos scénarios dans un compte.
@@ -95,7 +95,7 @@ The calculator does this math for you, **item by item**, and explains every amou
 - **Calculate** disposable income for 5 situations (single person, single-parent family, couple, retiree living alone, retired couple), based on income, age and number of children.
 - **Compare 2025 and 2026**, item by item, with the differences.
 - **Understand each item**: a panel shows its description, purpose, calculation rule, **official parameters (2025 / 2026)** and the link to the source.
-- **See the marginal effective tax rate**: a chart shows, at each income level, how much of an extra dollar earned slips away, and flags the **traps** (over 80%).
+- **See the marginal effective tax rate**: a chart shows, at each income level, how much of an extra dollar earned slips away, and flags the **traps** (over 60%).
 - **Compare two households**, or **two sets of parameters** on the same household (to simulate a "mini-budget").
 - **Ask an AI assistant** (Claude) to explain a result or answer your questions about the model *(you provide your own Anthropic key)*.
 - **Save, share by link, export to CSV or PDF**, and keep your scenarios in an account.

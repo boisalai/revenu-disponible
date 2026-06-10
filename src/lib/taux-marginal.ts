@@ -57,7 +57,7 @@ export function courbeTauxMarginal(menage: Menage, annee: Annee, opts: OptionsTM
 }
 
 /** Seuil de TMI au-delà duquel on parle de « trappe à la pauvreté » (%). */
-export const SEUIL_TRAPPE = 80;
+export const SEUIL_TRAPPE = 60;
 
 /**
  * Plages de revenu où le TMI total dépasse `seuil` — les **trappes à la pauvreté** : un dollar de

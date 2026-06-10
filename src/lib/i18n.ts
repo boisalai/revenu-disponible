@@ -174,10 +174,10 @@ export const UI = {
 
   // Trappes à la pauvreté (graphique de taux marginal)
   trappePauvrete: { fr: "Trappe à la pauvreté", en: "Poverty trap" },
-  trappeSeuil: { fr: "Seuil de trappe (> 80 %)", en: "Trap threshold (> 80%)" },
+  trappeSeuil: { fr: "Seuil de trappe (> 60 %)", en: "Trap threshold (> 60%)" },
   trappeNote: {
-    fr: "zones rouges où le TEMI dépasse 80 % — un dollar de revenu de travail supplémentaire y rapporte moins de 0,20 $ de revenu disponible.",
-    en: "red zones where the EMTR exceeds 80% — an extra dollar of employment income yields less than $0.20 of disposable income.",
+    fr: "zones rouges où le TEMI dépasse 60 % — un dollar de revenu de travail supplémentaire y rapporte moins de 0,40 $ de revenu disponible.",
+    en: "red zones where the EMTR exceeds 60% — an extra dollar of employment income yields less than $0.40 of disposable income.",
   },
   axeRevenu: { fr: "Revenu de travail (brut)", en: "Gross employment income" },
 
