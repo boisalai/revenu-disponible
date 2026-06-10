@@ -5,7 +5,7 @@ import Link from "next/link";
 import { UI, type Lang } from "@/lib/i18n";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { cn } from "@/lib/utils";
-import { EnteteVolet, PanneauInfoVolet } from "@/components/panneau-info";
+import { BoutonFermerPanneau, EnteteVolet, PanneauInfoVolet, usePanneauInfo } from "@/components/panneau-info";
 import { BoutonPartage } from "@/components/bouton-partage";
 import { BarreCompte } from "@/components/compte/barre-compte";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -153,6 +153,7 @@ export function EspaceTravail({
   tailleGauche?: string;
 }) {
   const estBureau = useMediaQuery("(min-width: 768px)");
+  const { mode, setMode } = usePanneauInfo();
   const g = parseFloat(tailleGauche) || 26;
   const central_ = Math.max(28, 100 - g - 24); // le volet droit part à 24 %
 
@@ -189,6 +190,24 @@ export function EspaceTravail({
               <EnteteVolet titre={droite.titre}>{droite.actions}</EnteteVolet>
               {droite.contenu}
             </section>
+          )}
+
+          {/* Tiroir assistant mobile : plein écran, glisse de droite. Monté en permanence
+              (la conversation est conservée) ; le tiroir détail du provider s'efface en
+              mode « assistant ». Fermer = revenir au mode « info ». */}
+          {assistant != null && (
+            <aside
+              aria-hidden={mode !== "assistant"}
+              className={cn(
+                "fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-card shadow-xl transition-transform duration-300 ease-out",
+                mode === "assistant" ? "translate-x-0" : "pointer-events-none translate-x-full",
+              )}
+            >
+              <EnteteVolet titre={UI.assistantTitre[lang]}>
+                <BoutonFermerPanneau lang={lang} onClose={() => setMode("info")} />
+              </EnteteVolet>
+              <div className="min-h-0 flex-1">{assistant}</div>
+            </aside>
           )}
         </div>
       )}

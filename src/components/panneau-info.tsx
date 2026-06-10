@@ -149,7 +149,9 @@ export function PanneauInfoProvider({ children }: { children: ReactNode }) {
   };
   const fermer = () => setPoste(null);
 
-  const actif = poste != null && POSTES_INFO[poste] != null;
+  // Le tiroir détail ne s'affiche qu'en mode « info » : en mode « assistant », c'est le
+  // tiroir assistant (rendu par EspaceTravail, qui détient le contenu) qui occupe l'écran.
+  const actif = poste != null && POSTES_INFO[poste] != null && mode === "info";
 
   return (
     <Ctx.Provider value={{ poste, lang, mode, ouvrir, fermer, setMode }}>
