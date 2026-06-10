@@ -262,7 +262,8 @@ export const POSTE_VERS_PARAM: Record<string, string> = Object.fromEntries(
 /** Formate une valeur de paramètre : montant (« 71 300 $ »), taux (« 5,4 % ») ou valeur brute. */
 function formatValeur(valeur: number, estDollar: boolean, lang: Lang): string {
   const loc = lang === "fr" ? "fr-CA" : "en-CA";
-  if (estDollar) return `${Math.round(valeur).toLocaleString(loc)} $`;
+  if (estDollar)
+    return Math.round(valeur).toLocaleString(loc, { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
   if (valeur > 0 && valeur < 1) return `${(valeur * 100).toLocaleString(loc, { maximumFractionDigits: 3 })} %`;
   return valeur.toLocaleString(loc);
 }
