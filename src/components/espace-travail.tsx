@@ -97,6 +97,15 @@ export function PiedPage({ lang }: { lang: Lang }) {
         </Link>
         {" · "}
         <a
+          href="/guide-revenu-disponible.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary underline-offset-4 hover:underline"
+        >
+          {UI.guidePdf[lang]}
+        </a>
+        {" · "}
+        <a
           href="https://github.com/boisalai/revenu-disponible"
           target="_blank"
           rel="noopener noreferrer"

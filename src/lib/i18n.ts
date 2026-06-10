@@ -197,6 +197,7 @@ export const UI = {
     en: "Disposable income of Quebec households (2025-2026) — verified calculations, each item explained and linked to its official source. TypeScript engine, Next.js · Tailwind · shadcn/ui interface. Educational tool — not tax advice.",
   },
   codeSource: { fr: "Code source", en: "Source code" },
+  guidePdf: { fr: "Guide (PDF)", en: "Guide (PDF, French)" },
   voletMenagesCompares: { fr: "Ménages comparés", en: "Compared households" },
   voletMenageParametres: { fr: "Ménage et paramètres", en: "Household & parameters" },
   nouveau: { fr: "Nouveau", en: "New" },
@@ -228,6 +229,20 @@ export const UI = {
     en: "Your key is kept only in this browser and used only for your requests; it is never stored on the server.",
   },
   assistantChangerCle: { fr: "Changer la clé", en: "Change key" },
+  demoBandeau: {
+    fr: "Mode démo — modèle Haiku, 5 questions par jour. Entrez votre clé API pour tout débloquer.",
+    en: "Demo mode — Haiku model, 5 questions per day. Enter your API key to unlock everything.",
+  },
+  demoUtiliserCle: { fr: "Utiliser ma clé API", en: "Use my API key" },
+  demoEssayer: { fr: "← Essayer la démo sans clé", en: "← Try the demo without a key" },
+  demoToursEpuises: {
+    fr: "Limite de la conversation démo atteinte — entrez votre clé API pour continuer.",
+    en: "Demo conversation limit reached — enter your API key to continue.",
+  },
+  demoErreur: {
+    fr: "Limite de la démo atteinte pour aujourd'hui. Réessayez demain, ou entrez votre clé API.",
+    en: "Demo limit reached for today. Try again tomorrow, or enter your API key.",
+  },
   modeleLabel: { fr: "Modèle", en: "Model" },
   modeleNote: {
     fr: "Sonnet recommandé. Haiku : plus rapide et économique, mais moins fiable pour les calculs. Opus : plus capable, plus coûteux.",
@@ -245,23 +260,23 @@ export const UI = {
   },
   aProposAuteurTitre: { fr: "L'auteur", en: "The author" },
   aProposAuteur: {
-    fr: "Mathématicien de formation, titulaire d'un MBA en gestion des technologies de l'information et d'un DESS en intelligence artificielle, je poursuis aujourd'hui des études de droit. J'ai passé plus de trente ans en finances publiques et en gouvernance au gouvernement du Québec, dont une douzaine d'années à des postes de direction et quinze ans au ministère des Finances du Québec — comme analyste expert puis directeur de la modélisation —, où j'ai conçu des modèles de simulation du revenu disponible des ménages. Administrateur à la Chambre des notaires du Québec, je développe des prototypes d'intelligence artificielle appliquée au droit et à la fiscalité, dont ce calculateur.",
-    en: "Trained as a mathematician, holding an MBA in IT management and a graduate diploma in artificial intelligence, I am now studying law. I spent more than thirty years in public finance and governance with the Government of Quebec, including a dozen years in executive roles and fifteen years at the Quebec Ministry of Finance — as a senior analyst and then director of modelling — where I built household disposable-income simulation models. A board member of the Chambre des notaires du Québec, I develop prototypes of AI applied to law and taxation, including this calculator.",
+    fr: "Mathématicien de formation, titulaire d'un MBA en gestion des technologies de l'information et d'un DESS en intelligence artificielle, je poursuis aujourd'hui des études de droit. J'ai passé plus de trente ans en analyse de données, en finances publiques et en gouvernance au gouvernement du Québec, dont une douzaine d'années à des postes de direction. Présentement administrateur à la Chambre des notaires du Québec et étudiant en droit, je développe des prototypes d'intelligence artificielle appliquée au droit et à la fiscalité, dont ce calculateur.",
+    en: "Trained as a mathematician, holding an MBA in IT management and a graduate diploma in artificial intelligence, I am now studying law. I spent more than thirty years in data analysis, public finance and governance with the Government of Quebec, including a dozen years in executive roles. Currently a board member of the Chambre des notaires du Québec and a law student, I develop prototypes of AI applied to law and taxation, including this calculator.",
   },
   aProposMethodeTitre: { fr: "Méthodologie", en: "Methodology" },
   aProposMethode: {
-    fr: "Tous les chiffres — montants, taux et seuils — viennent de sources officielles : Revenu Québec, l'Agence du revenu du Canada, Retraite Québec et Service Canada. Chacun renvoie à la loi qui le fixe ; rien n'est inventé. Les calculs suivent les règles de 2025 et de 2026, appliquées à des ménages types. Pour s'assurer qu'ils sont exacts, on les a comparés au calculateur officiel du ministère des Finances du Québec : les résultats correspondent au cent près.",
-    en: "Every figure — amounts, rates and thresholds — comes from an official source: Revenu Québec, the Canada Revenue Agency, Retraite Québec and Service Canada. Each one points back to the law that sets it; nothing is made up. The calculations follow the 2025 and 2026 rules, applied to typical households. To make sure they're correct, we compared them with the Quebec Ministry of Finance's own calculator — the results match to the penny.",
+    fr: "Tous les chiffres — montants, taux et seuils — viennent de sources officielles : Revenu Québec, l'Agence du revenu du Canada, Retraite Québec et Service Canada. Rien n'est inventé. Les calculs suivent les règles de 2025 et de 2026, appliquées à des ménages types. Pour s'assurer qu'ils sont exacts, nous les avons comparés au calculateur officiel du ministère des Finances du Québec : les résultats correspondent au cent près.",
+    en: "Every figure — amounts, rates and thresholds — comes from an official source: Revenu Québec, the Canada Revenue Agency, Retraite Québec and Service Canada. Nothing is made up. The calculations follow the 2025 and 2026 rules, applied to typical households. To make sure they're correct, we compared them with the Quebec Ministry of Finance's own calculator — the results match to the penny.",
   },
   aProposTechTitre: { fr: "Technologie", en: "Technology" },
   aProposTech: {
     fr: "Moteur en TypeScript strict, sans dépendance externe. Interface Next.js, Tailwind et shadcn/ui ; graphiques Recharts ; comptes et sauvegarde via Better Auth, Prisma et PostgreSQL ; déploiement continu sur Vercel.",
     en: "Engine in strict TypeScript, with no external dependency. Next.js, Tailwind and shadcn/ui interface; Recharts charts; accounts and storage via Better Auth, Prisma and PostgreSQL; continuous deployment on Vercel.",
   },
-  aProposIATitre: { fr: "Assistant IA", en: "AI assistant" },
+  aProposIATitre: { fr: "Intelligence artificielle", en: "Artificial intelligence" },
   aProposIA: {
-    fr: "Un assistant (Claude) explique les résultats, détaille le calcul de chaque poste et crée des ménages types — toujours ancré sur le moteur vérifié, sans inventer de chiffre. Chaque personne utilise sa propre clé API, conservée uniquement dans son navigateur et jamais sur le serveur.",
-    en: "An assistant (Claude) explains results, details how each item is computed, and creates household templates — always grounded in the verified engine, never inventing a figure. Each person uses their own API key, kept only in their browser and never on the server.",
+    fr: "Tout le code de ce calculateur — moteur, interface, tests — a été écrit par Claude (Anthropic), sous ma direction, en quelques jours : je le guidais, lui fournissais les sources officielles, et chaque calcul a été validé au cent près contre l'outil du ministère des Finances. Un assistant (Claude) est aussi intégré à l'application : il explique les résultats, détaille le calcul de chaque poste et crée des ménages types — toujours ancré sur le moteur vérifié, sans inventer de chiffre. Un mode démo permet de l'essayer sans clé (quelques questions par jour) ; pour un usage complet, chaque personne utilise sa propre clé API, conservée uniquement dans son navigateur et jamais sur le serveur.",
+    en: "All of this calculator's code — engine, interface, tests — was written by Claude (Anthropic) under my direction, in a matter of days: I guided it, supplied the official sources, and every calculation was validated to the cent against the Ministry of Finance's tool. An assistant (Claude) is also built into the app: it explains results, details how each item is computed, and creates household templates — always grounded in the verified engine, never inventing a figure. A demo mode lets you try it without a key (a few questions per day); for full use, each person uses their own API key, kept only in their browser and never on the server.",
   },
   aProposAvertTitre: { fr: "Avertissement", en: "Disclaimer" },
   aProposAvert: {
