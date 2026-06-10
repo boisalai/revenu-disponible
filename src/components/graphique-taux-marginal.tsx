@@ -53,8 +53,8 @@ export function GraphiqueTauxMarginal({
   const fmtPct = (v: number) => `${Math.round(v)} %`;
 
   return (
-    <div className="grid gap-2">
-      <ChartContainer config={config} className="h-[320px] w-full sm:h-auto sm:aspect-[16/6]">
+    <div className="grid grid-cols-1 gap-2">
+      <ChartContainer config={config} className="h-[320px] w-full min-w-0 sm:h-auto sm:aspect-[16/6]">
       <AreaChart data={data} margin={{ left: 4, right: 12, top: 20, bottom: 4 }} stackOffset="sign">
         <CartesianGrid vertical={false} />
         <XAxis
@@ -106,7 +106,7 @@ export function GraphiqueTauxMarginal({
             label={{ value: UI.revenuActuel[lang], position: "top", fontSize: 12.75, fill: "var(--muted-foreground)" }}
           />
         )}
-        <ChartLegend content={<ChartLegendContent />} />
+        <ChartLegend content={<ChartLegendContent className="flex-wrap" />} />
       </AreaChart>
       </ChartContainer>
 
