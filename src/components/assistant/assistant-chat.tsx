@@ -32,7 +32,7 @@ const MD: Components = {
   table: ({ node, ...p }) => (
     <div className="my-2 overflow-x-auto">
       <table
-        className="w-full border-collapse text-xs [&_td:not(:first-child)]:text-right [&_td:not(:first-child)]:tabular-nums [&_th:not(:first-child)]:text-right"
+        className="w-full border-collapse text-xs [&_td:not(:first-child)]:text-right [&_td:not(:first-child)]:tabular-nums [&_td:not(:first-child)]:whitespace-nowrap [&_th:not(:first-child)]:text-right"
         {...p}
       />
     </div>

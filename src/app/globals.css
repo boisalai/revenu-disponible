@@ -122,6 +122,10 @@
     }
   body {
     @apply bg-background text-foreground;
+    /* Aucun défilement horizontal au niveau de la page : tout débordement interne
+       (tableaux, graphiques) vit dans des conteneurs overflow-x-auto. Sans ce verrou,
+       iOS élargit le « layout viewport » et les tiroirs fixed w-full dépassent l'écran. */
+    @apply overflow-x-hidden;
     }
   html {
     @apply font-sans;

@@ -125,7 +125,7 @@ export async function POST(req: Request) {
     "- NE RECALCULE JAMAIS un total, un écart ou le revenu disponible toi-même : utilise les valeurs fournies (tu fais souvent des erreurs d'arithmétique).",
     "- Pour DÉTAILLER le calcul d'un poste (règle, taux, exemption, plafond, paliers, références), appelle l'outil detail_poste.",
     "- Pour un autre scénario (« et si… ? ») ou la courbe du TEMI (taux effectif marginal d'imposition), appelle l'outil correspondant — n'invente aucun chiffre.",
-    "- Format pour un PANNEAU ÉTROIT : concis, phrases courtes, listes à puces. Pas de grands tableaux markdown. Markdown léger.",
+    "- Format pour un PANNEAU ÉTROIT : concis, phrases courtes, listes à puces. Pas de grands tableaux markdown (au plus 3 colonnes ; jamais de gras ** à l'intérieur des cellules). Markdown léger.",
     "- Reste dans le sujet (ce modèle fiscal). Rappelle au besoin que ce sont des valeurs indicatives, pas un avis fiscal.",
     "",
     "SCÉNARIO ACTUELLEMENT AFFICHÉ :",
