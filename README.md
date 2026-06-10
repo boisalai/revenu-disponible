@@ -29,7 +29,7 @@ Le calculateur fait cette addition pour vous, **poste par poste**, et explique c
 - **Comprendre chaque poste** : un panneau présente sa description, son objectif, sa règle de calcul, ses **paramètres officiels (2025 / 2026)** et le lien vers la source.
 - **Voir le taux effectif marginal d'imposition** : un graphique montre, à chaque niveau de revenu, quelle part d'un dollar gagné en plus vous échappe, et repère les **trappes** (plus de 60 %).
 - **Comparer deux ménages**, ou **deux jeux de paramètres** sur un même ménage (pour simuler un « mini-budget »).
-- **Demander à un assistant IA** (Claude) d'expliquer un résultat ou de répondre à vos questions sur le modèle *(vous fournissez votre propre clé Anthropic)*.
+- **Demander à un assistant IA** (Claude) d'expliquer un résultat ou de répondre à vos questions sur le modèle *(démo gratuite limitée, ou votre propre clé Anthropic)*.
 - **Enregistrer, partager par lien, exporter en CSV ou PDF**, et conserver vos scénarios dans un compte.
 
 L'interface est **bilingue (français et anglais)** et offre un **mode clair ou sombre**.
@@ -39,6 +39,8 @@ L'interface est **bilingue (français et anglais)** et offre un **mode clair ou 
 Tous les chiffres — montants, taux et seuils — proviennent de **sources officielles** : Revenu Québec, l'Agence du revenu du Canada, Retraite Québec et Service Canada. Chacun renvoie à la loi qui le fixe ; rien n'est inventé.
 
 Pour s'assurer que les calculs sont exacts, ils ont été **comparés au [calculateur officiel du ministère des Finances du Québec](https://www.finances.gouv.qc.ca/ministere/outils_services/outils_calcul/revenu_disponible/outil_revenu.asp)** : sur des milliers de cas, les résultats **concordent au cent près**.
+
+Un **[guide pédagogique détaillé](docs/guide/main.pdf)** (PDF, 27 pages) décrit chaque poste : règle de calcul, paramètres 2025/2026, références légales.
 
 ## Technologies utilisées
 
@@ -97,7 +99,7 @@ The calculator does this math for you, **item by item**, and explains every amou
 - **Understand each item**: a panel shows its description, purpose, calculation rule, **official parameters (2025 / 2026)** and the link to the source.
 - **See the marginal effective tax rate**: a chart shows, at each income level, how much of an extra dollar earned slips away, and flags the **traps** (over 60%).
 - **Compare two households**, or **two sets of parameters** on the same household (to simulate a "mini-budget").
-- **Ask an AI assistant** (Claude) to explain a result or answer your questions about the model *(you provide your own Anthropic key)*.
+- **Ask an AI assistant** (Claude) to explain a result or answer your questions about the model *(limited free demo, or your own Anthropic key)*.
 - **Save, share by link, export to CSV or PDF**, and keep your scenarios in an account.
 
 The interface is **bilingual (French and English)** and offers a **light or dark mode**.
@@ -107,6 +109,8 @@ The interface is **bilingual (French and English)** and offers a **light or dark
 Every figure — amounts, rates and thresholds — comes from **official sources**: Revenu Québec, the Canada Revenue Agency, Retraite Québec and Service Canada. Each one points to the law that sets it; nothing is made up.
 
 To make sure the calculations are accurate, they have been **checked against the [Quebec Department of Finance's official calculator](https://www.finances.gouv.qc.ca/ministere/outils_services/outils_calcul/revenu_disponible/outil_revenu.asp)**: across thousands of cases, the results **match to the cent**.
+
+A **[detailed educational guide](docs/guide/main.pdf)** (PDF, 27 pages, in French) covers every item: calculation rule, 2025/2026 parameters, legal references.
 
 ## Technologies used
 
