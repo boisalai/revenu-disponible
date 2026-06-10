@@ -1,0 +1,92 @@
+% ===========================================================================
+% §Validation, limites et avertissement
+% ===========================================================================
+\section{Validation : la parité au cent près}
+\label{sec:validation}
+
+\subsection{Méthode}
+
+La règle de travail du projet : \emph{ne rien présumer}. Chaque valeur
+provient d'une source officielle citée ; chaque règle est tracée dans le
+calculateur officiel du MFQ ; et l'ensemble est validé par une suite de
+tests automatisés qui compare les sorties du moteur à celles de la
+référence.
+
+Concrètement, la suite de tests charge le code source du calculateur
+officiel (tel que distribué par le site du MFQ), l'exécute dans un bac à
+sable isolé, et confronte chaque sortie --- le revenu disponible, mais
+aussi chacun des postes --- aux résultats du moteur TypeScript, \emph{au
+cent près} :
+
+\begin{itemize}
+  \item un \textbf{balayage dense} : pour chacune des cinq situations, le
+        revenu varie de 0 à \D{150000} par pas de \D{2000}, avec des
+        variantes d'âge (frontières de 50, 58, 60, 64, 65, 70 et 75~ans),
+        de composition (couples d'âges mixtes dans les deux ordres,
+        enfants d'âges variés) et de frais de garde (subventionnés ou
+        non) --- plus de quatre mille points de comparaison ;
+  \item des \textbf{points de contrôle officiels} : les maximums publiés
+        (cotisation RRQ maximale, prime RAMQ maximale, SRG maximal, etc.)
+        sont vérifiés un à un contre les valeurs des organismes ;
+  \item au total, près de huit cents tests automatisés, exécutés à chaque
+        modification du code.
+\end{itemize}
+
+Tout écart, même d'un cent, fait échouer la suite : c'est ainsi qu'ont été
+découverts --- puis modélisés fidèlement --- plusieurs comportements fins
+de la référence (asymétrie du supplément du SRG, exonérations de la prime
+RAMQ, contrainte temporaire de l'aide sociale, traitement du revenu de
+pension avant 65~ans).
+
+\subsection{Limites et choix de modélisation}
+\label{sec:limites}
+
+Le moteur reproduit le calculateur officiel, \emph{y compris} ses choix de
+modélisation et ses idiosyncrasies, qui sont documentés plutôt que
+corrigés :
+
+\begin{itemize}
+  \item \textbf{revenus simplifiés} : une seule source de revenu par
+        adulte ; pas de gains en capital, de dividendes, de REER ni de
+        revenus de location (section~\ref{sec:modele}) ;
+  \item \textbf{frais de garde} : seuil \og jeune \fg{} à l'âge $\le 5$
+        (au lieu de \og moins de 7~ans \fg{}) et plafonnement agrégé
+        plutôt que par enfant (poste~6) ;
+  \item \textbf{allocation-logement} : loyer imputé selon la composition,
+        faute d'entrée \og loyer \fg{} ; facteur d'ajustement des
+        pensions extrait de la référence (poste~10) ;
+  \item \textbf{crédits de frais médicaux} (postes 12 et 18) :
+        systématiquement nuls, la seule dépense médicale du modèle étant
+        la prime RAMQ ; la forme anormale de la réduction du poste~12 est
+        reproduite telle quelle ;
+  \item \textbf{Sécurité de la vieillesse} : asymétrie du supplément
+        complémentaire pour les couples mixtes, reproduite par fidélité
+        (poste~17) ;
+  \item \textbf{périodes} : prestations de juillet à juin assimilées à
+        l'année civile ; barème RAMQ de la période tarifaire en cours au
+        1\ier{}~janvier.
+\end{itemize}
+
+\subsection{Avertissement}
+
+Cet outil est \textbf{pédagogique}. Les montants qu'il produit sont
+\emph{indicatifs} : ils reposent sur des cas types simplifiés et des
+données fictives, et ne tiennent pas compte de l'ensemble de la situation
+réelle d'un contribuable. Ils ne constituent ni un avis fiscal, ni un avis
+juridique. Pour toute décision, consulter un professionnel ou les
+organismes administrateurs (Revenu Québec, Agence du revenu du Canada,
+Retraite Québec, Service Canada).
+
+\section*{Colophon}
+\addcontentsline{toc}{section}{Colophon}
+
+Ce document a été rédigé par \textbf{Claude Fable~5} (Anthropic),
+assistant d'intelligence artificielle, le \textbf{10 juin 2026}, sous la
+direction d'Alain Boisvert, à partir du code source du moteur de calcul et
+de sa documentation de traçage. La mise en page reprend la classe
+\LaTeX{} des préimpressions FAIR (Meta), telle que publiée avec
+arXiv:2412.06769, adaptée au français (le logo de Meta, marque de
+l'entreprise, a été retiré).
+
+Le code source du calculateur --- moteur, application Web, suite de tests
+et le présent document --- est publié à l'adresse \ghurl.

@@ -1,0 +1,54 @@
+% ===========================================================================
+% Poste 15 — Crédit pour la TPS/TVH
+% ===========================================================================
+\poste{15}{Crédit pour la TPS/TVH}{CA\_tps}
+
+\pdesc Crédit fédéral remboursable et non imposable, versé trimestriellement
+par l'Agence du revenu du Canada pour compenser la taxe sur les produits et
+services payée par les ménages à revenu faible ou modeste.
+
+\pobj Atténuer la régressivité de la taxe de vente : rembourser aux ménages
+modestes une partie de la TPS qu'ils paient sur leur consommation.
+
+\pregle Le crédit additionne un montant de base par adulte et par enfant et,
+selon la composition, l'un de deux suppléments, puis applique une réduction
+de \pc{5} sur le revenu familial net rajusté (équation~\ref{eq:afni})
+au-delà du seuil $s_r$ :
+\begin{align*}
+\text{base} &= n_{ad} \times B + n \times E \\
+\text{supplément} &= \begin{cases}
+S_{mono} & \text{famille monoparentale (équivalent de conjoint)} \\
+\min\bigl(0{,}02 \times \pos{\AFNI - s_p},\; S_{max}\bigr) &
+\text{personne seule sans enfant} \\
+0 & \text{couple}
+\end{cases} \\
+\text{crédit} &= \pos{\text{base} + \text{supplément}
+ - 0{,}05 \times \pos{\AFNI - s_r}}
+\end{align*}
+Particularité du supplément \og personne seule \fg{} : il \emph{croît} avec
+le revenu (\pc{2} du revenu au-delà de $s_p$, jusqu'à $S_{max}$) avant que
+la réduction générale ne s'applique --- un profil en tente, en miniature.
+L'année affichée correspond à l'année de versement (juillet à juin).
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Montant de base par adulte ($B$)            & \D{349}   & \D{356} \\
+Montant par enfant ($E$)                    & \D{184}   & \D{187} \\
+Supplément monoparental ($S_{mono}$)        & \D{349}   & \D{356} \\
+Supplément personne seule --- seuil ($s_p$) & \D{11337} & \D{11564} \\
+Supplément personne seule --- taux          & \pc{2}    & \pc{2} \\
+Supplément personne seule --- maximum ($S_{max}$) & \D{184} & \D{187} \\
+Seuil de réduction ($s_r$)                  & \D{45521} & \D{46432} \\
+Taux de réduction                           & \pc{5}    & \pc{5} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
+(5\ieme{}~suppl.)), art.~122.5 ; Agence du revenu du Canada.

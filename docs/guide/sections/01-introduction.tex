@@ -1,0 +1,65 @@
+% ===========================================================================
+% §1 — Introduction : l'objectif du projet
+% ===========================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Combien reste-t-il \emph{vraiment} à un ménage québécois, une fois payés ses
+impôts et ses cotisations, et une fois reçus ses transferts --- allocations,
+crédits et prestations ? La réponse est moins simple qu'il n'y paraît : au
+Québec, le revenu disponible d'un ménage résulte de l'interaction d'une
+vingtaine de programmes, administrés par deux ordres de gouvernement, chacun
+avec ses propres seuils, taux, plafonds et règles de réduction.
+
+Le ministère des Finances du Québec (MFQ) publie un calculateur officiel du
+revenu disponible\footnote{\url{https://www.finances.gouv.qc.ca/ministere/outils_services/outils_calcul/revenu_disponible/outil_revenu.asp}}.
+Cet outil donne le résultat, mais expose peu le \emph{raisonnement} : on y
+voit les montants, pas les règles qui les produisent. Le projet
+\emph{Revenu disponible --- Québec} part de l'intuition inverse : pour
+comprendre la fiscalité, il faut pouvoir ouvrir la boîte noire.
+
+\subsection{Objectif du projet}
+
+Le projet poursuit quatre objectifs :
+
+\begin{enumerate}
+  \item \textbf{Reconstruire} le calcul du revenu disponible des ménages
+        québécois, poste par poste, dans un code source lisible, commenté et
+        publié (\ghurl), là où le calculateur officiel n'est disponible que
+        sous forme compilée ;
+  \item \textbf{Vérifier} chaque paramètre --- montant, taux, seuil ---
+        contre la source officielle qui le fixe (Revenu Québec, Agence du
+        revenu du Canada, Retraite Québec, Emploi et Développement social
+        Canada) et citer la disposition législative correspondante ;
+  \item \textbf{Valider} l'ensemble par comparaison systématique avec le
+        calculateur officiel du MFQ : sur plusieurs milliers de cas types,
+        les résultats concordent au cent près
+        (section~\ref{sec:validation}) ;
+  \item \textbf{Expliquer} : l'application Web rend chaque poste
+        explorable --- description, objectif, règle de calcul, paramètres,
+        références --- et permet de simuler des changements de paramètres,
+        comme à l'annonce d'un budget.
+\end{enumerate}
+
+\subsection{À qui s'adresse ce document}
+
+Ce guide vise d'abord les \textbf{étudiantes et étudiants en fiscalité}, qui
+y trouveront, pour chaque poste, des règles de calcul rédigées en français
+mais suffisamment précises pour être reproduites à la calculatrice --- elles
+correspondent aux règles effectivement codées dans le moteur TypeScript,
+y compris les cas limites (planchers, plafonds, arrondis) et les choix de
+modélisation hérités du calculateur officiel. Le lecteur citoyen y trouvera
+quant à lui une explication d'ensemble : pourquoi son taux marginal effectif
+ne ressemble pas à son taux d'imposition affiché, d'où viennent les
+\og trappes \fg{} à certains niveaux de revenu, et comment les programmes
+s'emboîtent.
+
+\subsection{Plan du document}
+
+La section~\ref{sec:modele} délimite le modèle : ce qu'il couvre, ses
+entrées, ses hypothèses. La section~\ref{sec:manuel} est le mode d'emploi de
+l'application Web. La section~\ref{sec:architecture} décrit l'architecture du
+calcul : l'ordre des postes et les bases de revenu intermédiaires qui les
+relient. Les sections~\ref{sec:cotisations} à~\ref{sec:rd} détaillent les
+vingt postes un à un. La section~\ref{sec:validation} explique la méthode de
+validation et les limites du modèle.

@@ -1,0 +1,60 @@
+% ===========================================================================
+% Poste 7 — Allocation famille + supplément fournitures scolaires
+% ===========================================================================
+\poste{7}{Allocation famille et supplément pour fournitures scolaires}{QC\_sae, SFS}
+
+\pdesc Prestation versée par Retraite Québec pour chaque enfant à charge de
+moins de 18~ans, bonifiée d'un supplément pour les familles monoparentales.
+S'y ajoute, pour chaque enfant d'âge scolaire, un supplément annuel fixe
+pour l'achat de fournitures scolaires.
+
+\pobj Aider les familles à assumer les coûts liés aux enfants, avec un
+soutien plancher universel : contrairement à plusieurs programmes, une
+famille à revenu élevé reçoit quand même le montant minimal.
+
+\pregle L'allocation part d'un montant maximal --- $M$ par enfant, plus le
+supplément monoparental $S_{max}$ si le ménage ne compte qu'un adulte --- et
+le réduit de \pc{4} du revenu familial net excédant le seuil $s$ ; mais elle
+ne descend jamais sous le montant \emph{minimal} ($m$ par enfant, plus
+$S_{min}$ si monoparental) :
+\begin{align*}
+\text{maximum} &= n \times M + \delta \times S_{max} \\
+\text{minimum} &= n \times m + \delta \times S_{min} \\
+\text{allocation} &= \max\bigl(\text{minimum},\;
+\text{maximum} - 0{,}04 \times \pos{\RFN - s}\bigr)
+\end{align*}
+où $\delta = 1$ pour une famille monoparentale et $\delta = 0$ pour un
+couple. Le seuil $s$ dépend de la composition (monoparentale ou couple). Le
+montant par enfant ne dépend pas de son rang. Le résultat est arrondi au
+cent.
+
+\emph{Supplément pour fournitures scolaires.} Montant fixe versé pour chaque
+enfant \textbf{de 4 à 16~ans} (âge $> 3$ et $< 17$), sans aucune réduction
+selon le revenu :
+\[
+SFS = n_{4\text{--}16} \times F
+\]
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Montant maximal par enfant ($M$)        & \D{3006} & \D{3068} \\
+Montant minimal par enfant ($m$)        & \D{1196} & \D{1221} \\
+Supplément monoparental maximal ($S_{max}$) & \D{1055} & \D{1077} \\
+Supplément monoparental minimal ($S_{min}$) & \D{421}  & \D{430} \\
+Seuil de réduction --- monoparentale ($s$)  & \D{43280} & \D{44032} \\
+Seuil de réduction --- couple ($s$)         & \D{59369} & \D{60398} \\
+Taux de réduction                       & \pc{4}   & \pc{4} \\
+Fournitures scolaires, par enfant ($F$) & \D{124}  & \D{127} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur les impôts (RLRQ, c.~I-3), art.~1029.8.61.8 à
+1029.8.61.60 ; Retraite Québec ; ministère des Finances du Québec,
+\emph{Paramètres du régime d'imposition}.

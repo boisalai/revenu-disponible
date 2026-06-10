@@ -1,0 +1,139 @@
+% ===========================================================================
+% Revenu disponible des ménages québécois — guide pédagogique détaillé
+% Mise en page : classe fairmeta (préimpressions FAIR/Meta), identique au
+% source de arXiv:2412.06769 (logo Meta retiré ; babel français — voir .cls).
+% Compilation : latexmk -pdf main.tex   (TeX Live / MacTeX)
+% ===========================================================================
+\documentclass[]{fairmeta}
+
+% ----- Mathématiques et nombres (le reste est chargé par la classe) -----
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{siunitx}
+\sisetup{locale=FR, group-minimum-digits=4}
+
+% ----- Macros maison -----
+\newcommand{\D}[1]{\num{#1}\,\$}                  % montant : \D{71300} -> 71 300 $
+\newcommand{\pc}[1]{\num{#1}\,\%}                 % taux : \pc{5.4} -> 5,4 %
+\newcommand{\pos}[1]{\bigl(#1\bigr)^{+}}          % partie positive : (x)^+ = max(0, x)
+\newcommand{\RFN}{\mathit{RFN}}                   % revenu familial net (Québec)
+\newcommand{\AFNI}{\mathit{AFNI}}                 % revenu familial net rajusté (fédéral)
+\newcommand{\RAL}{\mathit{R_{AL}}}                % revenu aux fins de l'allocation-logement
+\newcommand{\appurl}{\url{https://revenu-disponible.vercel.app/}}
+\newcommand{\ghurl}{\url{https://github.com/boisalai/revenu-disponible}}
+
+% En-tête de poste : \poste{N}{Nom}{sortie code}
+\newcommand{\poste}[3]{\subsection[Poste #1 --- #2]{Poste #1 --- #2 {\normalfont\small(\texttt{#3})}}}
+
+% Étiquettes de paragraphe uniformes par poste
+\newcommand{\pdesc}{\paragraph{Description.}}
+\newcommand{\pobj}{\paragraph{Objectif.}}
+\newcommand{\pregle}{\paragraph{Règle de calcul.}}
+\newcommand{\pparams}{\paragraph{Paramètres.}}
+\newcommand{\prefs}{\paragraph{Références.}}
+\newcommand{\pnotes}{\paragraph{Notes de modélisation.}}
+
+% ----- Boîte de titre (mécanique fairmeta) -----
+\title{Le revenu disponible des ménages québécois\\
+\Large Guide détaillé du calculateur, années d'imposition 2025 et 2026}
+
+\author[1]{Alain Boisvert}
+\affiliation[1]{Université Laval}
+
+\abstract{Ce document accompagne le calculateur Web \emph{Revenu disponible
+--- Québec} (\appurl), un outil pédagogique qui estime le revenu disponible
+d'un ménage québécois et le décompose poste par poste pour les années 2025
+et 2026. Le moteur de calcul, écrit en TypeScript et exécuté entièrement
+dans le navigateur, reconstruit vingt postes socio-fiscaux --- cotisations
+sociales, transferts québécois et fédéraux, impôts sur le revenu --- à
+partir des paramètres officiels publiés par Revenu Québec, l'Agence du
+revenu du Canada, Retraite Québec et Emploi et Développement social Canada.
+Ses résultats ont été confrontés au calculateur officiel du ministère des
+Finances du Québec et y concordent \emph{au cent près} sur plusieurs
+milliers de cas types. Destiné d'abord aux étudiantes et étudiants en
+fiscalité, ce guide expose l'objectif du projet, le mode d'emploi de
+l'application, l'architecture du calcul, puis, pour chacun des vingt
+postes : sa description, son objectif de politique publique, sa règle de
+calcul détaillée --- fidèle au code exécuté ---, ses paramètres pour 2025
+et 2026 et ses références légales. Les montants sont indicatifs et ne
+constituent pas un avis fiscal.}
+
+\metadata[Application]{\appurl}
+\metadata[Code source]{\ghurl}
+\metadata[Rédaction]{document rédigé par Claude Fable~5 (Anthropic),
+assistant d'intelligence artificielle, le 10~juin~2026, sous la direction
+de l'auteur.}
+\metadata[Dernière mise à jour]{10 juin 2026}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\input{sections/01-introduction}
+\input{sections/02-modele}
+\input{sections/03-manuel}
+\input{sections/04-architecture}
+
+\section{Les cotisations (postes 1 à 5)}
+\label{sec:cotisations}
+Les cinq premiers postes sont des prélèvements : quatre cotisations sociales
+assises sur le revenu (RRQ, RQAP, assurance-emploi, FSS) et la prime du régime
+public d'assurance médicaments. Dans le modèle, les trois cotisations sur le
+revenu de travail (postes 1 à 3) ne visent que les ménages actifs ; le FSS
+(poste 4) ne vise que les revenus de retraite ; la prime RAMQ (poste 5)
+dépend du revenu familial net, donc du calcul d'impôt en aval.
+
+\input{postes/01-rrq}
+\input{postes/02-rqap}
+\input{postes/03-ae}
+\input{postes/04-fss}
+\input{postes/05-ramq}
+
+\section{Les transferts québécois (postes 6 à 13)}
+\label{sec:transferts-qc}
+Huit programmes québécois soutiennent le revenu des ménages : le crédit pour
+frais de garde, l'Allocation famille et son supplément pour fournitures
+scolaires, la prime au travail, le crédit pour la solidarité,
+l'allocation-logement, le montant pour le soutien des aînés, le crédit
+remboursable pour frais médicaux et l'aide de dernier recours. Tous sont
+modulés selon le revenu --- la plupart sur le \emph{revenu familial net}
+(section~\ref{sec:architecture}).
+
+\input{postes/06-garde}
+\input{postes/07-allocation-famille}
+\input{postes/08-prime-travail}
+\input{postes/09-solidarite}
+\input{postes/10-allocation-logement}
+\input{postes/11-soutien-aines}
+\input{postes/12-frais-medicaux}
+\input{postes/13-aide-sociale}
+
+\section{Les transferts fédéraux (postes 14 à 18)}
+\label{sec:transferts-fed}
+Cinq programmes fédéraux : l'Allocation canadienne pour enfants, le crédit
+pour la TPS/TVH, l'Allocation canadienne pour les travailleurs (version
+reconfigurée pour le Québec), la Sécurité de la vieillesse (pension, SRG et
+Allocation au conjoint) et le supplément remboursable pour frais médicaux.
+Les quatre premiers sont modulés sur le \emph{revenu familial net rajusté}
+fédéral (AFNI) ; la Sécurité de la vieillesse, sur le revenu de retraite.
+
+\input{postes/14-ace}
+\input{postes/15-tps}
+\input{postes/16-act}
+\input{postes/17-securite-vieillesse}
+\input{postes/18-supplement-medical}
+
+\section{L'impôt sur le revenu (poste 19)}
+\label{sec:impots}
+\input{postes/19-impot}
+
+\section{L'agrégation finale : le revenu disponible (poste 20)}
+\label{sec:rd}
+\input{postes/20-revenu-disponible}
+
+\input{sections/05-validation-limites}
+
+\end{document}

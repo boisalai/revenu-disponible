@@ -1,0 +1,184 @@
+% ===========================================================================
+% Poste 19 — Impôt sur le revenu (Québec + fédéral)
+% ===========================================================================
+\poste{19}{Impôt sur le revenu des particuliers}{QC\_impot, CA\_impot}
+
+\pdesc Les deux impôts sur le revenu --- québécois et fédéral --- sont
+calculés par adulte selon la mécanique classique : revenu imposable, barème
+progressif, crédits non remboursables, puis, au fédéral, l'abattement du
+Québec. Les couples ajoutent des mécanismes de partage (montant pour
+conjoint, transferts de crédits).
+
+\pobj Financer les services publics selon la capacité de payer, tout en
+reconnaissant par les crédits la situation personnelle (besoins
+essentiels, âge, retraite, personne vivant seule, charges familiales).
+
+\subsubsection*{Impôt du Québec}
+
+\paragraph{Revenu imposable et revenu net.} Pour un adulte de revenu $r$
+(travail ou pension) et d'âge $a$ :
+\begin{align*}
+\text{revenu imposable} &= r + PSV_{imp} - D_{trav} - RRQ_{suppl} \\
+\text{revenu net} &= r + PSV_{tot} - D_{trav} - RRQ_{suppl}
+\end{align*}
+où $PSV_{imp}$ est la pension de la Sécurité de la vieillesse imposable et
+$PSV_{tot}$ l'ensemble des prestations du poste~17 (SRG et Allocation
+compris : non imposables, mais inclus dans le revenu net --- encadré de la
+section~\ref{sec:bases}). $D_{trav}$ est la \emph{déduction pour
+travailleur} : \pc{6} du revenu de travail, plafonnée (\D{1420} en 2025,
+\D{1450} en 2026) ; nulle pour un retraité. $RRQ_{suppl}$ est la cotisation
+RRQ supplémentaire, déductible (poste~1).
+
+\paragraph{Impôt brut.} Barème progressif à quatre paliers appliqué au
+revenu imposable :
+
+\begin{center}
+\small
+\begin{tabular}{r r c}
+\toprule
+Tranche 2025 & Tranche 2026 & Taux \\
+\midrule
+jusqu'à \D{53255}  & jusqu'à \D{54345}  & \pc{14} \\
+jusqu'à \D{106495} & jusqu'à \D{108680} & \pc{19} \\
+jusqu'à \D{129590} & jusqu'à \D{132245} & \pc{24} \\
+au-delà            & au-delà            & \pc{25.75} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Crédits non remboursables.} Tous au taux du premier palier
+(\pc{14}). Le montant personnel de base $BPA$ s'applique à chacun ; s'y
+ajoute un \emph{montant combiné} --- personne vivant seule, âge (65~ans et
+plus) et revenus de retraite --- réduit de \pc{18.75} du revenu net
+excédant un seuil :
+\begin{align*}
+\text{combiné} &= \mathrm{(seul)} \times M_{seul}
+ + \mathrm{(65+)} \times M_{âge}
+ + \mathrm{(retraité)} \times \min(r,\, M_{pension}) \\
+\text{combiné réduit} &= \pos{\text{combiné}
+ - 0{,}1875 \times \pos{\text{revenu net} - s}} \\
+\text{impôt} &= \pos{\text{impôt brut}
+ - 0{,}14 \times (BPA + \text{combiné réduit})}
+\end{align*}
+Les cotisations sociales ne donnent pas de crédit au Québec : la déduction
+pour travailleur en tient lieu. Le montant \og personne vivant seule \fg{}
+s'applique aux ménages à un adulte (la famille monoparentale y a droit).
+
+\paragraph{Couples (Québec).} Trois mécanismes s'ajoutent :
+\begin{enumerate}
+  \item l'adulte~1 réclame le montant combiné \emph{des deux} conjoints
+        (âge et pension), réduit de \pc{18.75} du \emph{revenu net
+        familial} (somme des deux revenus nets, prestations non imposables
+        comprises) excédant le seuil ;
+  \item un crédit \emph{non remboursable} pour frais médicaux du couple :
+        $\pos{\text{prime RAMQ} - 0{,}03 \times \text{revenu net
+        familial}} \times \pc{20}$ ;
+  \item le \emph{transfert entre conjoints} : la partie inutilisée des
+        crédits de l'un (quand ses crédits dépassent son impôt brut)
+        réduit l'impôt de l'autre.
+\end{enumerate}
+
+\subsubsection*{Impôt fédéral}
+
+\paragraph{Revenu imposable et revenu net.}
+\begin{align*}
+\text{revenu imposable} &= r + PSV_{imp} - RRQ_{suppl} - D_{garde} \\
+\text{revenu net} &= \text{revenu imposable} + SV_{non\,imp}
+\end{align*}
+où $D_{garde}$ est la déduction fédérale pour frais de garde (poste~6,
+réclamée par le conjoint au revenu le plus faible) et $SV_{non\,imp}$ les
+prestations non imposables (SRG, Allocation) de l'adulte. Il n'y a pas de
+déduction pour travailleur au fédéral.
+
+\paragraph{Impôt brut.} Barème progressif à cinq paliers :
+
+\begin{center}
+\small
+\begin{tabular}{r r c c}
+\toprule
+Tranche 2025 & Tranche 2026 & Taux 2025 & Taux 2026 \\
+\midrule
+jusqu'à \D{57375}  & jusqu'à \D{58523}  & \pc{14.5}\footnotemark & \pc{14} \\
+jusqu'à \D{114750} & jusqu'à \D{117045} & \pc{20.5} & \pc{20.5} \\
+jusqu'à \D{177882} & jusqu'à \D{181440} & \pc{26}   & \pc{26} \\
+jusqu'à \D{253414} & jusqu'à \D{258482} & \pc{29}   & \pc{29} \\
+au-delà            & au-delà            & \pc{33}   & \pc{33} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\footnotetext{Taux de transition : la baisse du taux du premier palier de
+15~\% à 14~\% est entrée en vigueur le 1\ier{}~juillet 2025, d'où un taux
+effectif de 14,5~\% pour l'année 2025 entière.}
+
+\paragraph{Crédits non remboursables.} Tous au taux du premier palier.
+\begin{itemize}
+  \item \emph{Montant personnel de base} $BPA(\cdot)$ : une partie fixe
+        plus une bonification qui s'amenuise linéairement entre deux seuils
+        de revenu net élevés (\D{177882} et \D{253414} en 2025) ;
+  \item \emph{cotisations} : RRQ de base, RQAP et assurance-emploi
+        (postes~1 à 3) ;
+  \item \emph{montant canadien pour emploi} : $\min(\D{1471},\, r)$ en
+        2025 (\D{1501} en 2026), travailleurs seulement ;
+  \item \emph{montant en raison de l'âge} (65~ans et plus) :
+        $\pos{M_{âge} - 0{,}15 \times \pos{\text{revenu net} - s_{âge}}}$,
+        avec $M_{âge} = \D{9028}$ et $s_{âge} = \D{45522}$ en 2025
+        (\D{9208} et \D{46432} en 2026) ;
+  \item \emph{montant pour revenu de pension} : $\min(\D{2000},\, r)$ pour
+        un retraité ;
+  \item \emph{montant pour personne à charge admissible} (famille
+        monoparentale) : un second $BPA$, même mécanique de bonification.
+\end{itemize}
+
+\paragraph{Abattement du Québec.} L'impôt fédéral net est réduit de
+\pc{16.5} pour les résidents du Québec (art.~120(2) LIR) :
+$\text{impôt final} = \text{impôt net} \times 0{,}835$.
+
+\paragraph{Couples (fédéral).} Trois mécanismes :
+\begin{enumerate}
+  \item \emph{montant pour conjoint} : $\pos{BPA - \text{revenu net du
+        conjoint}}$ --- le revenu net du conjoint \emph{inclut} ses
+        prestations non imposables (fiche 110113) ;
+  \item \emph{transfert} de la partie inutilisée des montants d'âge et de
+        pension vers l'autre conjoint (le transfert le plus avantageux
+        l'emporte) ;
+  \item \emph{crédit médical} du couple :
+        $\pos{\text{prime RAMQ} - 0{,}03 \times \text{revenu net}}$,
+        réclamé par le conjoint qui en tire le plus, plafonné à son impôt
+        résiduel.
+\end{enumerate}
+
+\pparams Récapitulatif des montants de crédits :
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+\multicolumn{3}{l}{\emph{Québec}} \\
+Montant personnel de base ($BPA$)        & \D{18571} & \D{18952} \\
+Déduction pour travailleur --- taux      & \pc{6}    & \pc{6} \\
+Déduction pour travailleur --- plafond   & \D{1420}  & \D{1450} \\
+Montant personne vivant seule ($M_{seul}$) & \D{2128} & \D{2172} \\
+Montant en raison de l'âge ($M_{âge}$)   & \D{3906}  & \D{3986} \\
+Montant pour revenus de retraite ($M_{pension}$) & \D{3470} & \D{3541} \\
+Réduction du montant combiné --- taux    & \pc{18.75} & \pc{18.75} \\
+Réduction du montant combiné --- seuil   & \D{42090} & \D{42955} \\
+Crédit médical (couples) --- taux        & \pc{20}   & \pc{20} \\
+\midrule
+\multicolumn{3}{l}{\emph{Fédéral}} \\
+$BPA$ --- partie de base                 & \D{14538} & \D{14829} \\
+$BPA$ --- bonification                   & \D{1591}  & \D{1623} \\
+Montant en raison de l'âge ($M_{âge}$)   & \D{9028}  & \D{9208} \\
+Seuil de réduction du montant d'âge      & \D{45522} & \D{46432} \\
+Montant pour revenu de pension (max)     & \D{2000}  & \D{2000} \\
+Montant canadien pour emploi (max)       & \D{1471}  & \D{1501} \\
+Abattement du Québec                     & \pc{16.5} & \pc{16.5} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Québec : Loi sur les impôts (RLRQ, c.~I-3) ; Revenu Québec.
+Fédéral : Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
+(5\ieme{}~suppl.)), art.~117 (barème), 118 et suivants (crédits), 120(2)
+(abattement) ; Agence du revenu du Canada.

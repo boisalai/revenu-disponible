@@ -1,0 +1,113 @@
+% ===========================================================================
+% Poste 17 — Sécurité de la vieillesse (PSV + SRG + Allocation)
+% ===========================================================================
+\poste{17}{Sécurité de la vieillesse (PSV, SRG et Allocation)}{CA\_psv}
+
+\pdesc Le pilier public fédéral du revenu de retraite : la \emph{pension de
+la Sécurité de la vieillesse} (PSV) pour les 65~ans et plus, le
+\emph{Supplément de revenu garanti} (SRG) pour les aînés à faible revenu,
+un \emph{supplément complémentaire} du SRG (\emph{top-up}) pour les très
+faibles revenus, et l'\emph{Allocation} pour le conjoint de 60 à 64~ans
+d'un prestataire du SRG.
+
+\pobj Garantir un revenu de base à la retraite (PSV, quasi universelle) et
+protéger les aînés à faible revenu (SRG, Allocation), avec récupération
+auprès des plus fortunés.
+
+\pregle Les montants officiels sont révisés \emph{chaque trimestre} ; les
+paramètres annuels du modèle sont la moyenne des quatre barèmes
+trimestriels --- d'où leurs décimales. Quatre composantes :
+
+\begin{enumerate}
+  \item \emph{PSV} (par adulte de 65~ans et plus, sur son revenu
+        individuel $r$) : pension de base $O$, majorée de \pc{10} à
+        75~ans, moins l'impôt de récupération de \pc{15} du revenu
+        (pension comprise) excédant le seuil $S_r$ :
+        \[
+        PSV = \pos{O' - 0{,}15 \times \pos{r + O' - S_r}},
+        \qquad O' = O + \mathrm{(75~ans~et~plus)} \times O_{75}
+        \]
+  \item \emph{SRG} (65~ans et plus) : montant maximal réduit selon le
+        revenu de retraite \emph{combiné} du ménage (excluant la PSV), par
+        tranches entières de 24~\$ (personne seule, taux \pc{50}) ou de
+        48~\$ (couple, taux \pc{25} par conjoint) :
+        \[
+        SRG_{seul} = \pos{G_{seul} - 0{,}50 \times
+        \Bigl\lfloor \tfrac{R}{24} \Bigr\rfloor \times 24}
+        \qquad
+        SRG_{couple} = \pos{G_{couple} - 0{,}25 \times
+        \Bigl\lfloor \tfrac{R}{48} \Bigr\rfloor \times 48}
+        \;\;\text{(par conjoint)}
+        \]
+  \item \emph{Supplément complémentaire} (top-up) : montant additionnel
+        $T$, réduit de \pc{25} du revenu excédant une exemption $E_t$,
+        par tranches arrondies \emph{au plafond} (48~\$ seul, 96~\$
+        couple) :
+        \[
+        topup = \pos{T - 0{,}25 \times
+        \Bigl\lceil \tfrac{\pos{R - E_t}}{t} \Bigr\rceil \times t}
+        \]
+  \item \emph{Allocation} (conjoint de 60--64~ans dont l'autre a 65~ans et
+        plus) : montant maximal $A$ réduit à deux taux --- \pc{75} par
+        tranches de 48~\$ jusqu'au seuil $S_a$ (la portion qui représente
+        la PSV du conjoint), puis \pc{25} par tranches de 24~\$ au-delà.
+\end{enumerate}
+
+\emph{Couple mixte (un conjoint de 65~ans et plus, l'autre de 60 à
+64~ans).} Le conjoint aîné reçoit la PSV et un SRG calculé sur le revenu
+au-delà du seuil de l'Allocation (arrondi à la tranche supérieure de
+48~\$) ; le conjoint cadet reçoit l'Allocation. Si le cadet a moins de
+60~ans, il ne reçoit rien (la PSV de l'aîné demeure).
+
+\emph{Traitement fiscal.} Seule la \emph{pension} (PSV) est imposable. Le
+SRG, le supplément complémentaire et l'Allocation ne le sont pas --- mais
+ils doivent être \emph{inclus dans le revenu net} qui module les crédits
+d'impôt et la prime RAMQ (encadré de la section~\ref{sec:bases}). Le moteur
+expose pour cela la part non imposable de chaque adulte.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre (moyennes annuelles des barèmes trimestriels) & 2025 & 2026 \\
+\midrule
+Pension de base, 65--74 ans ($O$)        & \D{8791.14}  & \D{8966.96} \\
+Supplément de pension, 75 ans et + ($O_{75}$) & \D{879.15} & \D{896.70} \\
+Seuil de récupération de la PSV ($S_r$)  & \D{93454}    & \D{95323} \\
+Taux de récupération                     & \pc{15}      & \pc{15} \\
+\midrule
+SRG maximal --- personne seule ($G_{seul}$)  & \D{11096.85} & \D{11318.79} \\
+SRG maximal --- par conjoint ($G_{couple}$)  & \D{7327.65}  & \D{7474.20} \\
+Tranche de réduction --- seul / couple       & 24 / 48 \$   & 24 / 48 \$ \\
+Taux de réduction --- seul / couple          & 50 / 25 \%   & 50 / 25 \% \\
+\midrule
+Top-up maximal --- seul ($T$)            & \D{2033.97}  & \D{2074.65} \\
+Top-up maximal --- couple                & \D{1152.60}  & \D{1175.65} \\
+Exemption du top-up --- seul ($E_t$)     & \D{2047.99}  & \D{2047.99} \\
+Exemption du top-up --- couple           & \D{4095.99}  & \D{4095.99} \\
+Tranche du top-up --- seul / couple ($t$)& 48 / 96 \$   & 48 / 96 \$ \\
+\midrule
+Allocation maximale ($A$)                & \D{16695.09} & \D{17028.99} \\
+Seuil entre les deux taux ($S_a$)        & \D{11760}    & \D{12000} \\
+Taux de réduction 1 / 2                  & 75 / 25 \%   & 75 / 25 \% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\pnotes Le calculateur officiel comporte, pour le supplément complémentaire
+des couples mixtes, une \emph{asymétrie sans justification économique} : le
+montant versé dépend de la position du conjoint aîné dans le formulaire
+(adulte~1 ou adulte~2) et, dans un cas, de l'âge exact de l'allocataire
+(facteur $\frac12\times$, $1\times$ ou $2\times$). Le moteur reproduit ce
+comportement à l'identique --- documenté comme défaut de la référence ---
+afin de préserver la parité au cent. Le SRG d'un couple mixte est par
+ailleurs calculé sur le revenu diminué du seuil de l'Allocation \emph{moins
+un cent}, autre idiosyncrasie reproduite.
+
+\prefs Loi sur la sécurité de la vieillesse (L.R.C. 1985, ch.~O-9) ; impôt
+de récupération : Loi de l'impôt sur le revenu, art.~180.2 ; Emploi et
+Développement social Canada (montants trimestriels) ; ministère des
+Finances du Québec, \emph{Dépenses fiscales}, fiche 110113 (traitement du
+SRG dans le revenu net).

@@ -1,0 +1,74 @@
+% ===========================================================================
+% Poste 5 — RAMQ
+% ===========================================================================
+\poste{5}{Prime au régime public d'assurance médicaments (RAMQ)}{QC\_ramq}
+
+\pdesc Prime annuelle du régime public d'assurance médicaments, payée à la
+déclaration de revenus (annexe~K) par les adultes qui ne sont pas couverts
+par une assurance collective privée. Le modèle présume la couverture
+publique pour tous les adultes.
+
+\pobj Financer l'accès aux médicaments d'ordonnance des personnes sans
+régime privé, selon la capacité de payer du ménage.
+
+\pregle La prime d'un adulte dépend du \emph{revenu familial net} du ménage
+(équation~\ref{eq:rfn}). On calcule d'abord la base cotisable, c'est-à-dire
+l'excédent du $\RFN$ sur le seuil d'exonération $X$, lequel varie selon le
+nombre d'adultes et d'enfants :
+\[
+b = \pos{\RFN - X(\text{adultes},\, \text{enfants})}
+\]
+puis la prime par adulte, à deux taux (un sur les premiers \D{5000} de base,
+un sur l'excédent), plafonnée à la prime maximale $P$ :
+\[
+\text{prime par adulte} = \min\bigl(\tau_1 \times \min(5\,000,\, b)
+ + \tau_2 \times \pos{b - 5\,000},\; P\bigr)
+\]
+Les couples utilisent un barème à taux réduits de moitié environ, mais
+\emph{chacun des deux adultes} paie la prime : le ménage paie donc
+$2 \times$ la prime par adulte. Le total est arrondi au cent.
+
+\emph{Exonérations individuelles.} Un adulte ne paie aucune prime s'il
+remplit l'une des conditions suivantes, vérifiées par l'orchestrateur
+(poste~20) :
+\begin{itemize}
+  \item il reçoit une aide financière de dernier recours (poste~13) ;
+  \item il a 65 ans ou plus et reçoit un Supplément de revenu garanti au
+        moins égal à \pc{94} du SRG maximal de sa situation (poste~17).
+\end{itemize}
+
+\pparams Le barème (taux et prime maximale) change le 1\ier{} juillet ; les
+seuils d'exonération sont indexés au 1\ier{} janvier. Le modèle applique,
+pour l'année civile $Y$, le barème de la période tarifaire en cours au
+1\ier{}~janvier (débutée en juillet $Y{-}1$) et les seuils indexés de
+l'année $Y$ --- c'est la convention du calculateur officiel.
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Prime maximale par adulte ($P$)            & \D{744}   & \D{766} \\
+Taux, 1 adulte --- 1\iere{} tranche ($\tau_1$) & \pc{7.65} & \pc{7.84} \\
+Taux, 1 adulte --- 2\ieme{} tranche ($\tau_2$) & \pc{11.48} & \pc{11.76} \\
+Taux, couple --- 1\iere{} tranche          & \pc{3.84} & \pc{3.93} \\
+Taux, couple --- 2\ieme{} tranche          & \pc{5.75} & \pc{5.89} \\
+\midrule
+Exonération, 1 adulte --- 0 enfant         & \D{19890} & \D{20290} \\
+Exonération, 1 adulte --- 1 enfant         & \D{32240} & \D{32890} \\
+Exonération, 1 adulte --- 2 enfants et +   & \D{36460} & \D{37195} \\
+Exonération, couple --- 0 enfant           & \D{32240} & \D{32890} \\
+Exonération, couple --- 1 enfant           & \D{36460} & \D{37195} \\
+Exonération, couple --- 2 enfants et +     & \D{40360} & \D{41175} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\pnotes Les seuils 2026 sont les seuils indexés utilisés par le calculateur
+officiel ; l'annexe~K 2026 n'étant pas encore publiée au moment de la
+vérification, ils sont marqués \og à reconfirmer \fg{} dans le code source.
+
+\prefs Loi sur l'assurance médicaments (RLRQ, c.~A-29.01), art.~10, 23 et
+24 ; déclaration TP-1, annexe~K et ligne 447 ; Revenu Québec ; RAMQ (tarifs
+et exonérations).

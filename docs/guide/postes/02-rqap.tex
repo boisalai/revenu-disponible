@@ -1,0 +1,50 @@
+% ===========================================================================
+% Poste 2 — RQAP
+% ===========================================================================
+\poste{2}{Régime québécois d'assurance parentale (RQAP)}{QC\_rqap}
+
+\pdesc Cotisation sur le revenu de travail finançant les prestations de
+maternité, de paternité, parentales et d'adoption du régime québécois.
+
+\pobj Soutenir financièrement les parents à la naissance ou à l'adoption
+d'un enfant, en remplaçant une partie de leur revenu pendant le congé.
+
+\pregle Contrairement au RRQ, le RQAP ne comporte \emph{aucune exemption} :
+dès que le revenu assurable dépasse le seuil minimal $s$, la cotisation
+s'applique au \emph{plein} revenu, plafonné au maximum assurable $M$ :
+\[
+\text{cotisation} =
+\begin{cases}
+0 & \text{si } r \le s \\
+\tau \times \min(r,\, M) & \text{sinon}
+\end{cases}
+\]
+où $\tau$ est le taux de cotisation (part de l'employé). La cotisation du
+ménage est la somme des cotisations des adultes ; les ménages retraités ne
+cotisent pas. À l'impôt fédéral, la cotisation RQAP donne droit à un crédit
+non remboursable (poste~19).
+
+\emph{Point de contrôle.} Cotisation maximale 2025 :
+$0{,}00494 \times \D{98000} = \D{484.12}$ ; 2026 :
+$0{,}0043 \times \D{103000} = \D{442.90}$.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Revenu maximal assurable ($M$)      & \D{98000}   & \D{103000} \\
+Revenu assurable minimal ($s$)      & \D{2000}    & \D{2000} \\
+Taux de cotisation ($\tau$)         & \pc{0.494}  & \pc{0.430} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La baisse du taux en 2026 (de \pc{0.494} à \pc{0.430}) est le second
+allègement de cotisation visible dans l'écart 2025--2026.
+
+\prefs Loi sur l'assurance parentale (RLRQ, c.~A-29.011) ; Conseil de
+gestion de l'assurance parentale ; Revenu Québec.

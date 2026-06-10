@@ -1,0 +1,53 @@
+% ===========================================================================
+% Poste 8 — Prime au travail
+% ===========================================================================
+\poste{8}{Prime au travail}{QC\_pt}
+
+\pdesc Crédit d'impôt remboursable québécois qui bonifie le revenu des
+travailleurs à faible ou moyen revenu. C'est l'un des deux grands
+\og suppléments au travail \fg{} du système, avec l'Allocation canadienne
+pour les travailleurs (poste~16).
+
+\pobj Inciter au travail et soutenir la transition de l'aide sociale vers
+l'emploi : la prime croît avec les premiers dollars gagnés, précisément là
+où l'aide sociale se retire.
+
+\pregle La prime a un profil en \og tente \fg{} : une phase de croissance
+assise sur le revenu de \emph{travail}, une phase de réduction assise sur le
+revenu \emph{familial net}. Quatre jeux de paramètres existent selon le type
+de ménage (1 ou 2 adultes $\times$ sans ou avec enfants) :
+\begin{align*}
+\text{croissance} &= \min\bigl(\tau_c \times \pos{R_{trav} - e},\; P\bigr) \\
+\text{réduction}  &= 0{,}10 \times \pos{\RFN - s} \\
+\text{prime} &= \pos{\text{croissance} - \text{réduction}}
+\end{align*}
+où $e$ est le revenu de travail exclu, $\tau_c$ le taux de croissance, $P$
+la prime maximale et $s$ le seuil de réduction. On notera que
+$P = (s - e) \times \tau_c$ : la prime atteint son maximum exactement
+lorsque le revenu de travail touche le seuil de réduction. Le résultat est
+arrondi au cent.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r r r}
+\toprule
+& \multicolumn{2}{c}{2025} & \multicolumn{2}{c}{2026} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Paramètre & 1 adulte & 2 adultes & 1 adulte & 2 adultes \\
+\midrule
+Revenu de travail exclu ($e$)         & \D{2400} & \D{3600} & \D{2400} & \D{3600} \\
+Taux de croissance --- sans enfants   & \pc{11.6} & \pc{11.6} & \pc{11.6} & \pc{11.6} \\
+Taux de croissance --- avec enfants   & \pc{30}  & \pc{25}  & \pc{30}  & \pc{25} \\
+Prime maximale --- sans enfants       & \D{1185.52} & \D{1848.34} & \D{1207.33} & \D{1882.45} \\
+Prime maximale --- avec enfants       & \D{3066} & \D{3983.50} & \D{3122.40} & \D{4057} \\
+Seuil de réduction ($s$)              & \D{12620} & \D{19534} & \D{12808} & \D{19828} \\
+Taux de réduction                     & \pc{10}  & \pc{10}  & \pc{10}  & \pc{10} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur les impôts (RLRQ, c.~I-3), art.~1029.8.116.1 à
+1029.8.116.11 ; Revenu Québec ; ministère des Finances du Québec,
+\emph{Paramètres du régime d'imposition}.

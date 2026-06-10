@@ -1,0 +1,52 @@
+% ===========================================================================
+% Poste 3 — Assurance-emploi
+% ===========================================================================
+\poste{3}{Assurance-emploi (AE)}{CA\_ae}
+
+\pdesc Cotisation fédérale sur le revenu d'emploi finançant les prestations
+en cas de perte d'emploi. Le Québec bénéficie d'un \emph{taux réduit}, car
+son régime parental (RQAP, poste~2) remplace les prestations de maternité et
+parentales fédérales.
+
+\pobj Offrir un revenu temporaire aux personnes qui perdent leur emploi.
+
+\pregle Même structure que le RQAP --- pas d'exemption, un seuil et un
+plafond :
+\[
+\text{cotisation} =
+\begin{cases}
+0 & \text{si } r \le s \\
+\tau \times \min(r,\, MRA) & \text{sinon}
+\end{cases}
+\]
+où $MRA$ est le maximum de la rémunération assurable et $\tau$ le taux
+réduit du Québec (part de l'employé). Le seuil $s$ reproduit l'article
+96(4) de la \emph{Loi sur l'assurance-emploi} : la personne dont la
+rémunération assurable de l'année est de \D{2000} ou moins obtient le
+remboursement de ses cotisations --- le modèle les met directement à zéro.
+La cotisation du ménage est la somme des cotisations des adultes ; les
+retraités ne cotisent pas. Au fédéral, la cotisation AE donne droit à un
+crédit non remboursable (poste~19).
+
+\emph{Point de contrôle.} Cotisation maximale 2025 :
+$0{,}0131 \times \D{65700} = \D{860.67}$ ; 2026 :
+$0{,}013 \times \D{68900} = \D{895.70}$.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Maximum de la rémunération assurable ($MRA$) & \D{65700} & \D{68900} \\
+Seuil de remboursement ($s$)                 & \D{2000}  & \D{2000} \\
+Taux de cotisation, Québec ($\tau$)          & \pc{1.31} & \pc{1.30} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur l'assurance-emploi (L.C. 1996, ch.~23), art.~4 (maximum),
+66 (taux), 69(2) (réduction pour régime provincial) et 96(4)
+(remboursement) ; Service Canada ; Bureau de l'actuaire en chef (BSIF).

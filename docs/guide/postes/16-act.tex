@@ -1,0 +1,70 @@
+% ===========================================================================
+% Poste 16 — Allocation canadienne pour les travailleurs
+% ===========================================================================
+\poste{16}{Allocation canadienne pour les travailleurs (ACT)}{CA\_pfrt}
+
+\pdesc Crédit fédéral remboursable qui bonifie le revenu des travailleurs à
+faible revenu. Le Québec ayant sa propre prime au travail (poste~8), l'ACT y
+est \emph{reconfigurée} par entente Canada--Québec : ses paramètres
+québécois diffèrent de ceux du reste du pays.
+
+\pobj Encourager et récompenser le travail chez les personnes à faible
+revenu --- le pendant fédéral de la prime au travail québécoise.
+
+\pregle Profil en tente, comme la prime au travail, avec deux différences
+notables : le taux d'accumulation est beaucoup plus élevé (jusqu'à
+\pc{37.3}) et la réduction s'applique à l'$\AFNI$ \emph{diminué d'une
+exemption sur le revenu du second conjoint}. Quatre jeux de paramètres
+selon le type de ménage (1 ou 2 adultes $\times$ sans ou avec enfants) :
+\begin{align*}
+\text{accumulation} &= \min\bigl(\tau_a \times \pos{R_{trav} - e},\; P\bigr) \\
+\text{exemption} &= \min\bigl(X,\; r_{\min}^{net}\bigr) \\
+\text{réduction} &= 0{,}20 \times \pos{(\AFNI - \text{exemption}) - s} \\
+ACT &= \pos{\text{accumulation} - \text{réduction}}
+\end{align*}
+où $e$ est le revenu de travail exclu, $r_{\min}^{net}$ le revenu de
+travail du conjoint le moins payé \emph{net de sa cotisation RRQ
+supplémentaire} (zéro si un seul adulte), et $X$ le plafond de l'exemption
+du second revenu. Le résultat est arrondi au cent.
+
+Deux interactions méritent attention : (1)~l'$\AFNI$ \emph{inclut l'aide
+sociale} (poste~13) --- un dollar d'aide sociale peut réduire l'ACT de
+20~cents ; (2)~l'accumulation porte sur le revenu de travail \emph{brut},
+mais l'exemption du second revenu sur le revenu \emph{net} de la cotisation
+RRQ supplémentaire, distinction reproduite du calculateur officiel. Les
+ménages retraités n'y ont pas droit (aucun revenu de travail).
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r r r}
+\toprule
+& \multicolumn{2}{c}{2025} & \multicolumn{2}{c}{2026} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Paramètre & 1 adulte & 2 adultes & 1 adulte & 2 adultes \\
+\midrule
+Revenu de travail exclu ($e$)        & \D{2400} & \D{3600} & \D{2400} & \D{3600} \\
+Taux d'accumulation --- sans enfants ($\tau_a$) & \pc{37.3} & \pc{37.3} & \pc{37.3} & \pc{37.3} \\
+Taux d'accumulation --- avec enfants & \pc{20}  & \pc{23.9} & \pc{20}  & \pc{23.9} \\
+Maximum --- sans enfants ($P$)       & \D{3812.06} & \D{5943.38} & \D{3882.18} & \D{6053.04} \\
+Maximum --- avec enfants             & \D{2044} & \D{3808.23} & \D{2081.60} & \D{3878.49} \\
+Seuil de réduction --- sans enfants ($s$) & \D{14170.05} & \D{21787.19} & \D{14484.06} & \D{22268.97} \\
+Seuil de réduction --- avec enfants  & \D{14341.56} & \D{22007.75} & \D{14644.79} & \D{22477.43} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\begin{tabular}{l r r}
+\toprule
+Paramètres communs & 2025 & 2026 \\
+\midrule
+Taux de réduction           & \pc{20}   & \pc{20} \\
+Exemption du second revenu ($X$) & \D{16386} & \D{16714} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
+(5\ieme{}~suppl.)), art.~122.7 ; reconfiguration pour le Québec par entente
+Canada--Québec ; Agence du revenu du Canada (montants propres au Québec).

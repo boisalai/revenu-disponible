@@ -1,0 +1,54 @@
+% ===========================================================================
+% Poste 20 — Revenu disponible (orchestrateur)
+% ===========================================================================
+\poste{20}{Le revenu disponible (orchestrateur)}{RD}
+
+\pdesc Le dernier poste n'est pas un programme, mais l'\emph{orchestrateur}
+du moteur : à partir des seules entrées brutes (situation, revenus, âges,
+enfants), il enchaîne les postes 1 à 19 dans l'ordre des dépendances
+(section~\ref{sec:architecture}), reconstruit les bases de revenu
+intermédiaires et agrège le tout.
+
+\pobj Produire le revenu disponible et sa décomposition complète --- le
+résultat que l'application affiche.
+
+\pregle L'enchaînement, pas à pas :
+\begin{enumerate}
+  \item \emph{Cotisations sur le revenu} : RRQ, RQAP, AE (actifs) ; FSS
+        (retraités) --- postes 1 à 4 ;
+  \item \emph{Postes-feuilles} : Sécurité de la vieillesse (poste~17) et
+        aide de dernier recours (poste~13, qui consomme les cotisations) ;
+  \item \emph{Bases intermédiaires} : $\RFN$, $\AFNI$ et $\RAL$
+        (équations~\ref{eq:rfn} à~\ref{eq:ral}) ;
+  \item \emph{Prime RAMQ} (poste~5) sur le $\RFN$, avec exonération
+        individuelle si l'adulte reçoit l'aide sociale ou un SRG d'au
+        moins \pc{94} du maximum ;
+  \item \emph{Impôts} (poste~19), qui reçoivent la prime RAMQ (crédit
+        médical des couples) et la déduction fédérale pour frais de
+        garde ;
+  \item \emph{Transferts} : Allocation famille et fournitures scolaires,
+        prime au travail, solidarité, allocation-logement, soutien aux
+        aînés, crédit de frais de garde (sur le $\RFN$) ; ACE, crédit TPS,
+        ACT (sur l'$\AFNI$) ;
+  \item \emph{Agrégation} :
+        \[
+        RD = R - C + T_{QC} - I_{QC} + T_{CA} - I_{CA} - G
+        \]
+        soit l'équation~\ref{eq:rd}, arrondie au cent.
+\end{enumerate}
+
+L'orchestrateur expose, outre le revenu disponible : les six composantes de
+l'équation, le \emph{détail des dix-neuf postes} (chaque montant
+individuel) et les trois bases intermédiaires --- c'est ce détail que
+l'application affiche et que la suite de tests confronte au calculateur
+officiel, ligne par ligne.
+
+\pparams Ce poste n'a pas de paramètres propres : il consomme ceux des
+postes 1 à 19. L'application permet d'ailleurs de \emph{modifier} n'importe
+lequel de ces paramètres (page \emph{Comparer des paramètres},
+section~\ref{sec:manuel}) : le moteur accepte un jeu de paramètres complet
+en entrée, les valeurs officielles n'étant que le préréglage par défaut.
+
+\prefs L'ensemble des références des postes 1 à 19 ; ministère des
+Finances du Québec, calculateur officiel du revenu disponible (outil de
+validation).

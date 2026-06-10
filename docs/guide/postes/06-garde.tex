@@ -1,0 +1,96 @@
+% ===========================================================================
+% Poste 6 — Frais de garde (crédit QC + déduction fédérale + coût)
+% ===========================================================================
+\poste{6}{Frais de garde d'enfants (crédit, déduction et coût)}{QC\_garde, Frais\_garde}
+
+\pdesc Les frais de garde payés par le ménage ont \emph{trois} effets sur le
+revenu disponible : un crédit d'impôt remboursable au Québec (sur les frais
+\emph{non subventionnés} seulement), une déduction au fédéral (sur tous les
+frais) et, bien sûr, le coût lui-même, soustrait du revenu disponible.
+
+\pobj Soutenir les parents qui travaillent ou étudient en remboursant une
+part substantielle des frais de garde --- le crédit québécois complète la
+place subventionnée à contribution réduite en couvrant la garde non
+subventionnée.
+
+\paragraph{Règle de calcul --- 1) crédit d'impôt remboursable du Québec.}
+Le taux du crédit
+$\tau(\RFN)$ décroît par paliers de \pc{78} à \pc{67} selon le revenu
+familial net (tableau ci-dessous). Les frais admissibles sont les frais
+\emph{non subventionnés}, bornés par un plafond qui dépend de l'âge de
+l'enfant ; le plafonnement est \emph{agrégé} sur la famille :
+\[
+\text{crédit} = \tau(\RFN) \times
+\min\Bigl(\sum_{e \,:\, f_e > 0} p(\text{âge}_e),\;\; \sum_e f_e\Bigr)
+\]
+où $f_e$ est le total des frais non subventionnés de l'enfant $e$ et
+$p(\text{âge})$ son plafond annuel : le plafond \og jeune \fg{}
+(\D{12275} en 2025, \D{12525} en 2026) si l'âge est de 5~ans ou moins, le
+plafond \og autre enfant admissible \fg{} (\D{6180} / \D{6305}) jusqu'à
+l'âge d'admissibilité, zéro au-delà. L'âge limite passe de 16~ans (2025) à
+14~ans (2026), resserrement annoncé du programme.
+
+\paragraph{Règle de calcul --- 2) déduction fédérale pour frais de garde.}
+Tous les frais payés (subventionnés ou non) sont déductibles au fédéral,
+dans une triple limite :
+\[
+D_{garde} = \min\Bigl(\sum_e f_e^{tot},\;\;
+\sum_{e \,:\, f^{tot}_e > 0} p^{féd}(\text{âge}_e),\;\;
+\tfrac{2}{3} \times r_{\min}\Bigr)
+\]
+où $p^{féd}$ vaut \D{8000} (âge $\le 5$), \D{5000} (6 à 15~ans) ou zéro
+(16~ans et plus), et $r_{\min}$ est le revenu de travail du conjoint le
+moins payé (celui qui doit réclamer la déduction). $D_{garde}$ réduit le
+revenu imposable fédéral \emph{et} l'$\AFNI$
+(équation~\ref{eq:afni}) --- il augmente donc l'Allocation canadienne pour
+enfants et le crédit TPS en plus de réduire l'impôt fédéral.
+
+\paragraph{Règle de calcul --- 3) coût.} Le total des frais payés,
+subventionnés et non subventionnés, est soustrait du revenu disponible
+(terme $G$ de l'équation~\ref{eq:rd}).
+
+\pparams Barème du taux du crédit québécois selon le revenu familial net :
+
+\begin{center}
+\small
+\begin{tabular}{r r c}
+\toprule
+$\RFN \le$ (2025) & $\RFN \le$ (2026) & Taux \\
+\midrule
+\D{24795}  & \D{25305}  & \pc{78} \\
+\D{43725}  & \D{44620}  & \pc{75} \\
+\D{45340}  & \D{46270}  & \pc{74} \\
+\D{46970}  & \D{47935}  & \pc{73} \\
+\D{48570}  & \D{49565}  & \pc{72} \\
+\D{50195}  & \D{51225}  & \pc{71} \\
+\D{119835} & \D{122290} & \pc{70} \\
+au-delà    & au-delà    & \pc{67} \\
+\bottomrule
+\end{tabular}
+\hspace{2em}
+\begin{tabular}{l r r}
+\toprule
+Plafonds & 2025 & 2026 \\
+\midrule
+Crédit QC --- enfant de 5 ans ou moins & \D{12275} & \D{12525} \\
+Crédit QC --- autre enfant admissible  & \D{6180}  & \D{6305} \\
+Crédit QC --- âge limite (exclusif)    & 16 ans    & 14 ans \\
+Déduction féd. --- âge $\le 5$         & \D{8000}  & \D{8000} \\
+Déduction féd. --- 6 à 15 ans          & \D{5000}  & \D{5000} \\
+Déduction féd. --- borne de revenu     & $2/3 \times r_{\min}$ & $2/3 \times r_{\min}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\pnotes Deux choix du calculateur officiel sont reproduits par fidélité :
+(1)~le seuil \og jeune \fg{} est l'âge $\le 5$, alors que la règle légale
+vise l'enfant \og de moins de 7~ans \fg{} (âge $\le 6$) --- divergence d'un
+an ; (2)~le plafonnement est \emph{agrégé} (somme des plafonds contre somme
+des frais) plutôt qu'enfant par enfant, ce qui peut surévaluer les frais
+admissibles quand un enfant dépasse son plafond et qu'un autre est en deçà.
+Le plafond majoré pour enfant handicapé n'est pas modélisé.
+
+\prefs Loi sur les impôts (RLRQ, c.~I-3), art.~1029.8.67 et suivants ;
+déclaration TP-1, annexe~C ; Revenu Québec. Fédéral : Loi de l'impôt sur le
+revenu (L.R.C. 1985, ch.~1 (5\ieme{}~suppl.)), art.~63 ; formulaire T778 ;
+ARC.

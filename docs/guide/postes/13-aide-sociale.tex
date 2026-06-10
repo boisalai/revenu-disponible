@@ -1,0 +1,70 @@
+% ===========================================================================
+% Poste 13 — Aide de dernier recours
+% ===========================================================================
+\poste{13}{Aide de dernier recours (aide sociale)}{QC\_adr}
+
+\pdesc Prestation mensuelle du programme d'aide sociale, versée aux
+personnes et familles sans ressources suffisantes. C'est un
+\emph{poste-intrant} : son montant entre dans le revenu familial net et
+l'AFNI (équations~\ref{eq:rfn} et~\ref{eq:afni}) et déclenche l'exonération
+de la prime RAMQ --- l'aide sociale alimente donc plusieurs autres postes.
+
+\pobj Garantir un revenu minimal de subsistance (couverture des besoins de
+base), tout en préservant une incitation au travail par l'exemption
+partielle des gains.
+
+\pregle Le calcul est mensuel, puis annualisé ($\times 12$). La prestation
+est \emph{nulle dès qu'un adulte du ménage a 65~ans ou plus} (le système
+bascule alors vers la Sécurité de la vieillesse, poste~17).
+
+\begin{enumerate}
+  \item \emph{Prestation de base mensuelle} : montant selon la composition
+        ($b_{seul}$ ou $b_{couple}$), plus \emph{un seul} des ajustements
+        suivants (par ordre de priorité) :
+        \begin{itemize}
+          \item les deux conjoints ont 58~ans et plus : $+\D{285}$ (2025) ;
+          \item un adulte a 58~ans et plus, \emph{ou} le ménage est une
+                famille monoparentale avec un enfant de moins de 5~ans
+                (contrainte temporaire à l'emploi) : $+\D{166}$ (2025) ;
+          \item adulte seul de moins de 50~ans sans enfant : $+\D{50}$.
+        \end{itemize}
+  \item \emph{Revenu compté}. Les \emph{gains de travail}, nets des
+        cotisations (RRQ, RQAP, AE), bénéficient d'une exemption mensuelle
+        $x$ (\D{200} seul, \D{300} couple) :
+        $g = \pos{R_{net}/12 - x}$. Les revenus \emph{autres} --- la
+        pension d'un retraité de moins de 65~ans, par exemple --- sont
+        comptés \emph{au complet}, sans exemption : $c = g + A/12$ ;
+  \item \emph{Prestation nette} : $p = \pos{b - c}$ ;
+  \item \emph{Incitation au travail} : si la prestation nette est positive,
+        \pc{25} des gains de travail comptés sont remboursés :
+        $i = 0{,}25 \times g$ si $p > 0$, sinon $0$ ;
+  \item \emph{Montant annuel} : $QC_{adr} = 12 \times (p + i)$.
+\end{enumerate}
+
+L'effet de l'incitation est visible dans le graphique des taux marginaux de
+l'application : sur la plage où l'aide se retire, chaque dollar de travail
+net ne réduit la prestation que de 75~cents.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre (mensuel) & 2025 & 2026 \\
+\midrule
+Prestation de base --- 1 adulte ($b_{seul}$)    & \D{829}  & \D{845} \\
+Prestation de base --- couple ($b_{couple}$)    & \D{1258} & \D{1283} \\
+Ajustement --- un adulte 58 ans et + (ou contrainte temporaire) & \D{166} & \D{169} \\
+Ajustement --- deux adultes 58 ans et +         & \D{285}  & \D{291} \\
+Ajustement --- adulte seul de moins de 50 ans   & \D{50}   & \D{50} \\
+Exemption de gains --- 1 adulte ($x$)           & \D{200}  & \D{200} \\
+Exemption de gains --- couple ($x$)             & \D{300}  & \D{300} \\
+Incitation au travail (part des gains exemptée) & \pc{25}  & \pc{25} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur l'aide aux personnes et aux familles (RLRQ, c.~A-13.1.1) et
+son règlement ; ministère de l'Emploi et de la Solidarité sociale
+(barèmes publiés sur quebec.ca).

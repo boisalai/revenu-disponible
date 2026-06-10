@@ -1,0 +1,75 @@
+% ===========================================================================
+% Poste 10 — Allocation-logement
+% ===========================================================================
+\poste{10}{Programme Allocation-logement}{QC\_al}
+
+\pdesc Aide mensuelle de la Société d'habitation du Québec, administrée par
+Revenu Québec, pour les ménages à faible revenu qui consacrent une part
+excessive de leur revenu au logement. Sont admissibles les ménages dont un
+adulte a 50~ans ou plus, ou qui comptent au moins un enfant à charge.
+
+\pobj Réduire le fardeau du logement des ménages à faible revenu --- aînés
+et familles --- sans passer par le logement social.
+
+\pregle Le programme réel calcule un \emph{taux d'effort} : la part du
+revenu consacrée au loyer. Le calculateur ne demandant pas le loyer, le
+modèle l'\emph{impute} selon la composition du ménage (voir Notes). Le
+calcul, fidèle au calculateur officiel :
+\begin{enumerate}
+  \item admissibilité : un adulte de 50~ans ou plus, \emph{ou} $n \ge 1$ ;
+  \item taux d'effort, arrondi à quatre décimales :
+        $\varepsilon = (loyer \times 12) / \RAL$, où $\RAL$ est le revenu
+        ajusté de l'équation~\ref{eq:ral} ;
+  \item montant mensuel selon le palier d'effort :
+        \[
+        m = \begin{cases}
+        0 & \varepsilon < \pc{30} \\
+        \D{100} & \pc{30} \le \varepsilon < \pc{50} \\
+        \D{150} & \pc{50} \le \varepsilon < \pc{80} \\
+        \D{170} & \varepsilon \ge \pc{80}
+        \end{cases}
+        \]
+  \item réduction \emph{dollar pour dollar} du revenu excédant le seuil
+        $s$ (selon la composition) :
+        \[
+        AL = \pos{12 \times m - \pos{\RAL - s}}
+        \]
+\end{enumerate}
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Seuil --- 1 adulte, 0 enfant ($s$)        & \D{22400} & \D{22900} \\
+Seuil --- 2 adultes, 0 enfant             & \D{31500} & \D{32100} \\
+Seuil --- 1 ad.\ 1--2 enf.\ ; 2 ad.\ 1 enf. & \D{38700} & \D{39500} \\
+Seuil --- 1 ad.\ 3+ enf.\ ; 2 ad.\ 2+ enf.  & \D{44600} & \D{45500} \\
+Montant mensuel --- effort 30 à 50 \%     & \D{100}   & \D{100} \\
+Montant mensuel --- effort 50 à 80 \%     & \D{150}   & \D{150} \\
+Montant mensuel --- effort 80 \% et +     & \D{170}   & \D{170} \\
+Âge d'admissibilité (sans enfant)         & 50 ans    & 50 ans \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Loyers mensuels imputés par le modèle (non indexés en 2026) : 1 adulte sans
+enfant \D{856} ; 1 adulte avec 1 enfant ou couple sans enfant \D{1002} ;
+1 adulte 2 enfants ou couple 1 enfant \D{1131} ; compositions plus grandes
+\D{1380}.
+
+\pnotes (1)~Le loyer imputé est un choix de modélisation hérité du
+calculateur officiel, non une règle du programme --- le programme réel
+utilise le loyer déclaré. (2)~Pour les aînés, le revenu $\RAL$ retranche du
+revenu familial net une fraction des pensions (facteur $f$ de
+l'équation~\ref{eq:ral}, extrait du calculateur officiel). (3)~Le seuil
+couple sans enfant 2026 (\D{32100}) diffère de \D{100} de celui publié par
+la chaire en fiscalité (CFFP, \D{32200}) ; la valeur du calculateur
+officiel est retenue.
+
+\prefs Programme établi en vertu de la Loi sur la Société d'habitation du
+Québec (RLRQ, c.~S-8), paramètres fixés par décret ; administré par Revenu
+Québec ; Société d'habitation du Québec.

@@ -1,0 +1,48 @@
+% ===========================================================================
+% Poste 18 — Supplément remboursable pour frais médicaux (fédéral)
+% ===========================================================================
+\poste{18}{Supplément remboursable pour frais médicaux (fédéral)}{CA\_medic}
+
+\pdesc Pendant fédéral du poste~12 : un crédit remboursable (ligne 45200)
+pour les travailleurs à faible revenu ayant des frais médicaux élevés.
+\textbf{Comme au poste~12, ce poste vaut toujours zéro dans le modèle} ---
+la seule dépense médicale disponible (la prime RAMQ) ne franchit jamais le
+plancher des frais admissibles.
+
+\pobj Rembourser une partie des frais médicaux des travailleurs modestes,
+même lorsqu'ils paient peu ou pas d'impôt.
+
+\pregle Structure officielle, telle que codée :
+\begin{enumerate}
+  \item admissibilité : revenu de travail d'au moins $r_{min}$ ;
+  \item plancher des frais : $\min(0{,}03 \times \text{revenu net},\; p)$
+        (ligne 33200) ; frais admissibles
+        $F_a = \pos{F - \text{plancher}}$ ;
+  \item supplément avant réduction :
+        $c = \min(0{,}25 \times F_a,\; c_{max})$ ;
+  \item réduction : $\pos{c - 0{,}05 \times \pos{\AFNI - s}}$ --- la forme
+        de réduction est ici \emph{correcte} (contrairement à l'anomalie
+        du poste~12 québécois), et la base de réduction est l'$\AFNI$,
+        comme pour l'ACE, le crédit TPS et l'ACT.
+\end{enumerate}
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Taux du supplément                  & \pc{25}   & \pc{25} \\
+Supplément maximal ($c_{max}$)      & \D{1504}  & \D{1534} \\
+Revenu de travail minimal ($r_{min}$) & \D{4390} & \D{4478} \\
+Plafond du plancher de 3 \% ($p$)   & \D{2834}  & \D{2890} \\
+Seuil de réduction ($s$)            & \D{33294} & \D{33960} \\
+Taux de réduction                   & \pc{5}    & \pc{5} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
+(5\ieme{}~suppl.)), art.~122.51 ; Agence du revenu du Canada, ligne 45200.

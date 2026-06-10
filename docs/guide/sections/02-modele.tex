@@ -1,0 +1,97 @@
+% ===========================================================================
+% §2 — Le modèle : définition, situations, entrées, hypothèses
+% ===========================================================================
+\section{Le modèle : périmètre et entrées}
+\label{sec:modele}
+
+\subsection{Définition du revenu disponible}
+
+Le \textbf{revenu disponible} (RD) d'un ménage est ce qui lui reste pour
+consommer et épargner une fois le système socio-fiscal traversé :
+
+\begin{equation}
+\label{eq:rd}
+RD \;=\; \underbrace{R}_{\substack{\text{revenu de travail}\\\text{ou de retraite}}}
+\;-\; \underbrace{C}_{\text{cotisations}}
+\;+\; \underbrace{T_{QC}}_{\substack{\text{transferts}\\\text{québécois}}}
+\;-\; \underbrace{I_{QC}}_{\substack{\text{impôt}\\\text{québécois}}}
+\;+\; \underbrace{T_{CA}}_{\substack{\text{transferts}\\\text{fédéraux}}}
+\;-\; \underbrace{I_{CA}}_{\substack{\text{impôt}\\\text{fédéral}}}
+\;-\; \underbrace{G}_{\substack{\text{frais de garde}\\\text{payés}}}
+\end{equation}
+
+Tous les montants sont \textbf{annuels} et exprimés en dollars courants de
+l'année simulée (2025 ou 2026). Le modèle calcule chaque terme de
+l'équation~\eqref{eq:rd} à partir d'un petit nombre d'entrées décrivant le
+ménage, puis présente la décomposition complète.
+
+\subsection{Les cinq situations types}
+
+Le modèle reprend les cinq situations du calculateur officiel du MFQ. Chacune
+fixe le nombre d'adultes et la nature du revenu saisi :
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{l c c l}
+\toprule
+Situation & Adultes & Enfants & Revenu saisi \\
+\midrule
+Personne vivant seule        & 1 & ---        & travail \\
+Famille monoparentale        & 1 & 1 à 5      & travail \\
+Couple                       & 2 & 0 à 5      & travail (deux revenus) \\
+Retraité vivant seul         & 1 & ---        & retraite (pension privée) \\
+Couple de retraités          & 2 & ---        & retraite (deux pensions) \\
+\bottomrule
+\end{tabular}
+\caption{Les cinq situations du modèle. Pour les ménages \og retraités \fg{},
+le revenu saisi est un revenu de pension privée (régime d'employeur, FERR,
+rente), auquel le modèle ajoute lui-même la pension fédérale de la Sécurité
+de la vieillesse et ses suppléments (poste~17).}
+\label{tab:situations}
+\end{table}
+
+\subsection{Les entrées}
+
+\begin{itemize}
+  \item \textbf{Revenu brut} de chaque adulte (travail ou retraite selon la
+        situation), de 0 à \D{200000} dans l'interface ;
+  \item \textbf{Âge} de chaque adulte --- il commande l'accès à plusieurs
+        programmes (aide sociale ajustée à 58 ans, allocation-logement à
+        50 ans, Sécurité de la vieillesse à 65 ans, soutien aux aînés à
+        70 ans, supplément de PSV à 75 ans) ;
+  \item \textbf{Enfants} (0 à 5) : pour chacun, l'âge, les frais de garde
+        annuels payés (plafonnés à \D{15000} par enfant dans l'interface) et
+        le type de service de garde --- \emph{subventionné} (la place à
+        contribution réduite) ou \emph{non subventionné}. Seuls les frais non
+        subventionnés ouvrent droit au crédit d'impôt québécois (poste~6) ;
+        tous les frais comptent pour la déduction fédérale et pour le coût
+        $G$ de l'équation~\eqref{eq:rd}.
+\end{itemize}
+
+\subsection{Hypothèses principales}
+
+Le modèle hérite des hypothèses du calculateur officiel ; les connaître évite
+de mauvaises interprétations.
+
+\begin{itemize}
+  \item \textbf{Une seule source de revenu par adulte} : du travail salarié
+        pour les ménages actifs, une pension privée pour les retraités.
+        Aucun revenu de placement, d'entreprise, de gain en capital ni de
+        REER n'est modélisé ;
+  \item \textbf{Aucune déduction facultative} (REER, frais financiers,
+        etc.) : seules les déductions automatiques du système sont
+        appliquées (déduction pour travailleur au Québec, cotisations RRQ
+        supplémentaires, frais de garde au fédéral) ;
+  \item \textbf{Enfants de moins de 18 ans}, à charge ;
+  \item \textbf{Ménage locataire type} pour l'allocation-logement : le loyer
+        n'étant pas saisi, le modèle l'impute selon la composition du ménage
+        (poste~10) ;
+  \item \textbf{Prestations fiscales versées de juillet à juin} (Allocation
+        canadienne pour enfants, crédit TPS, crédit pour la solidarité) :
+        le modèle assimile l'année de versement débutant en juillet de
+        l'année $Y$ à l'année civile $Y$ ;
+  \item \textbf{Couverture RAMQ publique} : les adultes sont présumés
+        inscrits au régime public d'assurance médicaments (pas d'assurance
+        collective privée).
+\end{itemize}

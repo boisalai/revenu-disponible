@@ -1,0 +1,142 @@
+% ===========================================================================
+% §4 — Architecture du calcul : notation, bases internes, ordre des postes
+% ===========================================================================
+\section{L'architecture du calcul}
+\label{sec:architecture}
+
+\subsection{Notation}
+
+Les règles des sections suivantes utilisent une notation commune :
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{c l}
+\toprule
+Symbole & Signification \\
+\midrule
+$r_i$            & revenu brut (travail ou retraite) de l'adulte $i \in \{1, 2\}$ \\
+$R = r_1 + r_2$  & revenu brut du ménage ($r_2 = 0$ si un seul adulte) \\
+$a_i$            & âge de l'adulte $i$ \\
+$n$              & nombre d'enfants à charge \\
+$\pos{x}$        & partie positive : $\pos{x} = \max(0,\,x)$ \\
+$\RFN$           & revenu familial net (base québécoise, ligne 275) \\
+$\AFNI$          & revenu familial net rajusté (base fédérale) \\
+$\RAL$           & revenu aux fins de l'allocation-logement \\
+\bottomrule
+\end{tabular}
+\caption{Notation utilisée dans les règles de calcul.}
+\label{tab:notation}
+\end{table}
+
+Sauf indication contraire, les montants sont annuels, les calculs par adulte
+sont ensuite additionnés sur le ménage, et le résultat final de chaque poste
+est arrondi au cent.
+
+\subsection{Les trois bases de revenu intermédiaires}
+\label{sec:bases}
+
+La subtilité centrale du système : les programmes ne sont pas modulés sur le
+revenu brut, mais sur des bases de revenu \emph{construites par le calcul
+lui-même}. Le moteur en reconstruit trois.
+
+\paragraph{Revenu familial net (Québec).} Somme des revenus nets des adultes
+au sens de la ligne 275 de la déclaration québécoise :
+\begin{equation}
+\label{eq:rfn}
+\RFN \;=\; R \;+\; PSV \;+\; AS \;-\; D_{trav} \;-\; RRQ_{suppl}
+\end{equation}
+où $PSV$ est l'ensemble des prestations de la Sécurité de la vieillesse
+(pension \emph{et} suppléments non imposables --- voir l'encadré ci-dessous),
+$AS$ l'aide de dernier recours, $D_{trav}$ la déduction pour travailleur
+(\pc{6} du revenu de travail, plafonnée --- poste~19) et $RRQ_{suppl}$ les
+cotisations RRQ supplémentaires, déductibles. Cette base sert à la prime
+RAMQ, à l'Allocation famille, à la prime au travail, au crédit pour la
+solidarité, au soutien aux aînés et aux crédits modulés de l'impôt québécois.
+
+\paragraph{Revenu familial net rajusté (fédéral, AFNI).} Même logique, sans
+la déduction pour travailleur (propre au Québec), et diminuée de la déduction
+fédérale pour frais de garde :
+\begin{equation}
+\label{eq:afni}
+\AFNI \;=\; R \;+\; PSV \;+\; AS \;-\; RRQ_{suppl} \;-\; D_{garde}
+\end{equation}
+Cette base module l'Allocation canadienne pour enfants, le crédit TPS,
+l'Allocation canadienne pour les travailleurs et le supplément médical
+fédéral.
+
+\paragraph{Revenu aux fins de l'allocation-logement.} Le programme
+Allocation-logement applique aux aînés un ajustement qui retranche une
+fraction des pensions :
+\begin{equation}
+\label{eq:ral}
+\RAL \;=\; \RFN \;-\; PSV \times f
+\end{equation}
+où $f$ est un facteur d'ajustement propre à l'année et à la composition
+(personne seule ou couple), extrait du calculateur officiel
+(2025 : $f \approx \num{0.0496}$ ; 2026 : $f \approx \num{0.0389}$).
+
+\paragraph{Encadré --- les prestations non imposables comptent quand même.}
+Le Supplément de revenu garanti (SRG) et l'Allocation au conjoint ne sont pas
+\emph{imposables}, mais ils doivent être \emph{inclus dans le revenu net}
+servant à calculer les crédits d'impôt réductibles selon le revenu (montant
+pour conjoint, montant en raison de l'âge, crédit médical) et la prime du
+régime public d'assurance médicaments\footnote{Ministère des Finances du
+Québec, \emph{Dépenses fiscales}, fiche 110113 :
+\url{https://www.budget.finances.gouv.qc.ca/budget/outils/depenses-fiscales/fiches/fiche-110113.asp}}.
+Le moteur distingue donc soigneusement, pour chaque adulte, le revenu
+\emph{imposable} (sans SRG ni Allocation) du revenu \emph{net} (avec).
+
+\subsection{L'ordre des postes}
+
+Les dépendances imposent un ordre de calcul précis :
+
+\begin{enumerate}
+  \item \textbf{Cotisations sur le revenu brut} (postes 1--4) : RRQ, RQAP,
+        assurance-emploi (ménages actifs), FSS (retraités). Elles ne
+        dépendent que du revenu saisi ;
+  \item \textbf{Postes-feuilles} : Sécurité de la vieillesse (poste~17,
+        fonction du revenu de retraite et de l'âge) et aide de dernier
+        recours (poste~13, fonction du revenu net des cotisations). L'aide
+        sociale a besoin des cotisations ; c'est pourquoi elle vient après ;
+  \item \textbf{Bases intermédiaires} : $\RFN$, $\AFNI$ et $\RAL$,
+        équations~\eqref{eq:rfn} à~\eqref{eq:ral} ;
+  \item \textbf{Prime RAMQ} (poste~5) sur le $\RFN$, en tenant compte des
+        exonérations individuelles (aide sociale ; SRG quasi maximal) ;
+  \item \textbf{Impôts} (poste~19) : le calcul québécois et le calcul
+        fédéral consomment les cotisations (crédits et déductions), la PSV
+        (revenu imposable et revenu net) et la prime RAMQ (crédit médical
+        des couples) ;
+  \item \textbf{Transferts} : tous les programmes modulés sur $\RFN$, $\AFNI$
+        ou $\RAL$ (postes 6--11, 14--16) ;
+  \item \textbf{Agrégation} (poste~20) : équation~\eqref{eq:rd}.
+\end{enumerate}
+
+Deux \og boucles \fg{} apparentes méritent explication. D'abord, l'aide
+sociale est un \emph{intrant} d'autres programmes : elle entre dans $\RFN$ et
+$\AFNI$ (elle est un revenu au sens de ces bases) et déclenche l'exonération
+de la prime RAMQ. Ensuite, l'Allocation canadienne pour les travailleurs
+dépend de l'$\AFNI$, qui inclut l'aide sociale : un dollar d'aide sociale
+peut donc réduire l'ACT de vingt cents. Le moteur résout ces dépendances par
+le simple ordre ci-dessus --- aucune itération n'est nécessaire, car aucun
+programme ne dépend de sa propre sortie.
+
+\subsection{Conventions de calcul}
+
+\begin{itemize}
+  \item \textbf{Annualisation} : les programmes versés mensuellement (aide
+        sociale, allocation-logement) ou trimestriellement (Sécurité de la
+        vieillesse) sont exprimés en montants annuels ; pour la Sécurité de
+        la vieillesse, les paramètres annuels sont la moyenne des quatre
+        barèmes trimestriels, d'où leurs décimales ;
+  \item \textbf{Années de versement} : pour les prestations versées de
+        juillet $Y$ à juin $Y{+}1$ (ACE, crédit TPS, solidarité), l'année
+        affichée $Y$ correspond à cette période de versement ;
+  \item \textbf{Arrondis} : chaque poste arrondit son résultat au cent,
+        comme le calculateur officiel ; les règles internes d'arrondi
+        particulières (tranches de 24/48/96~\$ du SRG, effort logement à
+        quatre décimales) sont reproduites à l'identique ;
+  \item \textbf{Cotisations en positif} : le moteur renvoie les cotisations
+        et impôts en montants positifs ; c'est l'équation~\eqref{eq:rd} qui
+        porte les signes.
+\end{itemize}

@@ -1,0 +1,48 @@
+% ===========================================================================
+% Poste 4 — FSS
+% ===========================================================================
+\poste{4}{Fonds des services de santé (FSS)}{QC\_fss}
+
+\pdesc Cotisation des particuliers au financement des services de santé,
+assise sur les revenus \emph{autres} que les salaires (le revenu d'emploi en
+est exclu, l'employeur cotisant déjà sur sa masse salariale). Dans le
+modèle, où les ménages actifs n'ont que des salaires, seuls les ménages
+\emph{retraités} paient cette cotisation, sur leur revenu de pension.
+
+\pobj Faire contribuer au financement de la santé les revenus non assujettis
+aux cotisations d'emploi --- notamment les revenus de retraite et de
+placement.
+
+\pregle La cotisation d'un particulier sur son revenu assujetti $r$
+s'obtient par \emph{deux tranches additives}, chacune plafonnée :
+\[
+\text{FSS} = \min\bigl(\tau \times \pos{r - s_1},\; p_1\bigr)
+           + \min\bigl(\tau \times \pos{r - s_2},\; p_2\bigr)
+\]
+avec $\tau = \pc{1}$, $p_1 = \D{150}$ et $p_2 = \D{850}$. Le profil qui en
+résulte est en escalier : la cotisation croît de \pc{1} au-delà du premier
+seuil jusqu'à plafonner à \D{150}, reste constante, puis croît de nouveau de
+\pc{1} au-delà du second seuil jusqu'au maximum global de
+$p_1 + p_2 = \D{1000}$. Chaque adulte calcule sa cotisation sur son propre
+revenu ; le ménage paie la somme.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Seuil de la première tranche ($s_1$)   & \D{18130} & \D{18500} \\
+Plafond de la première tranche ($p_1$) & \D{150}   & \D{150} \\
+Seuil de la seconde tranche ($s_2$)    & \D{63060} & \D{64355} \\
+Plafond de la seconde tranche ($p_2$)  & \D{850}   & \D{850} \\
+Taux ($\tau$, les deux tranches)       & \pc{1}    & \pc{1} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur la Régie de l'assurance maladie du Québec (RLRQ, c.~R-5),
+art.~38 à 40 ; déclaration TP-1, ligne 446 et annexe F ; Revenu Québec ;
+ministère des Finances du Québec, \emph{Paramètres du régime d'imposition}.

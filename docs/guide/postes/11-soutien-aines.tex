@@ -1,0 +1,42 @@
+% ===========================================================================
+% Poste 11 — Montant pour le soutien des aînés
+% ===========================================================================
+\poste{11}{Montant pour le soutien des aînés}{QC\_aines}
+
+\pdesc Crédit d'impôt remboursable québécois pour les personnes de 70~ans et
+plus à revenu faible ou moyen, réclamé à la ligne 463 de la déclaration.
+
+\pobj Soutenir le revenu des aînés les plus âgés et les plus vulnérables,
+au-delà des pensions fédérales.
+
+\pregle Chaque adulte de 70~ans et plus ouvre droit à un montant maximal $M$
+--- un couple dont les deux conjoints sont admissibles part donc de $2M$. Le
+total est réduit selon le revenu familial net au-delà du seuil $s$ (qui
+dépend du nombre d'adultes, pas du nombre d'aînés) :
+\[
+\text{crédit} = \pos{\,k \times M - \tau \times \pos{\RFN - s}\,}
+\qquad k \in \{1, 2\}
+\]
+où $k$ est le nombre d'adultes de 70~ans et plus. Si aucun adulte n'a
+70~ans, le crédit est nul.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Montant par aîné admissible ($M$)   & \D{2000}  & \D{2000} \\
+Âge d'admissibilité                 & 70 ans    & 70 ans \\
+Seuil de réduction --- 1 adulte ($s$)  & \D{27835} & \D{28405} \\
+Seuil de réduction --- couple ($s$)    & \D{45270} & \D{46200} \\
+Taux de réduction ($\tau$)          & \pc{5.4}  & \pc{5.47} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur les impôts (RLRQ, c.~I-3) ; déclaration TP-1, ligne 463 ;
+Revenu Québec ; ministère des Finances du Québec, \emph{Paramètres du
+régime d'imposition}.

@@ -1,0 +1,59 @@
+% ===========================================================================
+% Poste 9 — Crédit d'impôt pour la solidarité
+% ===========================================================================
+\poste{9}{Crédit d'impôt pour la solidarité}{QC\_sol}
+
+\pdesc Crédit remboursable versé mensuellement par Revenu Québec, qui
+regroupe depuis 2011 trois anciennes mesures : la compensation de la TVQ, le
+remboursement d'impôts fonciers (volet logement) et le soutien aux
+habitants des villages nordiques.
+
+\pobj Compenser la taxe de vente du Québec et une partie des coûts de
+logement des ménages à revenu faible ou moyen.
+
+\pregle Le crédit additionne deux volets, puis applique une réduction unique
+de \pc{6} sur le revenu familial net excédant le seuil $s$ :
+\begin{align*}
+\text{volet TVQ} &= B + \begin{cases}
+C & \text{si couple (montant pour conjoint)} \\
+A & \text{si un seul adulte (montant \og vivant seule \fg{})}
+\end{cases} \\
+\text{volet logement} &= \begin{cases}
+L_{couple} & \text{si couple} \\
+L_{seul} & \text{sinon}
+\end{cases} \;+\; n \times L_{enfant} \\
+\text{crédit} &= \pos{\text{volet TVQ} + \text{volet logement}
+ - 0{,}06 \times \pos{\RFN - s}}
+\end{align*}
+Le modèle suppose le ménage locataire ou propriétaire d'un logement
+admissible (droit aux deux volets) ; le taux de réduction est donc toujours
+\pc{6} (il serait de \pc{3} à une seule composante). Le volet
+\og village nordique \fg{} n'est pas modélisé. La famille monoparentale
+reçoit le montant additionnel \og vivant seule \fg{}, étant réputée vivre
+seule avec ses enfants à charge. Les périodes de versement vont de juillet à
+juin ; l'année affichée correspond à la période débutant en juillet.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Volet TVQ --- montant de base ($B$)            & \D{356} & \D{363} \\
+Volet TVQ --- montant pour conjoint ($C$)      & \D{356} & \D{363} \\
+Volet TVQ --- additionnel vivant seule ($A$)   & \D{169} & \D{172} \\
+Volet logement --- couple ($L_{couple}$)       & \D{888} & \D{906} \\
+Volet logement --- seule ou monoparentale ($L_{seul}$) & \D{731} & \D{746} \\
+Volet logement --- par enfant ($L_{enfant}$)   & \D{155} & \D{158} \\
+Seuil de réduction ($s$)                       & \D{42325} & \D{43195} \\
+Taux de réduction                              & \pc{6}  & \pc{6} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur les impôts (RLRQ, c.~I-3), art.~1029.8.116.12 à
+1029.8.116.35 ; Revenu Québec ; ministère des Finances du Québec,
+\emph{Paramètres du régime d'imposition} (tableau du crédit pour la
+solidarité).

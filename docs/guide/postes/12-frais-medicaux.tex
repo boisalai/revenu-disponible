@@ -1,0 +1,64 @@
+% ===========================================================================
+% Poste 12 — Crédit remboursable pour frais médicaux (Québec)
+% ===========================================================================
+\poste{12}{Crédit d'impôt remboursable pour frais médicaux (Québec)}{QC\_medic}
+
+\pdesc Crédit remboursable destiné aux travailleurs à faible revenu dont les
+frais médicaux dépassent un seuil relatif à leur revenu (ligne 462 de la
+déclaration). \textbf{Dans ce modèle, ce poste vaut toujours zéro} --- il
+est documenté ici pour expliquer pourquoi.
+
+\pobj Alléger les frais médicaux des travailleurs à faible revenu, même
+lorsqu'ils ne paient pas assez d'impôt pour profiter du crédit non
+remboursable usuel.
+
+\pregle La structure officielle du crédit, telle que codée :
+\begin{enumerate}
+  \item admissibilité : un revenu de travail d'au moins $r_{min}$ ;
+  \item frais admissibles : la part des frais médicaux $F$ qui excède
+        \pc{3} du revenu familial net,
+        $F_a = \pos{F - 0{,}03 \times \RFN}$ ;
+  \item crédit avant réduction : $c = \min(0{,}25 \times F_a,\; c_{max})$ ;
+  \item réduction selon le revenu : l'excédent $e = \pos{\RFN - s}$ est
+        soustrait, au taux de \pc{5}.
+\end{enumerate}
+
+\pnotes Deux particularités, reproduites par fidélité au calculateur
+officiel, expliquent le résultat systématiquement nul.
+\begin{itemize}
+  \item \emph{La seule dépense médicale du modèle est la prime RAMQ}
+        (poste~5) : aucune autre entrée de frais médicaux n'existe. Or la
+        prime, plafonnée à environ \D{750}, ne dépasse \emph{jamais} \pc{3}
+        du revenu familial net au-dessus duquel elle devient exigible : les
+        frais admissibles $F_a$ sont donc toujours nuls, et le crédit avec
+        eux. Ce résultat a été vérifié empiriquement sur l'ensemble de la
+        grille de validation ;
+  \item \emph{la forme de la réduction du calculateur officiel est
+        anormale} : il calcule $\pos{(c - e) \times 0{,}05}$ là où la règle
+        réelle est $\pos{c - 0{,}05 \times e}$. Comme $c$ est toujours nul,
+        l'anomalie ne se manifeste jamais ; le code la reproduit telle
+        quelle, avec ce commentaire, plutôt que de \og corriger \fg{}
+        silencieusement la référence.
+\end{itemize}
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Taux du crédit                       & \pc{25}   & \pc{25} \\
+Crédit maximal ($c_{max}$)           & \D{1466}  & \D{1496} \\
+Revenu de travail minimal ($r_{min}$)& \D{3750}  & \D{3825} \\
+Seuil de réduction ($s$)             & \D{28335} & \D{28915} \\
+Taux de réduction                    & \pc{5}    & \pc{5} \\
+Plancher des frais (part du revenu)  & \pc{3}    & \pc{3} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\prefs Loi sur les impôts (RLRQ, c.~I-3) ; déclaration TP-1, ligne 462 ;
+Revenu Québec ; ministère des Finances du Québec, \emph{Paramètres du
+régime d'imposition}.

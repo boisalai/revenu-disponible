@@ -1,0 +1,68 @@
+% ===========================================================================
+% Poste 1 — RRQ
+% ===========================================================================
+\poste{1}{Régime de rentes du Québec (RRQ)}{CA\_rrq}
+
+\pdesc Cotisation obligatoire prélevée sur le revenu de travail, qui finance
+les rentes de retraite, d'invalidité et de survivant du régime public
+québécois. Depuis 2019, le régime comporte un volet \emph{de base} et un
+volet \emph{supplémentaire} (la \og bonification \fg{}), dont le traitement
+fiscal diffère.
+
+\pobj Assurer un revenu de remplacement à la retraite (et en cas
+d'invalidité ou de décès), proportionnel aux gains de travail.
+
+\pregle La cotisation d'un adulte se calcule sur deux bandes de son revenu de
+travail $r$. La première bande court de l'exemption générale $E$ au maximum
+des gains admissibles ($MGA$) ; la seconde, du $MGA$ au maximum
+supplémentaire ($MGAS$, fixé à \pc{114} du $MGA$) :
+\begin{align*}
+B_1 &= \pos{\min(r,\, MGA) - E} \\
+B_2 &= \pos{\min(r,\, MGAS) - MGA}
+\end{align*}
+Trois taux s'appliquent (part de l'employé) : le taux du régime de base
+$\tau_{base}$ et la première cotisation supplémentaire $\tau_1$ sur la
+bande~1 ; la deuxième cotisation supplémentaire $\tau_2$ sur la bande~2 :
+\begin{align*}
+\text{cotisation de base} &= \tau_{base} \times B_1 \\
+\text{cotisation supplémentaire} &= \tau_1 \times B_1 + \tau_2 \times B_2 \\
+\text{cotisation totale} &= \text{base} + \text{supplémentaire}
+\end{align*}
+La cotisation du ménage est la somme des cotisations des adultes. Les
+ménages retraités ne cotisent pas (aucun revenu de travail).
+
+La distinction base/supplémentaire importe pour l'impôt (poste~19) : la
+cotisation \emph{de base} donne droit à un crédit d'impôt non remboursable au
+fédéral, tandis que la cotisation \emph{supplémentaire} est déductible du
+revenu --- elle réduit le revenu imposable et le revenu net aux deux ordres
+de gouvernement.
+
+\emph{Point de contrôle.} En 2025, un salarié gagnant le $MGAS$ ou plus paie
+au maximum : base $= 0{,}054 \times (71\,300 - 3\,500) = \D{3661.20}$ ;
+supplémentaire $= 0{,}01 \times 67\,800 + 0{,}04 \times 9\,900 = \D{1074}$ ;
+total $= \D{4735.20}$.
+
+\pparams
+
+\begin{center}
+\small
+\begin{tabular}{l r r}
+\toprule
+Paramètre & 2025 & 2026 \\
+\midrule
+Exemption générale ($E$)                          & \D{3500}  & \D{3500} \\
+Maximum des gains admissibles ($MGA$)             & \D{71300} & \D{74600} \\
+Maximum supplémentaire ($MGAS$)                   & \D{81200} & \D{85000} \\
+Taux du régime de base ($\tau_{base}$)            & \pc{5.4}  & \pc{5.3} \\
+Première cotisation supplémentaire ($\tau_1$)     & \pc{1}    & \pc{1} \\
+Deuxième cotisation supplémentaire ($\tau_2$)     & \pc{4}    & \pc{4} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La baisse du taux de base de \pc{5.4} à \pc{5.3} en 2026 découle de
+l'évaluation actuarielle du régime ; c'est l'un des allègements visibles dans
+l'écart 2025--2026 du calculateur.
+
+\prefs Loi sur le régime de rentes du Québec (RLRQ, c.~R-9) ; Retraite
+Québec (taux et maximums) ; Revenu Québec.
