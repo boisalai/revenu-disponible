@@ -7,6 +7,7 @@ import { courbeTauxMarginal } from "@/lib/taux-marginal";
 import { POSTES_INFO } from "@/lib/postes-info";
 import { SOURCE_POSTE } from "@/lib/sources-postes";
 import { CLE_VERS_POSTE } from "@/lib/parametres-meta";
+import { modeleValide } from "@/lib/modeles-ia";
 
 export const maxDuration = 30;
 
@@ -84,11 +85,12 @@ function ventilationComplete(menage: MenageEtat, lang: "fr" | "en"): string {
 }
 
 export async function POST(req: Request) {
-  const { messages, menage, lang, apiKey } = (await req.json()) as {
+  const { messages, menage, lang, apiKey, modele } = (await req.json()) as {
     messages: UIMessage[];
     menage: MenageEtat;
     lang: "fr" | "en";
     apiKey?: string;
+    modele?: string;
   };
   if (!apiKey) return new Response("Clé API requise.", { status: 401 });
   const ia = createAnthropic({ apiKey });
@@ -119,7 +121,7 @@ export async function POST(req: Request) {
   ].join("\n");
 
   const result = streamText({
-    model: ia("claude-sonnet-4-6"),
+    model: ia(modeleValide(modele)),
     system,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(6),

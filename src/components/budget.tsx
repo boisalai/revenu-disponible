@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
+import { RotateCcw } from "lucide-react";
 import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, type Annee, type Parametres } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
 import { useLangue } from "@/components/lang-provider";
@@ -48,7 +49,8 @@ function PanneauParametres({
         label={UI.selectJeu[lang]}
       />
       <div className="flex justify-end">
-        <Button variant="ghost" size="sm" onClick={() => onBundle(cloner(annee))}>
+        <Button variant="outline" size="sm" onClick={() => onBundle(cloner(annee))} className="gap-1.5">
+          <RotateCcw className="size-4" />
           {UI.reinitialiser[lang]}
         </Button>
       </div>

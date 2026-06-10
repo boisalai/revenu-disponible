@@ -135,7 +135,7 @@ export function EditeurParametres({
                     .map(([champ, v]) => (
                       <ChampParam
                         key={champ}
-                        label={labelChamp(champ)}
+                        label={labelChamp(groupe, champ, lang)}
                         valeur={nombre(v)}
                         officiel={nombre((ref as GroupeObjet)[champ])}
                         onChange={(nv) => setObjet(groupe, champ, nv)}

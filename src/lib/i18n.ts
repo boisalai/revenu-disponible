@@ -47,7 +47,7 @@ export const UI = {
   cotisations: { fr: "Cotisations", en: "Contributions" },
   transfertsQC: { fr: "Transferts — Québec", en: "Transfers — Quebec" },
   impotQC: { fr: "Impôt du Québec", en: "Quebec income tax" },
-  transfertsFederaux: { fr: "Transferts — fédéral", en: "Transfers — federal" },
+  transfertsFederaux: { fr: "Transferts — Fédéral", en: "Transfers — Federal" },
   impotFederal: { fr: "Impôt fédéral", en: "Federal income tax" },
   totalCotisations: { fr: "Total des cotisations", en: "Total contributions" },
   totalTransfertsQC: { fr: "Total des transferts du Québec", en: "Total Quebec transfers" },
@@ -226,6 +226,11 @@ export const UI = {
     en: "Your key is kept only in this browser and used only for your requests; it is never stored on the server.",
   },
   assistantChangerCle: { fr: "Changer la clé", en: "Change key" },
+  modeleLabel: { fr: "Modèle", en: "Model" },
+  modeleNote: {
+    fr: "Sonnet recommandé. Haiku : plus rapide et économique, mais moins fiable pour les calculs. Opus : plus capable, plus coûteux.",
+    en: "Sonnet recommended. Haiku: faster and cheaper, but less reliable for calculations. Opus: more capable, pricier.",
+  },
 
   // Page « À propos »
   aProposLien: { fr: "À propos", en: "About" },

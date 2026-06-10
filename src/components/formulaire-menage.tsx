@@ -12,6 +12,7 @@ import {
 } from "@/lib/menage-etat";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const SITUATIONS_ORDRE: Situation[] = [
@@ -28,12 +29,14 @@ function ChampMontant({
   valeur,
   onChange,
   max,
+  slider,
 }: {
   id: string;
   label: string;
   valeur: number;
   onChange: (n: number) => void;
   max?: number;
+  slider?: { min: number; max: number; step?: number };
 }) {
   return (
     <div className="grid gap-1.5">
@@ -48,6 +51,17 @@ function ChampMontant({
         placeholder="0"
         onChange={(e) => onChange(Math.min(max ?? Infinity, Number(e.target.value) || 0))}
       />
+      {slider && (
+        <Slider
+          aria-label={label}
+          min={slider.min}
+          max={slider.max}
+          step={slider.step ?? 1}
+          value={[Math.min(slider.max, Math.max(slider.min, valeur))]}
+          onValueChange={(v) => onChange(v[0])}
+          className="mt-1"
+        />
+      )}
     </div>
   );
 }
@@ -101,28 +115,28 @@ export function FormulaireMenage({
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <ChampMontant id={`${prefixe}rev1`} label={(meta.retraite ? UI.revenuRetraite : UI.revenuTravail)[lang]} valeur={etat.revenu1} onChange={(n) => maj({ revenu1: n })} />
-        <ChampMontant id={`${prefixe}age1`} label={UI.age[lang]} valeur={etat.age1} onChange={(n) => maj({ age1: n })} />
+        <ChampMontant id={`${prefixe}rev1`} label={(meta.retraite ? UI.revenuRetraite : UI.revenuTravail)[lang]} valeur={etat.revenu1} onChange={(n) => maj({ revenu1: n })} slider={{ min: 0, max: 200_000, step: 1000 }} />
+        <ChampMontant id={`${prefixe}age1`} label={UI.age[lang]} valeur={etat.age1} onChange={(n) => maj({ age1: n })} slider={{ min: 18, max: 100 }} />
       </div>
 
       {couple && (
         <div className="grid grid-cols-2 gap-3">
-          <ChampMontant id={`${prefixe}rev2`} label={(meta.retraite ? UI.revenuRetraiteConjoint : UI.revenuTravailConjoint)[lang]} valeur={etat.revenu2} onChange={(n) => maj({ revenu2: n })} />
-          <ChampMontant id={`${prefixe}age2`} label={UI.ageConjoint[lang]} valeur={etat.age2} onChange={(n) => maj({ age2: n })} />
+          <ChampMontant id={`${prefixe}rev2`} label={(meta.retraite ? UI.revenuRetraiteConjoint : UI.revenuTravailConjoint)[lang]} valeur={etat.revenu2} onChange={(n) => maj({ revenu2: n })} slider={{ min: 0, max: 200_000, step: 1000 }} />
+          <ChampMontant id={`${prefixe}age2`} label={UI.ageConjoint[lang]} valeur={etat.age2} onChange={(n) => maj({ age2: n })} slider={{ min: 18, max: 100 }} />
         </div>
       )}
 
       {aEnfants && (
         <div className="grid gap-3">
-          <ChampMontant id={`${prefixe}nbEnf`} label={UI.nbEnfants[lang]} valeur={etat.enfants.length} onChange={changerNbEnfants} />
+          <ChampMontant id={`${prefixe}nbEnf`} label={UI.nbEnfants[lang]} valeur={etat.enfants.length} onChange={changerNbEnfants} slider={{ min: 0, max: 5 }} />
           {etat.enfants.map((enf, i) => (
             <div key={i} className="grid gap-2 rounded-lg border bg-muted/30 p-2.5">
-              <p className="text-xs font-medium text-muted-foreground">
+              <p className="text-sm font-medium text-muted-foreground">
                 {UI.enfant[lang]} {i + 1}
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <ChampMontant id={`${prefixe}enfAge${i}`} label={UI.age[lang]} valeur={enf.age} onChange={(a) => majEnfant(i, { age: a })} />
-                <ChampMontant id={`${prefixe}enfFrais${i}`} label={UI.fraisGarde[lang]} valeur={enf.fraisGarde} max={FRAIS_GARDE_MAX} onChange={(f) => majEnfant(i, { fraisGarde: f })} />
+                <ChampMontant id={`${prefixe}enfFrais${i}`} label={`${UI.fraisGarde[lang]} ${lang === "fr" ? "(en $)" : "($)"}`} valeur={enf.fraisGarde} max={FRAIS_GARDE_MAX} onChange={(f) => majEnfant(i, { fraisGarde: f })} />
               </div>
               <div className="grid gap-1.5">
                 <Label htmlFor={`${prefixe}enfType${i}`}>{UI.serviceGarde[lang]}</Label>

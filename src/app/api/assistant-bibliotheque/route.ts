@@ -4,6 +4,7 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { convertToModelMessages, streamText, stepCountIs, tool, type UIMessage } from "ai";
 import { auth } from "@/lib/auth";
 import { enregistrerMenage, enregistrerJeuParametres } from "@/lib/bibliotheque";
+import { modeleValide } from "@/lib/modeles-ia";
 
 export const maxDuration = 30;
 
@@ -33,10 +34,11 @@ export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return new Response("Connexion requise.", { status: 401 });
 
-  const { messages, lang, apiKey } = (await req.json()) as {
+  const { messages, lang, apiKey, modele } = (await req.json()) as {
     messages: UIMessage[];
     lang: "fr" | "en";
     apiKey?: string;
+    modele?: string;
   };
   if (!apiKey) return new Response("Clé API requise.", { status: 401 });
   const ia = createAnthropic({ apiKey });
@@ -52,7 +54,7 @@ export async function POST(req: Request) {
   ].join("\n");
 
   const result = streamText({
-    model: ia("claude-sonnet-4-6"),
+    model: ia(modeleValide(modele)),
     system,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(6),

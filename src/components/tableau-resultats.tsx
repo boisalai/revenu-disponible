@@ -105,7 +105,7 @@ function SectionLignes({ section, lang }: { section: Section; lang: Lang }) {
     <>
       {section.titre && (
         <TableRow className="bg-muted/30 hover:bg-muted/30">
-          <TableCell colSpan={4} className="py-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <TableCell colSpan={4} className="py-1.5 text-sm font-bold text-foreground">
             {section.titre[lang]}
           </TableCell>
         </TableRow>
@@ -159,7 +159,7 @@ export function TableauResultats({
           { t: UI.ecart[lang], v: rdD - rdG, ecart: true },
         ].map((c) => (
           <div key={c.t}>
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">{c.t}</div>
+            <div className="text-sm text-muted-foreground">{c.t}</div>
             <div
               className={`mt-1 text-2xl font-semibold tabular-nums ${
                 c.ecart ? (c.v > 0 ? "text-emerald-600 dark:text-emerald-400" : c.v < 0 ? "text-red-600 dark:text-red-400" : "") : "text-foreground"

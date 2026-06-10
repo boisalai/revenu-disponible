@@ -7,11 +7,13 @@ import { DefaultChatTransport } from "ai";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useSession } from "@/lib/auth-client";
-import { useCleApi } from "@/lib/cle-api";
+import { useCleApi, useModeleIA } from "@/lib/cle-api";
+import { MODELES_IA } from "@/lib/modeles-ia";
 import { usePanneauInfo } from "@/components/panneau-info";
 import { UI, type Lang } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AuthDialog } from "@/components/compte/auth-dialog";
 
 // Rendu markdown compact ; valeurs des tableaux alignées à droite (colonnes ≠ première).
@@ -72,6 +74,7 @@ export function AssistantChat({
 }) {
   const { data: session, isPending } = useSession();
   const { cle, setCle, pret } = useCleApi();
+  const { modele, setModele } = useModeleIA();
   const [authOuvert, setAuthOuvert] = useState(false);
   const [saisie, setSaisie] = useState("");
   const [saisieCle, setSaisieCle] = useState("");
@@ -87,7 +90,7 @@ export function AssistantChat({
   const envoyer = (texte: string) => {
     const t = texte.trim();
     if (!t || occupe || !cle) return;
-    sendMessage({ text: t }, { body: { ...corps, apiKey: cle } });
+    sendMessage({ text: t }, { body: { ...corps, apiKey: cle, modele } });
     setSaisie("");
   };
 
@@ -147,6 +150,24 @@ export function AssistantChat({
 
   return (
     <div className="flex h-full flex-col">
+      <div className="border-b px-4 py-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-muted-foreground">{UI.modeleLabel[lang]}</span>
+          <Select value={modele} onValueChange={setModele}>
+            <SelectTrigger size="sm" className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {MODELES_IA.map((m) => (
+                <SelectItem key={m.id} value={m.id} className="text-xs">
+                  {m.nom}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <p className="mt-1 text-xs leading-snug text-muted-foreground">{UI.modeleNote[lang]}</p>
+      </div>
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 text-sm">
         {messages.length === 0 && (
           <div className="space-y-3">
