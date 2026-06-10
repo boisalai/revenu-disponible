@@ -54,7 +54,7 @@ export function GraphiqueTauxMarginal({
 
   return (
     <div className="grid gap-2">
-      <ChartContainer config={config} className="aspect-[16/6] w-full">
+      <ChartContainer config={config} className="h-[320px] w-full sm:h-auto sm:aspect-[16/6]">
       <AreaChart data={data} margin={{ left: 4, right: 12, top: 20, bottom: 4 }} stackOffset="sign">
         <CartesianGrid vertical={false} />
         <XAxis
