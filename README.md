@@ -6,7 +6,7 @@ Combien vous reste-t-il **vraiment**, une fois payés vos impôts et vos cotisat
 
 **▶ Essayez-le : https://revenu-disponible.vercel.app/**
 
-![Le calculateur : la situation du ménage à gauche, le détail poste par poste 2025 vs 2026 au centre, et l'explication d'un poste à droite](docs/calculateur.png)
+![Le calculateur : la situation du ménage à gauche, le détail poste par poste 2025 vs 2026 au centre, et l'explication d'un poste à droite](docs/calculateur_fr.png)
 
 ## En clair
 
@@ -74,7 +74,7 @@ How much do you **really** keep, once you've paid your taxes and contributions a
 
 **▶ Try it: https://revenu-disponible.vercel.app/**
 
-![The calculator: the household situation on the left, the item-by-item breakdown 2025 vs 2026 in the centre, and the explanation of an item on the right](docs/calculateur.png)
+![The calculator: the household situation on the left, the item-by-item breakdown 2025 vs 2026 in the centre, and the explanation of an item on the right](docs/calculateur_en.png)
 
 ## In plain terms
 
