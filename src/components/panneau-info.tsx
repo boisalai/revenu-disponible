@@ -8,6 +8,8 @@ import { SOURCE_POSTE } from "@/lib/sources-postes";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ResizablePanel } from "@/components/ui/resizable";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { parametresDuPoste } from "@/lib/parametres-meta";
 
 type ModePanneau = "info" | "assistant";
 
@@ -60,6 +62,7 @@ export function CorpsPanneau({ poste, lang }: { poste: string; lang: Lang }) {
   const info = POSTES_INFO[poste];
   const source = SOURCE_POSTE[poste];
   if (!info) return null;
+  const params = parametresDuPoste(poste, lang);
 
   const champ = (titre: string, texte: string) => (
     <div>
@@ -73,6 +76,35 @@ export function CorpsPanneau({ poste, lang }: { poste: string; lang: Lang }) {
       <p className="leading-relaxed text-muted-foreground">{info.description[lang]}</p>
       {champ(UI.objectif[lang], info.objectif[lang])}
       {champ(UI.regleCalcul[lang], info.regle[lang])}
+      {params.length > 0 && (
+        <Accordion type="single" collapsible>
+          <AccordionItem value="params" className="border-b-0">
+            <AccordionTrigger className="py-1 text-xs font-medium uppercase tracking-wide text-muted-foreground hover:no-underline">
+              {UI.parametresTitre[lang]}
+            </AccordionTrigger>
+            <AccordionContent>
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b text-xs text-muted-foreground">
+                    <th className="py-1 pr-2 text-left font-medium">{UI.parametre[lang]}</th>
+                    <th className="py-1 px-1 text-right font-medium">2025</th>
+                    <th className="py-1 pl-1 text-right font-medium">2026</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {params.map((r) => (
+                    <tr key={r.label} className="border-b align-top last:border-0">
+                      <td className="py-1 pr-2">{r.label}</td>
+                      <td className="py-1 px-1 text-right tabular-nums whitespace-nowrap">{r.v2025}</td>
+                      <td className="py-1 pl-1 text-right tabular-nums whitespace-nowrap">{r.v2026}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
       {champ(UI.references[lang], info.references[lang])}
       {source && (
         <a

@@ -57,7 +57,7 @@ export function BoutonEnregistrer({
 
   return (
     <>
-      <Button variant="outline" size="sm" onClick={cliquer} className="gap-1.5">
+      <Button size="sm" onClick={cliquer} className="gap-1.5">
         <Save className="size-4" />
         {UI.enregistrer[lang]}
       </Button>

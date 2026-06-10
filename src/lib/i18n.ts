@@ -59,6 +59,8 @@ export const UI = {
   objectif: { fr: "Objectif", en: "Purpose" },
   regleCalcul: { fr: "Règle de calcul", en: "Calculation rule" },
   references: { fr: "Références", en: "References" },
+  parametresTitre: { fr: "Paramètres", en: "Parameters" },
+  parametre: { fr: "Paramètre", en: "Parameter" },
 
   // Taux marginaux
   tauxMarginalTitre: { fr: "Taux effectif marginal d'imposition (TEMI)", en: "Effective marginal tax rate (EMTR)" },
@@ -238,8 +240,8 @@ export const UI = {
   aProposSousTitre: { fr: "Le projet, la méthode et l'auteur.", en: "The project, the method and the author." },
   aProposProjetTitre: { fr: "Le projet", en: "The project" },
   aProposProjet: {
-    fr: "« Revenu disponible » calcule, pour un ménage québécois, ce qu'il lui reste une fois additionnés ses revenus et ses transferts, puis retranchés ses cotisations et ses impôts — avec la ventilation poste par poste, pour 2025 et 2026. C'est à la fois un moteur de calcul vérifié et une application web pédagogique.",
-    en: "“Disposable income” computes, for a Quebec household, what it keeps once incomes and transfers are added and contributions and taxes subtracted — with the item-by-item breakdown, for 2025 and 2026. It is both a verified calculation engine and a pedagogical web app.",
+    fr: "« Revenu disponible » calcule, pour un ménage québécois, ce qu'il lui reste une fois additionnés ses revenus et ses transferts, puis retranchés ses cotisations et ses impôts — avec la ventilation poste par poste, pour 2025 et 2026. C'est à la fois un moteur de calcul vérifié et une application web pédagogique. Autrement dit, il vous montre vos prélèvements et ce qui vous reste réellement dans vos poches.",
+    en: "“Disposable income” computes, for a Quebec household, what it keeps once incomes and transfers are added and contributions and taxes subtracted — with the item-by-item breakdown, for 2025 and 2026. It is both a verified calculation engine and a pedagogical web app. In other words, it shows you what is deducted from your income and what really stays in your pocket.",
   },
   aProposAuteurTitre: { fr: "L'auteur", en: "The author" },
   aProposAuteur: {
@@ -248,8 +250,8 @@ export const UI = {
   },
   aProposMethodeTitre: { fr: "Méthodologie", en: "Methodology" },
   aProposMethode: {
-    fr: "Règle stricte : rien n'est posé « de mémoire ». Chaque paramètre est confronté à sa source officielle (Revenu Québec, Agence du revenu du Canada, Retraite Québec, Service Canada) et rattaché à sa disposition légale. Les calculs ont été validés par parité avec le calculateur du revenu disponible du ministère des Finances du Québec : une suite de tests reproduit les maximums et points de contrôle officiels, au cent près.",
-    en: "Strict rule: nothing is set “from memory”. Every parameter is checked against its official source (Revenu Québec, Canada Revenue Agency, Retraite Québec, Service Canada) and tied to its legal provision. The calculations were validated by parity with the Quebec Ministry of Finance disposable-income calculator: a test suite reproduces the official maximums and control points, to the cent.",
+    fr: "Tous les chiffres — montants, taux et seuils — viennent de sources officielles : Revenu Québec, l'Agence du revenu du Canada, Retraite Québec et Service Canada. Chacun renvoie à la loi qui le fixe ; rien n'est inventé. Les calculs suivent les règles de 2025 et de 2026, appliquées à des ménages types. Pour s'assurer qu'ils sont exacts, on les a comparés au calculateur officiel du ministère des Finances du Québec : les résultats correspondent au cent près.",
+    en: "Every figure — amounts, rates and thresholds — comes from an official source: Revenu Québec, the Canada Revenue Agency, Retraite Québec and Service Canada. Each one points back to the law that sets it; nothing is made up. The calculations follow the 2025 and 2026 rules, applied to typical households. To make sure they're correct, we compared them with the Quebec Ministry of Finance's own calculator — the results match to the penny.",
   },
   aProposTechTitre: { fr: "Technologie", en: "Technology" },
   aProposTech: {

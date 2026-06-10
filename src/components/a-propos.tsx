@@ -16,6 +16,29 @@ function Section({ titre, children }: { titre: string; children: ReactNode }) {
   );
 }
 
+const MFQ_CALCULATEUR =
+  "https://www.finances.gouv.qc.ca/ministere/outils_services/outils_calcul/revenu_disponible/outil_revenu.asp";
+
+/** Rend `texte` en transformant la première occurrence de `terme` en lien externe. */
+function AvecLien({ texte, terme, href }: { texte: string; terme: string; href: string }) {
+  const i = texte.indexOf(terme);
+  if (i < 0) return <>{texte}</>;
+  return (
+    <>
+      {texte.slice(0, i)}
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-primary underline-offset-4 hover:underline"
+      >
+        {terme}
+      </a>
+      {texte.slice(i + terme.length)}
+    </>
+  );
+}
+
 export function APropos() {
   const { lang, setLang } = useLangue();
 
@@ -65,7 +88,13 @@ export function APropos() {
             </div>
           </Section>
 
-          <Section titre={UI.aProposMethodeTitre[lang]}>{UI.aProposMethode[lang]}</Section>
+          <Section titre={UI.aProposMethodeTitre[lang]}>
+            <AvecLien
+              texte={UI.aProposMethode[lang]}
+              terme={lang === "fr" ? "calculateur officiel" : "calculator"}
+              href={MFQ_CALCULATEUR}
+            />
+          </Section>
           <Section titre={UI.aProposTechTitre[lang]}>{UI.aProposTech[lang]}</Section>
           <Section titre={UI.aProposIATitre[lang]}>{UI.aProposIA[lang]}</Section>
           <Section titre={UI.aProposAvertTitre[lang]}>{UI.aProposAvert[lang]}</Section>

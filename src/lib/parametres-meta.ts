@@ -5,6 +5,7 @@
 
 import type { Bilingue, Lang } from "./i18n";
 import { POSTES_INFO } from "./postes-info";
+import { PARAMETRES_OFFICIELS } from "@/parametres";
 
 /** clé du bundle Parametres → clé de POSTES_INFO (pour réutiliser le nom + la fiche pédagogique). */
 export const CLE_VERS_POSTE: Record<string, string> = {
@@ -251,4 +252,42 @@ export function labelChamp(groupe: string, champ: string, lang: Lang): string {
   if (l) return l[lang];
   const espace = champ.replace(/([A-Z])/g, " $1").replace(/([a-z])([0-9])/g, "$1 $2");
   return espace.charAt(0).toUpperCase() + espace.slice(1);
+}
+
+/** poste (clé POSTES_INFO) → clé du groupe de paramètres (inverse de CLE_VERS_POSTE). */
+export const POSTE_VERS_PARAM: Record<string, string> = Object.fromEntries(
+  Object.entries(CLE_VERS_POSTE).map(([groupe, poste]) => [poste, groupe]),
+);
+
+/** Formate une valeur de paramètre : montant (« 71 300 $ »), taux (« 5,4 % ») ou valeur brute. */
+function formatValeur(valeur: number, estDollar: boolean, lang: Lang): string {
+  const loc = lang === "fr" ? "fr-CA" : "en-CA";
+  if (estDollar) return `${Math.round(valeur).toLocaleString(loc)} $`;
+  if (valeur > 0 && valeur < 1) return `${(valeur * 100).toLocaleString(loc, { maximumFractionDigits: 3 })} %`;
+  return valeur.toLocaleString(loc);
+}
+
+/**
+ * Lignes du tableau de paramètres d'un poste : libellé bilingue (suffixe d'unité retiré) et valeurs
+ * 2025/2026 formatées. Vide si le poste n'a pas de groupe de paramètres (ex. revenu, frais de garde).
+ */
+export function parametresDuPoste(posteCle: string, lang: Lang): { label: string; v2025: string; v2026: string }[] {
+  const groupe = POSTE_VERS_PARAM[posteCle];
+  if (!groupe) return [];
+  const o25 = (PARAMETRES_OFFICIELS[2025] as unknown as Record<string, unknown>)[groupe];
+  const o26 = (PARAMETRES_OFFICIELS[2026] as unknown as Record<string, unknown>)[groupe];
+  if (!o25 || typeof o25 !== "object") return [];
+  const a = o25 as Record<string, unknown>;
+  const b = (o26 ?? {}) as Record<string, unknown>;
+  const lignes: { label: string; v2025: string; v2026: string }[] = [];
+  for (const [champ, val] of Object.entries(a)) {
+    if (typeof val !== "number") continue; // on saute les sous-structures (barèmes imbriqués)
+    const lbl = PARAMS_LABELS[`${groupe}.${champ}`];
+    const complet = lbl ? lbl[lang] : champ;
+    const estDollar = complet.includes("$");
+    const label = complet.replace(/\s*\((en )?\$\)$/, ""); // l'unité est portée par la valeur formatée
+    const v26 = typeof b[champ] === "number" ? (b[champ] as number) : val;
+    lignes.push({ label, v2025: formatValeur(val, estDollar, lang), v2026: formatValeur(v26, estDollar, lang) });
+  }
+  return lignes;
 }

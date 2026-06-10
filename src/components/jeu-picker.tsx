@@ -89,7 +89,7 @@ export function JeuPicker({
         </Select>
       </div>
       {peutEnregistrer && (
-        <Button type="button" variant="outline" size="sm" className="justify-self-start gap-1.5" onClick={() => setDlg(true)}>
+        <Button type="button" size="sm" className="justify-self-start gap-1.5" onClick={() => setDlg(true)}>
           <Save className="size-4" />
           {UI.enregistrerCeJeu[lang]}
         </Button>
