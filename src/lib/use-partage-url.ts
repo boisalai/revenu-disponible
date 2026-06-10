@@ -18,6 +18,11 @@ export function usePartageURL(encoded: string, onCharger: (s: string) => void) {
   useEffect(() => {
     if (!pret) return;
     const base = window.location.pathname;
-    window.history.replaceState(null, "", encoded ? `${base}?s=${encoded}` : base);
+    try {
+      window.history.replaceState(null, "", encoded ? `${base}?s=${encoded}` : base);
+    } catch {
+      // Safari iOS plafonne replaceState (~100 appels / 30 s) et lève alors une SecurityError.
+      // On l'ignore pour ne pas faire planter l'app ; l'URL se resynchronise au prochain changement.
+    }
   }, [pret, encoded]);
 }

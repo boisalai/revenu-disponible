@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Situation, SITUATIONS, TypeGarde } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
 import {
@@ -38,6 +39,11 @@ function ChampMontant({
   max?: number;
   slider?: { min: number; max: number; step?: number };
 }) {
+  // Pendant le glissement on garde la valeur en local (curseur fluide) et on ne propage
+  // qu'au relâchement (onValueCommit). Évite une rafale de recalculs + synchros d'URL à
+  // chaque cran, qui faisait planter l'onglet sur mobile (iOS).
+  const [drag, setDrag] = useState<number | null>(null);
+  const courant = drag ?? valeur;
   return (
     <div className="grid gap-1.5">
       <Label htmlFor={id}>{label}</Label>
@@ -47,7 +53,7 @@ function ChampMontant({
         inputMode="numeric"
         min={0}
         max={max}
-        value={valeur === 0 ? "" : valeur}
+        value={courant === 0 ? "" : courant}
         placeholder="0"
         onChange={(e) => onChange(Math.min(max ?? Infinity, Number(e.target.value) || 0))}
       />
@@ -57,8 +63,12 @@ function ChampMontant({
           min={slider.min}
           max={slider.max}
           step={slider.step ?? 1}
-          value={[Math.min(slider.max, Math.max(slider.min, valeur))]}
-          onValueChange={(v) => onChange(v[0])}
+          value={[Math.min(slider.max, Math.max(slider.min, courant))]}
+          onValueChange={(v) => setDrag(v[0])}
+          onValueCommit={(v) => {
+            onChange(v[0]);
+            setDrag(null);
+          }}
           className="mt-1"
         />
       )}
