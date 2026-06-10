@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, Situation, type Annee, type Parametres } from "@/index";
+import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, SITUATIONS, Situation, type Annee, type Parametres } from "@/index";
 import { UI, type Lang } from "@/lib/i18n";
 import { useLangue } from "@/components/lang-provider";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
@@ -18,6 +18,30 @@ import { JeuPicker, cleOfficiel } from "@/components/jeu-picker";
 const DEFAUT_A: MenageEtat = MENAGE_DEFAUT;
 const DEFAUT_B: MenageEtat = { ...MENAGE_DEFAUT, situation: Situation.Couple, revenu2: 30_000 };
 const cloner = (a: Annee): Parametres => structuredClone(PARAMETRES_OFFICIELS[a]);
+
+/** Court descriptif d'un ménage (contenu du hover card sur le titre de scénario). */
+function descriptionMenage(etat: MenageEtat, lang: Lang): ReactNode {
+  const meta = SITUATIONS[etat.situation];
+  const couple = meta.nbAdultes === 2;
+  const fmt = (n: number) => `${Math.round(n).toLocaleString(lang === "fr" ? "fr-CA" : "en-CA")} $`;
+  const ligne = (label: string, valeur: string) => (
+    <div className="flex justify-between gap-6">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="tabular-nums">{valeur}</span>
+    </div>
+  );
+  return (
+    <div className="space-y-1.5 text-sm">
+      <p className="font-semibold">{UI.situations[etat.situation][lang]}</p>
+      {ligne(
+        (meta.retraite ? UI.revenuRetraite : UI.revenuTravail)[lang],
+        couple ? `${fmt(etat.revenu1)} + ${fmt(etat.revenu2)}` : fmt(etat.revenu1),
+      )}
+      {ligne(UI.age[lang], couple ? `${etat.age1} / ${etat.age2}` : String(etat.age1))}
+      {etat.enfants.length > 0 && ligne(UI.nbEnfants[lang], String(etat.enfants.length))}
+    </div>
+  );
+}
 
 /** Un côté : ménage (chargé de la bibliothèque ou saisi) sur le jeu de paramètres partagé. */
 function SectionMenage({
@@ -119,6 +143,8 @@ export function Comparaison() {
               lang={lang}
               enteteGauche={UI.scenarioA[lang]}
               enteteDroite={UI.scenarioB[lang]}
+              descGauche={descriptionMenage(etatA, lang)}
+              descDroite={descriptionMenage(etatB, lang)}
             />
           </div>
         ),

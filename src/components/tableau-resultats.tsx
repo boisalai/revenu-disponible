@@ -1,14 +1,31 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Info } from "lucide-react";
 import type { ResultatRevenuDisponible } from "@/index";
 import { UI, type Bilingue, type Lang } from "@/lib/i18n";
 import { POSTES_INFO } from "@/lib/postes-info";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { usePanneauInfo } from "@/components/panneau-info";
 
 const dollars = (n: number, lang: Lang) =>
   n.toLocaleString(lang === "fr" ? "fr-CA" : "en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
+
+/** Titre de colonne — survolable (hover card avec descriptif) si `desc` est fourni. */
+function TitreHover({ titre, desc }: { titre: string; desc?: ReactNode }) {
+  if (!desc) return <>{titre}</>;
+  return (
+    <HoverCard openDelay={120} closeDelay={80}>
+      <HoverCardTrigger asChild>
+        <span className="cursor-help underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
+          {titre}
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-64 text-left">{desc}</HoverCardContent>
+    </HoverCard>
+  );
+}
 
 type Ligne = { cle?: string; label?: Bilingue; vG: number; vD: number };
 type Section = { titre: Bilingue | null; lignes: Ligne[]; total?: Ligne };
@@ -139,12 +156,16 @@ export function TableauResultats({
   lang,
   enteteGauche,
   enteteDroite,
+  descGauche,
+  descDroite,
 }: {
   rGauche: ResultatRevenuDisponible;
   rDroite: ResultatRevenuDisponible;
   lang: Lang;
   enteteGauche: string;
   enteteDroite: string;
+  descGauche?: ReactNode;
+  descDroite?: ReactNode;
 }) {
   const sections = construireSections(rGauche, rDroite);
   const rdG = rGauche.revenuDisponible;
@@ -154,12 +175,14 @@ export function TableauResultats({
     <div>
       <div className="mb-6 grid grid-cols-3 gap-4 rounded-xl border bg-card p-5 text-center shadow-[0_1px_2px_rgb(15_23_42/0.04),0_3px_12px_-4px_rgb(15_23_42/0.08)]">
         {[
-          { t: enteteGauche, v: rdG, ecart: false },
-          { t: enteteDroite, v: rdD, ecart: false },
-          { t: UI.ecart[lang], v: rdD - rdG, ecart: true },
+          { t: enteteGauche, v: rdG, ecart: false, desc: descGauche },
+          { t: enteteDroite, v: rdD, ecart: false, desc: descDroite },
+          { t: UI.ecart[lang], v: rdD - rdG, ecart: true, desc: undefined as ReactNode },
         ].map((c) => (
           <div key={c.t}>
-            <div className="text-sm text-muted-foreground">{c.t}</div>
+            <div className="text-sm text-muted-foreground">
+              <TitreHover titre={c.t} desc={c.desc} />
+            </div>
             <div
               className={`mt-1 text-2xl font-semibold tabular-nums ${
                 c.ecart ? (c.v > 0 ? "text-emerald-600 dark:text-emerald-400" : c.v < 0 ? "text-red-600 dark:text-red-400" : "") : "text-foreground"
@@ -176,8 +199,8 @@ export function TableauResultats({
         <TableHeader>
           <TableRow>
             <TableHead>{UI.poste[lang]}</TableHead>
-            <TableHead className="text-right">{enteteGauche}</TableHead>
-            <TableHead className="text-right">{enteteDroite}</TableHead>
+            <TableHead className="text-right"><TitreHover titre={enteteGauche} desc={descGauche} /></TableHead>
+            <TableHead className="text-right"><TitreHover titre={enteteDroite} desc={descDroite} /></TableHead>
             <TableHead className="text-right">{UI.ecart[lang]}</TableHead>
           </TableRow>
         </TableHeader>
