@@ -173,13 +173,13 @@ export function TableauResultats({
 
   return (
     <div>
-      <div className="mb-6 grid grid-cols-3 gap-4 rounded-xl border bg-card p-5 text-center shadow-[0_1px_2px_rgb(15_23_42/0.04),0_3px_12px_-4px_rgb(15_23_42/0.08)]">
+      <div className="mb-6 grid grid-cols-2 gap-3 rounded-xl border bg-card p-5 text-center shadow-[0_1px_2px_rgb(15_23_42/0.04),0_3px_12px_-4px_rgb(15_23_42/0.08)] sm:grid-cols-3 sm:gap-4">
         {[
           { t: enteteGauche, v: rdG, ecart: false, desc: descGauche },
           { t: enteteDroite, v: rdD, ecart: false, desc: descDroite },
           { t: UI.ecart[lang], v: rdD - rdG, ecart: true, desc: undefined as ReactNode },
         ].map((c) => (
-          <div key={c.t}>
+          <div key={c.t} className={c.ecart ? "col-span-2 sm:col-span-1" : undefined}>
             <div className="text-sm text-muted-foreground">
               <TitreHover titre={c.t} desc={c.desc} />
             </div>
