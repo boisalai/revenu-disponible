@@ -42,6 +42,7 @@ export function Calculateur() {
           corps={{ menage: etat, lang }}
           intro={UI.assistantIntro[lang]}
           actionsRapides={[UI.assistantQ1[lang], UI.assistantQ2[lang]]}
+          demoPossible
         />
       }
       header={

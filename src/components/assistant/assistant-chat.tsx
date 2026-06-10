@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import { useSession } from "@/lib/auth-client";
 import { useCleApi, useModeleIA } from "@/lib/cle-api";
 import { MODELES_IA } from "@/lib/modeles-ia";
+import { DEMO_ACTIVE, DEMO_TOURS_MAX } from "@/lib/demo-ia";
 import { usePanneauInfo } from "@/components/panneau-info";
 import { UI, type Lang } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -54,7 +55,8 @@ export function BoutonAssistant({ lang }: { lang: Lang }) {
 
 /** Conversation IA générique, clé API fournie par l'utilisateur (BYOK).
  *  `corps` = données envoyées à chaque message ; `onTermine` est appelé à la fin d'un tour ;
- *  `requiertConnexion` ajoute une porte de connexion (pour la bibliothèque, qui écrit en BD). */
+ *  `requiertConnexion` ajoute une porte de connexion (pour la bibliothèque, qui écrit en BD) ;
+ *  `demoPossible` autorise le mode démo sans clé (route assistant seulement, si DEMO_ACTIVE). */
 export function AssistantChat({
   lang,
   api,
@@ -63,6 +65,7 @@ export function AssistantChat({
   actionsRapides,
   onTermine,
   requiertConnexion = false,
+  demoPossible = false,
 }: {
   lang: Lang;
   api: string;
@@ -71,6 +74,7 @@ export function AssistantChat({
   actionsRapides: string[];
   onTermine?: () => void;
   requiertConnexion?: boolean;
+  demoPossible?: boolean;
 }) {
   const { data: session, isPending } = useSession();
   const { cle, setCle, pret } = useCleApi();
@@ -78,6 +82,7 @@ export function AssistantChat({
   const [authOuvert, setAuthOuvert] = useState(false);
   const [saisie, setSaisie] = useState("");
   const [saisieCle, setSaisieCle] = useState("");
+  const [montrerCle, setMontrerCle] = useState(false); // bascule démo → formulaire de clé
   const transport = useMemo(() => new DefaultChatTransport({ api }), [api]);
   const { messages, sendMessage, status } = useChat({ transport, onFinish: onTermine });
   const finRef = useRef<HTMLDivElement>(null);
@@ -86,11 +91,18 @@ export function AssistantChat({
     finRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, status]);
 
+  // Mode démo : pas de clé, mais la démo est offerte (clé plafonnée côté serveur).
+  const demoDispo = demoPossible && DEMO_ACTIVE;
+  const modeDemo = !cle && demoDispo && !montrerCle;
+  const toursUtilises = messages.filter((m) => m.role === "user").length;
+  const demoEpuisee = modeDemo && toursUtilises >= DEMO_TOURS_MAX;
+
   const occupe = status === "submitted" || status === "streaming";
   const envoyer = (texte: string) => {
     const t = texte.trim();
-    if (!t || occupe || !cle) return;
-    sendMessage({ text: t }, { body: { ...corps, apiKey: cle, modele } });
+    if (!t || occupe || (!cle && !modeDemo) || demoEpuisee) return;
+    // En démo, ni clé ni modèle : le serveur impose Haiku sur la clé plafonnée du projet.
+    sendMessage({ text: t }, { body: { ...corps, ...(cle ? { apiKey: cle, modele } : {}) } });
     setSaisie("");
   };
 
@@ -106,9 +118,9 @@ export function AssistantChat({
     );
   }
 
-  // Porte 2 — clé API (BYOK).
+  // Porte 2 — clé API (BYOK), sauf si le mode démo prend le relais.
   if (!pret) return null;
-  if (!cle) {
+  if (!cle && !modeDemo) {
     return (
       <div className="flex h-full flex-col justify-center gap-3 px-5 py-6">
         <div className="flex items-center gap-2 font-medium">
@@ -144,30 +156,45 @@ export function AssistantChat({
           {UI.assistantCleLien[lang]}
         </a>
         <p className="text-xs leading-relaxed text-muted-foreground">{UI.assistantCleNote[lang]}</p>
+        {demoDispo && (
+          <button
+            type="button"
+            onClick={() => setMontrerCle(false)}
+            className="text-left text-xs font-medium text-primary underline underline-offset-2"
+          >
+            {UI.demoEssayer[lang]}
+          </button>
+        )}
       </div>
     );
   }
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b px-4 py-2">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-muted-foreground">{UI.modeleLabel[lang]}</span>
-          <Select value={modele} onValueChange={setModele}>
-            <SelectTrigger size="sm" className="text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {MODELES_IA.map((m) => (
-                <SelectItem key={m.id} value={m.id} className="text-xs">
-                  {m.nom}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {modeDemo ? (
+        <div className="border-b px-4 py-2">
+          <p className="text-xs leading-snug text-muted-foreground">{UI.demoBandeau[lang]}</p>
         </div>
-        <p className="mt-1 text-xs leading-snug text-muted-foreground">{UI.modeleNote[lang]}</p>
-      </div>
+      ) : (
+        <div className="border-b px-4 py-2">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-medium text-muted-foreground">{UI.modeleLabel[lang]}</span>
+            <Select value={modele} onValueChange={setModele}>
+              <SelectTrigger size="sm" className="text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {MODELES_IA.map((m) => (
+                  <SelectItem key={m.id} value={m.id} className="text-xs">
+                    {m.nom}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <p className="mt-1 text-xs leading-snug text-muted-foreground">{UI.modeleNote[lang]}</p>
+        </div>
+      )}
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 text-sm">
         {messages.length === 0 && (
           <div className="space-y-3">
@@ -211,7 +238,10 @@ export function AssistantChat({
         })}
 
         {status === "submitted" && <p className="text-muted-foreground">{UI.assistantReflechit[lang]}</p>}
-        {status === "error" && <p className="text-destructive">{UI.assistantErreur[lang]}</p>}
+        {status === "error" && (
+          <p className="text-destructive">{modeDemo ? UI.demoErreur[lang] : UI.assistantErreur[lang]}</p>
+        )}
+        {demoEpuisee && <p className="text-muted-foreground">{UI.demoToursEpuises[lang]}</p>}
         <div ref={finRef} />
       </div>
 
@@ -226,9 +256,15 @@ export function AssistantChat({
           value={saisie}
           onChange={(e) => setSaisie(e.target.value)}
           placeholder={UI.assistantPlaceholder[lang]}
-          className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          disabled={demoEpuisee}
+          className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
         />
-        <Button type="submit" size="icon" disabled={occupe || !saisie.trim()} aria-label={UI.assistantEnvoyer[lang]}>
+        <Button
+          type="submit"
+          size="icon"
+          disabled={occupe || !saisie.trim() || demoEpuisee}
+          aria-label={UI.assistantEnvoyer[lang]}
+        >
           <SendHorizonal className="size-4" />
         </Button>
       </form>
@@ -237,10 +273,13 @@ export function AssistantChat({
         <p className="text-xs leading-relaxed text-muted-foreground">{UI.assistantAvertissement[lang]}</p>
         <button
           type="button"
-          onClick={() => setCle(null)}
+          onClick={() => {
+            setCle(null);
+            setMontrerCle(true); // démo ou BYOK : mène au formulaire de clé
+          }}
           className="shrink-0 text-xs text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
         >
-          {UI.assistantChangerCle[lang]}
+          {modeDemo ? UI.demoUtiliserCle[lang] : UI.assistantChangerCle[lang]}
         </button>
       </div>
     </div>

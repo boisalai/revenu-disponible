@@ -8,6 +8,8 @@ import { POSTES_INFO } from "@/lib/postes-info";
 import { SOURCE_POSTE } from "@/lib/sources-postes";
 import { CLE_VERS_POSTE } from "@/lib/parametres-meta";
 import { modeleValide } from "@/lib/modeles-ia";
+import { DEMO_MODELE, DEMO_TOURS_MAX, DEMO_MAX_TOKENS } from "@/lib/demo-ia";
+import { consommerQuotaDemo, ipClient } from "@/lib/demo-quota";
 
 export const maxDuration = 30;
 
@@ -92,8 +94,23 @@ export async function POST(req: Request) {
     apiKey?: string;
     modele?: string;
   };
-  if (!apiKey) return new Response("Clé API requise.", { status: 401 });
-  const ia = createAnthropic({ apiKey });
+  // BYOK (clé de l'utilisateur, modèle au choix) ou mode DÉMO (clé dédiée du
+  // projet, plafonnée dans la console Anthropic : Haiku imposé, quota par IP,
+  // conversation et sortie bornées — voir src/lib/demo-ia.ts).
+  const cleDemo = process.env.ANTHROPIC_DEMO_API_KEY;
+  let model: ReturnType<ReturnType<typeof createAnthropic>>;
+  let maxOutputTokens: number | undefined;
+  if (apiKey) {
+    model = createAnthropic({ apiKey })(modeleValide(modele));
+  } else if (cleDemo) {
+    const tours = messages.filter((m) => m.role === "user").length;
+    if (tours > DEMO_TOURS_MAX) return new Response("Limite de conversation de la démo atteinte.", { status: 429 });
+    if (!consommerQuotaDemo(ipClient(req))) return new Response("Quota quotidien de la démo atteint.", { status: 429 });
+    model = createAnthropic({ apiKey: cleDemo })(DEMO_MODELE);
+    maxOutputTokens = DEMO_MAX_TOKENS;
+  } else {
+    return new Response("Clé API requise.", { status: 401 });
+  }
 
   const langue = lang === "en" ? "English" : "français";
   const couple = menage.situation === 2 || menage.situation === 4;
@@ -121,7 +138,8 @@ export async function POST(req: Request) {
   ].join("\n");
 
   const result = streamText({
-    model: ia(modeleValide(modele)),
+    model,
+    maxOutputTokens,
     system,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(6),
