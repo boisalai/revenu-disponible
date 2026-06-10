@@ -122,14 +122,14 @@ function SectionLignes({ section, lang }: { section: Section; lang: Lang }) {
     <>
       {section.titre && (
         <TableRow className="bg-muted/30 hover:bg-muted/30">
-          <TableCell colSpan={4} className="py-1.5 text-sm font-bold text-foreground">
+          <TableCell colSpan={4} className="py-1.5 font-bold text-foreground">
             {section.titre[lang]}
           </TableCell>
         </TableRow>
       )}
       {section.lignes.map((l, i) => (
         <TableRow key={i}>
-          <TableCell className="pl-6 text-sm">
+          <TableCell className="whitespace-normal pl-4 sm:pl-6">
             <LibelleLigne ligne={l} lang={lang} />
           </TableCell>
           <CelluleMontant valeur={l.vG} lang={lang} />
@@ -139,7 +139,7 @@ function SectionLignes({ section, lang }: { section: Section; lang: Lang }) {
       ))}
       {section.total && (
         <TableRow className="border-b font-medium">
-          <TableCell className="pl-6 text-sm">{section.total.label![lang]}</TableCell>
+          <TableCell className="whitespace-normal pl-4 sm:pl-6">{section.total.label![lang]}</TableCell>
           <CelluleMontant valeur={section.total.vG} lang={lang} fort />
           <CelluleMontant valeur={section.total.vD} lang={lang} fort />
           <CelluleMontant valeur={section.total.vD - section.total.vG} lang={lang} fort ecart />
@@ -195,7 +195,7 @@ export function TableauResultats({
         ))}
       </div>
 
-      <Table>
+      <Table className="text-xs sm:text-sm">
         <TableHeader>
           <TableRow>
             <TableHead>{UI.poste[lang]}</TableHead>
