@@ -260,8 +260,8 @@ export const UI = {
   },
   aProposAuteurTitre: { fr: "L'auteur", en: "The author" },
   aProposAuteur: {
-    fr: "Mathématicien de formation, titulaire d'un MBA en gestion des technologies de l'information et d'un DESS en intelligence artificielle, je poursuis aujourd'hui des études de droit. J'ai passé plus de trente ans en analyse de données, en finances publiques et en gouvernance au gouvernement du Québec, dont une douzaine d'années à des postes de direction. Présentement administrateur à la Chambre des notaires du Québec et étudiant en droit, je développe des prototypes d'intelligence artificielle appliquée au droit et à la fiscalité, dont ce calculateur.",
-    en: "Trained as a mathematician, holding an MBA in IT management and a graduate diploma in artificial intelligence, I am now studying law. I spent more than thirty years in data analysis, public finance and governance with the Government of Quebec, including a dozen years in executive roles. Currently a board member of the Chambre des notaires du Québec and a law student, I develop prototypes of AI applied to law and taxation, including this calculator.",
+    fr: "Présentement membre du conseil d'administration de la Chambre des notaires du Québec et étudiant en droit, j'expérimente l'IA appliquée au droit et au notariat en développant des prototypes.",
+    en: "Currently a member of the board of directors of the Chambre des notaires du Québec and a law student, I experiment with AI applied to law and the notarial profession by developing prototypes.",
   },
   aProposMethodeTitre: { fr: "Méthodologie", en: "Methodology" },
   aProposMethode: {
