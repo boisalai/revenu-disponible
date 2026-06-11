@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
     "@prisma/adapter-pg",
     "pg",
   ],
+
+  // L'outil `code_poste` de l'assistant lit les sources du moteur au runtime
+  // (src/lib/code-postes.ts). Le traçage statique ne voit pas ces lectures
+  // dynamiques : sans cette inclusion, les `.ts` n'existent pas dans la
+  // fonction déployée sur Vercel (en dev, ils sont lus sur le disque).
+  outputFileTracingIncludes: {
+    "/api/assistant": ["src/postes/*.ts", "src/socle.ts"],
+  },
 };
 
 export default nextConfig;

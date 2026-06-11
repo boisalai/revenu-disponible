@@ -7,6 +7,7 @@ import { courbeTauxMarginal } from "@/lib/taux-marginal";
 import { POSTES_INFO } from "@/lib/postes-info";
 import { SOURCE_POSTE } from "@/lib/sources-postes";
 import { CLE_VERS_POSTE } from "@/lib/parametres-meta";
+import { FICHIER_POSTE, codePoste } from "@/lib/code-postes";
 import { modeleValide } from "@/lib/modeles-ia";
 import { DEMO_MODELE, DEMO_TOURS_MAX, DEMO_MAX_TOKENS } from "@/lib/demo-ia";
 import { consommerQuotaDemo, ipClient } from "@/lib/demo-quota";
@@ -124,6 +125,7 @@ export async function POST(req: Request) {
     "- Les chiffres du SCÉNARIO ci-dessous et ceux des outils sont EXACTS et FONT AUTORITÉ. Recopie-les tels quels.",
     "- NE RECALCULE JAMAIS un total, un écart ou le revenu disponible toi-même : utilise les valeurs fournies (tu fais souvent des erreurs d'arithmétique).",
     "- Pour DÉTAILLER le calcul d'un poste (règle, taux, exemption, plafond, paliers, références), appelle l'outil detail_poste.",
+    "- Pour la MÉCANIQUE EXACTE d'un poste (ordre des étapes, arrondis, cas limites, interactions), appelle l'outil code_poste : il renvoie le code source TypeScript vérifié du moteur. Explique-le ensuite en langage clair, étape par étape ; ne montre des extraits de code que si on te le demande.",
     "- Pour un autre scénario (« et si… ? ») ou la courbe du TEMI (taux effectif marginal d'imposition), appelle l'outil correspondant — n'invente aucun chiffre.",
     "- Format pour un PANNEAU ÉTROIT : concis, phrases courtes, listes à puces. Pas de grands tableaux markdown (au plus 3 colonnes ; jamais de gras ** à l'intérieur des cellules). Markdown léger.",
     "- Reste dans le sujet (ce modèle fiscal). Rappelle au besoin que ce sont des valeurs indicatives, pas un avis fiscal.",
@@ -171,6 +173,14 @@ export async function POST(req: Request) {
             parametresOfficiels2026: params(2026),
           };
         },
+      }),
+      code_poste: tool({
+        description:
+          "Renvoie le code source TypeScript du moteur (vérifié, commenté en français, avec base légale) qui calcule un poste : la mécanique exacte — étapes, arrondis, plafonds, réductions, interactions. Complément de detail_poste pour les questions pointues ou pour reproduire un calcul à la main. Clés spéciales : « socle » (types et helpers communs : impotProgressif, credit, revenusAdultes) et « orchestrateur » (enchaînement des postes et bases de revenu).",
+        inputSchema: z.object({
+          cle: z.string().describe(`clé du poste, parmi : ${Object.keys(FICHIER_POSTE).join(", ")}`),
+        }),
+        execute: async ({ cle }) => (await codePoste(cle)) ?? { erreur: `clé inconnue : ${cle}` },
       }),
       calculer_revenu_disponible: tool({
         description:
