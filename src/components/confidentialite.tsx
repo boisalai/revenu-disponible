@@ -131,9 +131,11 @@ export function Confidentialite() {
 
           <Section titre="4. Conservation et destruction">
             <p>
-              Les renseignements de compte et les scénarios sont conservés tant que le compte est actif. Sur demande de
-              suppression, le compte et les données associées sont détruits dans les 30 jours. Les journaux techniques de
-              l'hébergeur sont conservés pour une courte durée qu'il détermine.
+              Les renseignements de compte et les scénarios sont conservés tant que le compte est actif. Vous pouvez
+              supprimer votre compte <strong>vous-même, immédiatement</strong> (menu du compte → « Supprimer mon compte ») :
+              le compte et toutes les données associées — scénarios, ménages types, jeux de paramètres — sont alors détruits
+              sur-le-champ. Sur demande par courriel, la destruction est effectuée au plus tard dans les 30 jours. Les
+              journaux techniques de l'hébergeur sont conservés pour une courte durée qu'il détermine.
             </p>
           </Section>
 
@@ -143,7 +145,7 @@ export function Confidentialite() {
               <li><strong>accéder</strong> aux renseignements personnels que nous détenons sur vous ;</li>
               <li>les faire <strong>rectifier</strong> s'ils sont inexacts ou incomplets ;</li>
               <li><strong>retirer votre consentement</strong> à leur utilisation ou à leur communication ;</li>
-              <li>demander la <strong>suppression</strong> de votre compte et des scénarios associés ;</li>
+              <li>demander la <strong>suppression</strong> de votre compte et des scénarios associés — aussi possible <strong>directement dans l'application</strong>, sans demande (section 4) ;</li>
               <li>demander la <strong>cessation de la diffusion</strong> d'un renseignement qui vous concerne.</li>
             </ul>
             <p>

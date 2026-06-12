@@ -18,6 +18,13 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   emailAndPassword: { enabled: true },
+  user: {
+    // Suppression de compte en libre-service (politique de confidentialité, §4-5).
+    // Compte courriel : confirmation par mot de passe. Compte Google sans mot de
+    // passe : Better Auth exige alors une session « fraîche » (défaut : 24 h).
+    // La destruction des scénarios/ménages/jeux suit par cascade (onDelete: Cascade).
+    deleteUser: { enabled: true },
+  },
   ...(socialProviders ? { socialProviders } : {}),
   account: {
     // Lie automatiquement une connexion Google à un compte courriel/mot de passe

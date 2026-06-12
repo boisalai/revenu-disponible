@@ -221,6 +221,20 @@ export const UI = {
     en: "Taxes versus transfers only — excluding contributions (insurance-based: they earn future entitlements) and childcare costs. Adult 1's income varies; everything else is held fixed.",
   },
 
+  // Suppression de compte
+  supprimerCompte: { fr: "Supprimer mon compte", en: "Delete my account" },
+  supprimerCompteTitre: { fr: "Supprimer votre compte ?", en: "Delete your account?" },
+  supprimerCompteDesc: {
+    fr: "Cette action est immédiate et définitive : votre compte, vos scénarios enregistrés, vos ménages types et vos jeux de paramètres seront détruits.",
+    en: "This action is immediate and permanent: your account, saved scenarios, household presets and parameter sets will be destroyed.",
+  },
+  supprimerCompteMdp: { fr: "Confirmez avec votre mot de passe", en: "Confirm with your password" },
+  supprimerCompteConfirmer: { fr: "Supprimer définitivement", en: "Delete permanently" },
+  supprimerCompteErreur: {
+    fr: "Échec de la suppression — mot de passe erroné ? Sinon, déconnectez-vous, reconnectez-vous, puis réessayez.",
+    en: "Deletion failed — wrong password? Otherwise, sign out, sign back in, then try again.",
+  },
+
   // Confidentialité
   confidentialiteLien: { fr: "Confidentialité", en: "Privacy" },
   confidentialiteTitre: { fr: "Politique de confidentialité", en: "Privacy policy" },

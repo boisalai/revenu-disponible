@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CircleUser, FolderOpen, Library, LogOut } from "lucide-react";
+import { CircleUser, FolderOpen, Library, LogOut, Trash2 } from "lucide-react";
 import { signOut, useSession } from "@/lib/auth-client";
 import { UI, type Lang } from "@/lib/i18n";
 import { AuthDialog } from "./auth-dialog";
 import { ScenariosDialog } from "./scenarios-dialog";
+import { SupprimerCompteDialog } from "./supprimer-compte-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ export function BarreCompte({ lang }: { lang: Lang }) {
   const { data: session, isPending } = useSession();
   const [authOuvert, setAuthOuvert] = useState(false);
   const [scnOuvert, setScnOuvert] = useState(false);
+  const [supprOuvert, setSupprOuvert] = useState(false);
 
   if (isPending) return null; // évite le clignotement connecté/déconnecté à l'hydratation
 
@@ -65,9 +67,18 @@ export function BarreCompte({ lang }: { lang: Lang }) {
             <LogOut className="size-4" />
             {UI.seDeconnecter[lang]}
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="text-destructive focus:text-destructive"
+            onClick={() => setSupprOuvert(true)}
+          >
+            <Trash2 className="size-4" />
+            {UI.supprimerCompte[lang]}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <ScenariosDialog open={scnOuvert} onOpenChange={setScnOuvert} lang={lang} />
+      <SupprimerCompteDialog open={supprOuvert} onOpenChange={setSupprOuvert} lang={lang} />
     </>
   );
 }
