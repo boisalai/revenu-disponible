@@ -264,6 +264,7 @@ export const UI = {
   // Export
   exportCsv: { fr: "Exporter en CSV", en: "Export to CSV" },
   exportPdf: { fr: "Exporter en PDF", en: "Export to PDF" },
+  paramsModifies: { fr: "paramètre(s) modifié(s)", en: "modified parameter(s)" },
 
   // Panneau d'information
   fermer: { fr: "Fermer", en: "Close" },
@@ -289,6 +290,18 @@ export const UI = {
   assistantIntro: { fr: "Posez une question sur le scénario affiché, ou choisissez :", en: "Ask about the displayed scenario, or pick:" },
   assistantQ1: { fr: "Explique-moi ce résultat.", en: "Explain this result to me." },
   assistantQ2: { fr: "Pourquoi mon taux marginal varie-t-il autant ?", en: "Why does my marginal rate vary so much?" },
+  assistantScenariosIntro: {
+    fr: "Posez une question sur la comparaison affichée, ou choisissez :",
+    en: "Ask about the displayed comparison, or pick:",
+  },
+  assistantScenariosQ1: {
+    fr: "Explique-moi l'écart entre les deux scénarios.",
+    en: "Explain the gap between the two scenarios.",
+  },
+  assistantScenariosQ2: {
+    fr: "Quel poste change le plus, et pourquoi ?",
+    en: "Which item changes the most, and why?",
+  },
   assistantPlaceholder: { fr: "Votre question…", en: "Your question…" },
   assistantEnvoyer: { fr: "Envoyer", en: "Send" },
   assistantReflechit: { fr: "L'assistant réfléchit…", en: "Thinking…" },

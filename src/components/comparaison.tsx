@@ -12,6 +12,9 @@ import { FormulaireMenage } from "@/components/formulaire-menage";
 import { CasTypes } from "@/components/cas-types";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { TauxVariation } from "@/components/taux-variation";
+import { BoutonsExport } from "@/components/boutons-export";
+import { specComparaison, labelJeu } from "@/lib/export-resultats";
+import { AssistantChat, BoutonAssistant } from "@/components/assistant/assistant-chat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 import { MenagePicker } from "@/components/menage-picker";
@@ -104,10 +107,23 @@ export function Comparaison() {
   const rA = useMemo(() => calculerRevenuDisponible(versMenage(etatA), bundleJeu), [etatA, bundleJeu]);
   const rB = useMemo(() => calculerRevenuDisponible(versMenage(etatB), bundleJeu), [etatB, bundleJeu]);
 
+  // Écarts du jeu courant vs officiel : libellé d'export + contexte de l'assistant.
+  const diffJeu = useMemo(() => diffParams(bundleJeu, PARAMETRES_OFFICIELS[anneeJeu]), [bundleJeu, anneeJeu]);
+
   return (
     <EspaceTravail
       lang={lang}
       tailleGauche="32%"
+      assistant={
+        <AssistantChat
+          lang={lang}
+          api="/api/assistant-scenarios"
+          corps={{ mode: "menages", menageA: etatA, menageB: etatB, jeuA: { annee: anneeJeu, diff: diffJeu }, lang }}
+          intro={UI.assistantScenariosIntro[lang]}
+          actionsRapides={[UI.assistantScenariosQ1[lang], UI.assistantScenariosQ2[lang]]}
+          demoPossible
+        />
+      }
       header={
         <BarreSuperieure
           lang={lang}
@@ -138,6 +154,15 @@ export function Comparaison() {
       }}
       central={{
         titre: UI.revenuDisponible[lang],
+        actions: (
+          <div className="flex items-center gap-2">
+            <BoutonAssistant lang={lang} />
+            <BoutonsExport
+              spec={specComparaison(etatA, etatB, rA, rB, labelJeu(anneeJeu, Object.keys(diffJeu).length, lang), lang)}
+              lang={lang}
+            />
+          </div>
+        ),
         contenu: (
           <div className="space-y-5 px-5 py-5">
             <TableauResultats

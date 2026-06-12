@@ -12,6 +12,7 @@ import { FormulaireMenage } from "@/components/formulaire-menage";
 import { CasTypes } from "@/components/cas-types";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { BoutonsExport } from "@/components/boutons-export";
+import { specCalculateur } from "@/lib/export-resultats";
 import { AssistantChat, BoutonAssistant } from "@/components/assistant/assistant-chat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
@@ -86,7 +87,7 @@ export function Calculateur() {
         actions: (
           <div className="flex items-center gap-2">
             <BoutonAssistant lang={lang} />
-            <BoutonsExport etat={etat} r25={r25} r26={r26} lang={lang} />
+            <BoutonsExport spec={specCalculateur(etat, r25, r26, lang)} lang={lang} />
           </div>
         ),
         contenu: (

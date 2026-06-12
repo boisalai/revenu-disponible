@@ -7,11 +7,14 @@ import { calculerRevenuDisponible, PARAMETRES_OFFICIELS, type Annee, type Parame
 import { UI, type Lang } from "@/lib/i18n";
 import { useLangue } from "@/components/lang-provider";
 import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
-import { encoderBudget, decoderBudget } from "@/lib/partage";
+import { encoderBudget, decoderBudget, diffParams } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { EditeurParametres } from "@/components/editeur-parametres";
+import { BoutonsExport } from "@/components/boutons-export";
+import { specBudget, labelJeu } from "@/lib/export-resultats";
+import { AssistantChat, BoutonAssistant } from "@/components/assistant/assistant-chat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 import { MenagePicker } from "@/components/menage-picker";
@@ -101,10 +104,30 @@ export function Budget() {
   const rA = useMemo(() => calculerRevenuDisponible(menage, bundleA), [menage, bundleA]);
   const rB = useMemo(() => calculerRevenuDisponible(menage, bundleB), [menage, bundleB]);
 
+  // Écarts de chaque jeu vs officiel : libellés d'export + contexte de l'assistant.
+  const diffA = useMemo(() => diffParams(bundleA, PARAMETRES_OFFICIELS[anneeA]), [bundleA, anneeA]);
+  const diffB = useMemo(() => diffParams(bundleB, PARAMETRES_OFFICIELS[anneeB]), [bundleB, anneeB]);
+
   return (
     <EspaceTravail
       lang={lang}
       tailleGauche="34%"
+      assistant={
+        <AssistantChat
+          lang={lang}
+          api="/api/assistant-scenarios"
+          corps={{
+            mode: "parametres",
+            menageA: etat,
+            jeuA: { annee: anneeA, diff: diffA },
+            jeuB: { annee: anneeB, diff: diffB },
+            lang,
+          }}
+          intro={UI.assistantScenariosIntro[lang]}
+          actionsRapides={[UI.assistantScenariosQ1[lang], UI.assistantScenariosQ2[lang]]}
+          demoPossible
+        />
+      }
       header={
         <BarreSuperieure
           lang={lang}
@@ -152,6 +175,20 @@ export function Budget() {
       }}
       central={{
         titre: UI.revenuDisponible[lang],
+        actions: (
+          <div className="flex items-center gap-2">
+            <BoutonAssistant lang={lang} />
+            <BoutonsExport
+              spec={specBudget(
+                etat, rA, rB,
+                anneeA, labelJeu(anneeA, Object.keys(diffA).length, lang),
+                anneeB, labelJeu(anneeB, Object.keys(diffB).length, lang),
+                lang,
+              )}
+              lang={lang}
+            />
+          </div>
+        ),
         contenu: (
           <div className="px-5 py-5">
             <TableauResultats

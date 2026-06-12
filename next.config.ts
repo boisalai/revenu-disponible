@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
   // fonction déployée sur Vercel (en dev, ils sont lus sur le disque).
   outputFileTracingIncludes: {
     "/api/assistant": ["src/postes/*.ts", "src/socle.ts"],
+    "/api/assistant-scenarios": ["src/postes/*.ts", "src/socle.ts"],
   },
 };
 
