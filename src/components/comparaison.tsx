@@ -63,7 +63,7 @@ function SectionMenage({
       <h3 className="mb-3 text-sm font-semibold">{titre}</h3>
       <div className="grid gap-4">
         <MenagePicker lang={lang} etatCourant={etat} onCharger={onChange} />
-        <CasTypes lang={lang} onCharger={onChange} />
+        <CasTypes lang={lang} etat={etat} onCharger={onChange} />
         <FormulaireMenage etat={etat} onChange={onChange} lang={lang} prefixe={prefixe} />
       </div>
     </div>

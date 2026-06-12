@@ -67,7 +67,7 @@ export function Calculateur() {
         titre: UI.situationMenage[lang],
         contenu: (
           <div className="space-y-5 px-5 py-5">
-            <CasTypes lang={lang} onCharger={setEtat} />
+            <CasTypes lang={lang} etat={etat} onCharger={setEtat} />
             <FormulaireMenage etat={etat} onChange={setEtat} lang={lang} />
           </div>
         ),
