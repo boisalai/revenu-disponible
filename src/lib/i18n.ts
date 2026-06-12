@@ -221,6 +221,14 @@ export const UI = {
     en: "Taxes versus transfers only — excluding contributions (insurance-based: they earn future entitlements) and childcare costs. Adult 1's income varies; everything else is held fixed.",
   },
 
+  // Confidentialité
+  confidentialiteLien: { fr: "Confidentialité", en: "Privacy" },
+  confidentialiteTitre: { fr: "Politique de confidentialité", en: "Privacy policy" },
+  confidentialiteSousTitre: {
+    fr: "Ce que l'application recueille — et surtout ce qu'elle ne recueille pas",
+    en: "What the app collects — and above all what it does not",
+  },
+
   // Export
   exportCsv: { fr: "Exporter en CSV", en: "Export to CSV" },
   exportPdf: { fr: "Exporter en PDF", en: "Export to PDF" },

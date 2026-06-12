@@ -74,6 +74,10 @@ node scripts/telecharger-reference.mjs
 npm test
 ```
 
+## Licence
+
+Code sous **[AGPL-3.0](LICENSE)** — libre d'utiliser, de modifier et de redistribuer, à condition que toute version dérivée (y compris offerte comme service web) reste sous AGPL-3.0 avec son code source accessible. Guide pédagogique sous **CC BY-SA 4.0** ; paramètres fiscaux = faits issus des sources officielles, sans revendication ; le calculateur du MFQ n'est **pas couvert** (voir [LICENSE.md](LICENSE.md) et [reference/README.md](reference/README.md)).
+
 ## Avertissement
 
 Outil **pédagogique** : les montants sont **indicatifs** et **ne constituent pas un avis fiscal**. Les exemples n'utilisent que des **données fictives**.
@@ -153,6 +157,10 @@ source (checksums verified) and run the full suite:
 node scripts/telecharger-reference.mjs
 npm test
 ```
+
+## License
+
+Code under **[AGPL-3.0](LICENSE)** — free to use, modify and redistribute, provided any derivative (including one offered as a web service) remains under AGPL-3.0 with its source code available. Educational guide under **CC BY-SA 4.0**; tax parameters are facts from official sources, with no claim; the MFQ calculator itself is **not covered** (see [LICENSE.md](LICENSE.md) and [reference/README.md](reference/README.md)).
 
 ## Disclaimer
 

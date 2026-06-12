@@ -96,6 +96,10 @@ export function PiedPage({ lang }: { lang: Lang }) {
           {UI.aProposLien[lang]}
         </Link>
         {" · "}
+        <Link href="/confidentialite" className="font-medium text-primary underline-offset-4 hover:underline">
+          {UI.confidentialiteLien[lang]}
+        </Link>
+        {" · "}
         <a
           href="/guide-revenu-disponible.pdf"
           target="_blank"
