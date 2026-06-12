@@ -9,6 +9,7 @@ import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
 import { encoderComparaison, decoderComparaison, diffParams } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
+import { CasTypes } from "@/components/cas-types";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
@@ -62,6 +63,7 @@ function SectionMenage({
       <h3 className="mb-3 text-sm font-semibold">{titre}</h3>
       <div className="grid gap-4">
         <MenagePicker lang={lang} etatCourant={etat} onCharger={onChange} />
+        <CasTypes lang={lang} onCharger={onChange} />
         <FormulaireMenage etat={etat} onChange={onChange} lang={lang} prefixe={prefixe} />
       </div>
     </div>

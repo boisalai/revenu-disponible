@@ -9,6 +9,7 @@ import { MENAGE_DEFAUT, versMenage, type MenageEtat } from "@/lib/menage-etat";
 import { encoderMenage, decoderMenage } from "@/lib/partage";
 import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
+import { CasTypes } from "@/components/cas-types";
 import { TableauResultats } from "@/components/tableau-resultats";
 import { BoutonsExport } from "@/components/boutons-export";
 import { AssistantChat, BoutonAssistant } from "@/components/assistant/assistant-chat";
@@ -65,7 +66,8 @@ export function Calculateur() {
       gauche={{
         titre: UI.situationMenage[lang],
         contenu: (
-          <div className="px-5 py-5">
+          <div className="space-y-5 px-5 py-5">
+            <CasTypes lang={lang} onCharger={setEtat} />
             <FormulaireMenage etat={etat} onChange={setEtat} lang={lang} />
           </div>
         ),

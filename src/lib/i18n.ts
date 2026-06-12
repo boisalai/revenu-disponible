@@ -221,6 +221,10 @@ export const UI = {
     en: "Taxes versus transfers only — excluding contributions (insurance-based: they earn future entitlements) and childcare costs. Adult 1's income varies; everything else is held fixed.",
   },
 
+  // Cas types du guide
+  casTypes: { fr: "Cas types du guide", en: "Guide case profiles" },
+  casTypesPlaceholder: { fr: "Charger un cas type (M1–M13)…", en: "Load a case profile (M1–M13)…" },
+
   // Suppression de compte
   supprimerCompte: { fr: "Supprimer mon compte", en: "Delete my account" },
   supprimerCompteTitre: { fr: "Supprimer votre compte ?", en: "Delete your account?" },

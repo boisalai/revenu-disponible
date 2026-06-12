@@ -13,7 +13,7 @@
 // Tous les exemples portent sur l'année d'imposition 2025.
 // ============================================================================
 
-import { Situation, SITUATIONS, TypeGarde, impotProgressif, type Menage } from "../src/socle";
+import { SITUATIONS, TypeGarde, impotProgressif, type Menage } from "../src/socle";
 import { RRQ, cotisationRRQ } from "../src/postes/01-rrq";
 import { RQAP } from "../src/postes/02-rqap";
 import { AE } from "../src/postes/03-ae";
@@ -37,6 +37,8 @@ import { PALIERS_FEDERAL, PALIERS_QC } from "../src/impot/parametres";
 import { calculerRevenuDisponible } from "../src/postes/20-revenu-disponible";
 import { courbeTauxMarginal, zonesTrappe } from "../src/lib/taux-marginal";
 import { CRITERES, positionNette, seuilsMenage, type Critere } from "../src/lib/seuils";
+import { MENAGES_TYPES } from "../src/lib/menages-types";
+import { versMenage } from "../src/lib/menage-etat";
 
 const AN = 2025;
 
@@ -46,112 +48,70 @@ const AN = 2025;
 
 interface MenageType {
   code: string; // « M4 »
-  /** Description complète (utilisée dans l'en-tête de chaque exemple). */
+  /** En-tête LaTeX (FR) des exemples — dérivé des données de src/lib/menages-types.ts. */
   titre: string;
   /** Colonnes du tableau récapitulatif : situation / âges / revenus / enfants. */
   specs: [string, string, string, string];
   menage: Menage;
 }
 
-const menage = (
-  situation: Situation,
-  revenu1: number,
-  revenu2: number,
-  age1: number,
-  age2: number,
-  enfants: Menage["enfants"] = [],
-): Menage => ({ situation, revenu1, revenu2, ageAdulte1: age1, ageAdulte2: age2, enfants });
+const NOMBRES = ["un", "deux", "trois", "quatre", "cinq"];
+const dL = (x: number) => (x === 0 ? "0\\,\\$" : `\\D{${x}}`);
 
-export const MENAGES: MenageType[] = [
-  {
-    code: "M1",
-    titre: "personne vivant seule, 25~ans, aucun revenu",
-    specs: ["Personne vivant seule", "25", "0\\,\\$", "---"],
-    menage: menage(Situation.PersonneSeule, 0, 0, 25, 0),
-  },
-  {
-    code: "M2",
-    titre: "personne vivant seule, 30~ans, revenu de travail de \\D{9000}",
-    specs: ["Personne vivant seule", "30", "\\D{9000}", "---"],
-    menage: menage(Situation.PersonneSeule, 9000, 0, 30, 0),
-  },
-  {
-    code: "M3",
-    titre: "personne vivant seule, 30~ans, revenu de travail de \\D{15000}",
-    specs: ["Personne vivant seule", "30", "\\D{15000}", "---"],
-    menage: menage(Situation.PersonneSeule, 15_000, 0, 30, 0),
-  },
-  {
-    code: "M4",
-    titre: "personne vivant seule, 40~ans, revenu de travail de \\D{50000}",
-    specs: ["Personne vivant seule", "40", "\\D{50000}", "---"],
-    menage: menage(Situation.PersonneSeule, 50_000, 0, 40, 0),
-  },
-  {
-    code: "M5",
-    titre: "personne vivant seule, 45~ans, revenu de travail de \\D{100000}",
-    specs: ["Personne vivant seule", "45", "\\D{100000}", "---"],
-    menage: menage(Situation.PersonneSeule, 100_000, 0, 45, 0),
-  },
-  {
-    code: "M6",
-    titre:
-      "famille monoparentale, 35~ans, revenu de travail de \\D{35000}, un enfant de 3~ans en garderie subventionnée (\\D{2000} payés dans l'année)",
-    specs: ["Famille monoparentale", "35", "\\D{35000}", "3 ans (subv., \\D{2000})"],
-    menage: menage(Situation.FamilleMonoparentale, 35_000, 0, 35, 0, [
-      { age: 3, fraisGarde: 2000, typeGarde: TypeGarde.Subventionne },
-    ]),
-  },
-  {
-    code: "M7",
-    titre: "couple, 45 et 44~ans, revenus de travail de \\D{30000} et \\D{0}, sans enfant",
-    specs: ["Couple", "45 / 44", "\\D{30000} / 0\\,\\$", "---"],
-    menage: menage(Situation.Couple, 30_000, 0, 45, 44),
-  },
-  {
-    code: "M8",
-    titre:
-      "couple, 38 et 36~ans, revenus de travail de \\D{60000} et \\D{40000}, deux enfants : 4~ans (garde non subventionnée, \\D{13000}) et 8~ans (garde non subventionnée, \\D{3000})",
-    specs: ["Couple", "38 / 36", "\\D{60000} / \\D{40000}", "4 ans (\\D{13000}) ; 8 ans (\\D{3000})"],
-    menage: menage(Situation.Couple, 60_000, 40_000, 38, 36, [
-      { age: 4, fraisGarde: 13_000, typeGarde: TypeGarde.NonSubventionne },
-      { age: 8, fraisGarde: 3000, typeGarde: TypeGarde.NonSubventionne },
-    ]),
-  },
-  {
-    code: "M9",
-    titre:
-      "couple, 45 et 45~ans, revenus de travail de \\D{120000} et \\D{60000}, un enfant de 5~ans (garde non subventionnée, \\D{15000})",
-    specs: ["Couple", "45 / 45", "\\D{120000} / \\D{60000}", "5 ans (\\D{15000})"],
-    menage: menage(Situation.Couple, 120_000, 60_000, 45, 45, [
-      { age: 5, fraisGarde: 15_000, typeGarde: TypeGarde.NonSubventionne },
-    ]),
-  },
-  {
-    code: "M10",
-    titre: "retraité vivant seul, 70~ans, revenu de pension privée de \\D{20000}",
-    specs: ["Retraité vivant seul", "70", "\\D{20000}", "---"],
-    menage: menage(Situation.RetraiteSeul, 20_000, 0, 70, 0),
-  },
-  {
-    code: "M11",
-    titre: "couple de retraités, 72 et 70~ans, pensions privées de \\D{30000} et \\D{10000}",
-    specs: ["Couple de retraités", "72 / 70", "\\D{30000} / \\D{10000}", "---"],
-    menage: menage(Situation.CoupleRetraites, 30_000, 10_000, 72, 70),
-  },
-  {
-    code: "M12",
-    titre: "retraité vivant seul, 76~ans, revenu de pension privée de \\D{110000}",
-    specs: ["Retraité vivant seul", "76", "\\D{110000}", "---"],
-    menage: menage(Situation.RetraiteSeul, 110_000, 0, 76, 0),
-  },
-  {
-    code: "M13",
-    titre: "couple de retraités, 68 et 66~ans, pensions privées de \\D{12000} et \\D{6000}",
-    specs: ["Couple de retraités", "68 / 66", "\\D{12000} / \\D{6000}", "---"],
-    menage: menage(Situation.CoupleRetraites, 12_000, 6000, 68, 66),
-  },
-];
+type Entree = (typeof MENAGES_TYPES)[number];
+
+/** Fragment LaTeX d'un enfant : « 4~ans (garde non subventionnée, \D{13000}) ». */
+function enfantLatex(e: Entree["etat"]["enfants"][number]): string {
+  if (e.fraisGarde <= 0) return `${e.age}~ans`;
+  const type = e.typeGarde === TypeGarde.NonSubventionne ? "non subventionnée" : "subventionnée";
+  return `${e.age}~ans (garde ${type}, \\D{${e.fraisGarde}})`;
+}
+
+/** En-tête LaTeX d'un exemple, dérivé du cast (source unique avec l'application). */
+function titreLatex(mt: Entree): string {
+  const e = mt.etat;
+  const { nbAdultes, retraite, libelle } = SITUATIONS[e.situation];
+  const lib = libelle.charAt(0).toLowerCase() + libelle.slice(1);
+  const ages = nbAdultes === 2 ? `${e.age1} et ${e.age2}~ans` : `${e.age1}~ans`;
+  const revenus = retraite
+    ? nbAdultes === 2
+      ? `pensions privées de \\D{${e.revenu1}} et \\D{${e.revenu2}}`
+      : `revenu de pension privée de \\D{${e.revenu1}}`
+    : nbAdultes === 2
+      ? `revenus de travail de \\D{${e.revenu1}} et ${dL(e.revenu2)}`
+      : e.revenu1 === 0
+        ? "aucun revenu"
+        : `revenu de travail de \\D{${e.revenu1}}`;
+  const enfants = e.enfants.length
+    ? `, ${NOMBRES[e.enfants.length - 1]} enfant${e.enfants.length > 1 ? "s" : ""} : ${e.enfants.map(enfantLatex).join(" et ")}`
+    : "";
+  return `${lib}, ${ages}, ${revenus}${enfants}`;
+}
+
+/** Colonnes LaTeX du tableau récapitulatif du cast. */
+function specsLatex(mt: Entree): [string, string, string, string] {
+  const e = mt.etat;
+  const { nbAdultes, libelle } = SITUATIONS[e.situation];
+  const ages = nbAdultes === 2 ? `${e.age1} / ${e.age2}` : `${e.age1}`;
+  const revenus = nbAdultes === 2 ? `${dL(e.revenu1)} / ${dL(e.revenu2)}` : dL(e.revenu1);
+  const enfants = e.enfants.length
+    ? e.enfants
+        .map((c) =>
+          c.fraisGarde > 0
+            ? `${c.age} ans (${c.typeGarde === TypeGarde.Subventionne ? "subv., " : ""}\\D{${c.fraisGarde}})`
+            : `${c.age} ans`,
+        )
+        .join(" ; ")
+    : "---";
+  return [libelle, ages, revenus, enfants];
+}
+
+export const MENAGES: MenageType[] = MENAGES_TYPES.map((mt) => ({
+  code: mt.code,
+  titre: titreLatex(mt),
+  specs: specsLatex(mt),
+  menage: versMenage(mt.etat),
+}));
 
 const M = Object.fromEntries(MENAGES.map((m) => [m.code, m]));
 
@@ -232,7 +192,8 @@ exemple reproduit l'algorithme du poste à la calculatrice ; tous les montants
 sont produits par le moteur de calcul et chaque résultat final est
 \\textbf{vérifié automatiquement} contre celui-ci par la suite de tests du
 projet (le fichier source des exemples est régénéré à chaque modification du
-moteur).
+moteur). Chacun de ces ménages se charge d'un clic dans
+l'application (sélecteur \\og Cas types du guide \\fg{} du calculateur).
 
 \\begin{table}[ht]
 \\centering
