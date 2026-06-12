@@ -88,6 +88,25 @@ function ventilationComplete(menage: MenageEtat, lang: "fr" | "en"): string {
   return out.join("\n");
 }
 
+/** Position nette et seuils du ménage affiché (2025 et 2026), exacts — à recopier par le modèle. */
+function blocSeuils(etat: MenageEtat): string {
+  const v = (x: number | null) => (x === null ? "non atteint avant 300 000 $" : dollars(x));
+  return ([2025, 2026] as const)
+    .map((annee) => {
+      const m = versMenage(etat);
+      const pos = positionNette(m, annee);
+      const s = seuilsMenage(m, annee);
+      return (
+        `${annee} : position nette = ${pos.nette >= 0 ? "BÉNÉFICIAIRE" : "CONTRIBUTEUR"} net de ${dollars(Math.abs(pos.nette))} ` +
+        `(${dollars(pos.transferts)} de transferts reçus ; ${dollars(pos.impots)} d'impôts payés). ` +
+        `Seuils : 1er $ d'impôt fédéral à ${v(s.impotFederal)} de revenu ; 1er $ d'impôt du Québec à ${v(s.impotQuebec)} ; ` +
+        `devient contributeur net à ${v(s.contributeurNet)} (envers le Québec seul : ${v(s.contributeurNetQuebec)} ; ` +
+        `envers le fédéral seul : ${v(s.contributeurNetFederal)}).`
+      );
+    })
+    .join("\n");
+}
+
 export async function POST(req: Request) {
   const { messages, menage, lang, apiKey, modele } = (await req.json()) as {
     messages: UIMessage[];
@@ -129,16 +148,30 @@ export async function POST(req: Request) {
     "- Dès que la question porte sur le COMMENT d'un calcul (« comment se calcule… », « précisément », « étape par étape », ordre des étapes, arrondis, cas limites, interactions), appelle AUSSI l'outil code_poste : le code source TypeScript vérifié du moteur, qui fait foi de la mécanique exacte. Explique-le en langage clair, étape par étape ; ne montre des extraits de code que sur demande.",
     "- Ne demande JAMAIS la permission d'appeler un outil (pas de « veux-tu que je consulte… ? ») : consulte d'abord, réponds ensuite.",
     "- Pour un autre scénario (« et si… ? ») ou la courbe du TEMI (taux effectif marginal d'imposition), appelle l'outil correspondant — n'invente aucun chiffre.",
+    "- Pour la position nette et les seuils (« à partir de quel revenu… ? », premier dollar d'impôt, contributeur net) : recopie le bloc SEUILS ci-dessous ; pour un AUTRE ménage, appelle l'outil seuils. Définitions : solde = impôts contre transferts seulement (cotisations exclues, car assurantielles ; frais de garde exclus, car coût privé) ; le revenu de l'adulte 1 varie, le reste du ménage est fixe ; chaque seuil est le premier franchissement, exact au dollar.",
     "- Format pour un PANNEAU ÉTROIT : concis, phrases courtes, listes à puces. Pas de grands tableaux markdown (au plus 3 colonnes ; jamais de gras ** à l'intérieur des cellules). Markdown léger.",
     "- Reste dans le sujet (ce modèle fiscal). Rappelle au besoin que ce sont des valeurs indicatives, pas un avis fiscal.",
     "",
     "SCÉNARIO ACTUELLEMENT AFFICHÉ :",
     `- Situation : ${SITUATIONS[menage.situation] ?? "?"}`,
     `- Revenu adulte 1 : ${dollars(menage.revenu1)}${couple ? ` ; adulte 2 : ${dollars(menage.revenu2)}` : ""}`,
-    `- Âge : ${menage.age1}${couple ? ` ; ${menage.age2}` : ""} ; enfants : ${menage.enfants.length}`,
+    `- Âge : ${menage.age1}${couple ? ` ; ${menage.age2}` : ""}`,
+    `- Enfants : ${
+      menage.enfants.length === 0
+        ? "aucun"
+        : menage.enfants
+            .map(
+              (e) =>
+                `${e.age} ans${e.fraisGarde > 0 ? ` (garde ${e.typeGarde === 1 ? "non subventionnée" : "subventionnée"}, ${dollars(e.fraisGarde)}/an)` : ""}`,
+            )
+            .join(" ; ")
+    } — pour les outils, reprends EXACTEMENT ces âges, frais et types de garde.`,
     "",
     "Ventilation EXACTE par poste (à recopier, ne pas recalculer) :",
     ventilationComplete(menage, lang),
+    "",
+    "SEUILS ET POSITION NETTE du ménage affiché (EXACTS, à recopier — ne jamais recalculer) :",
+    blocSeuils(menage),
   ].join("\n");
 
   const result = streamText({
