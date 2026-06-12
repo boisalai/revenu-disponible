@@ -4,6 +4,7 @@ import { convertToModelMessages, streamText, stepCountIs, tool, type UIMessage }
 import { calculerRevenuDisponible, PARAMETRES_OFFICIELS } from "@/index";
 import { versMenage, type MenageEtat } from "@/lib/menage-etat";
 import { courbeTauxMarginal } from "@/lib/taux-marginal";
+import { positionNette, seuilsMenage } from "@/lib/seuils";
 import { POSTES_INFO } from "@/lib/postes-info";
 import { SOURCE_POSTE } from "@/lib/sources-postes";
 import { CLE_VERS_POSTE } from "@/lib/parametres-meta";
@@ -200,6 +201,33 @@ export async function POST(req: Request) {
             transfertsFederaux: Math.round(c.transfertsFederaux),
             impotFederal: -Math.round(c.impotFederal),
             coutFraisGarde: -Math.round(c.fraisGarde),
+          };
+        },
+      }),
+      seuils: tool({
+        description:
+          "Position nette d'un ménage (transferts reçus − impôts payés) et ses seuils de bascule, au dollar près : revenu où il paie son premier dollar d'impôt (Québec ; fédéral) et revenu où il devient contributeur net (impôts > transferts ; aussi détaillé par gouvernement). Convention : le revenu de l'adulte 1 varie, le reste est fixe ; cotisations et frais de garde exclus du solde. À utiliser pour « à partir de quel revenu… ? » ou « est-ce que je reçois plus que je paie ? ».",
+        inputSchema: menageSchema.extend({ annee: z.union([z.literal(2025), z.literal(2026)]).default(2025) }),
+        execute: async ({ annee, ...m }) => {
+          const menageCalc = versMenage(m as MenageEtat);
+          const pos = positionNette(menageCalc, annee);
+          const s = seuilsMenage(menageCalc, annee);
+          return {
+            annee,
+            positionNette: {
+              transfertsRecus: Math.round(pos.transferts),
+              impotsPayes: Math.round(pos.impots),
+              solde: Math.round(pos.nette),
+              statut: pos.nette >= 0 ? "bénéficiaire net" : "contributeur net",
+            },
+            seuils: {
+              premierDollarImpotQuebec: s.impotQuebec,
+              premierDollarImpotFederal: s.impotFederal,
+              contributeurNet: s.contributeurNet,
+              contributeurNetEnversQuebec: s.contributeurNetQuebec,
+              contributeurNetEnversFederal: s.contributeurNetFederal,
+              note: "null = non atteint avant 300 000 $ de revenu",
+            },
           };
         },
       }),

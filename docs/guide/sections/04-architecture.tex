@@ -204,3 +204,43 @@ hypothèses distincts ; elles supposent notamment une assurance médicaments
 (poste~5) --- mais les reliefs (plateaux, pointes, trappes) concordent.
 Leurs analyses récentes signalent des TEMI dépassant \pc{100} pour des
 familles de trois enfants dans certaines plages de revenu.
+
+\subsection{Seuils d'imposition nulle et de contribution nette}
+\label{sec:seuils}
+
+Le TEMI décrit la \emph{pente} ; trois questions \og en niveaux \fg{} la
+complètent, que le calculateur résout pour le ménage affiché :
+
+\begin{enumerate}
+  \item à partir de quel revenu le ménage paie-t-il son \textbf{premier
+        dollar d'impôt} ? La réponse diffère pour le Québec et le fédéral
+        (montants personnels de base, déduction pour travailleur et
+        crédits distincts) ;
+  \item à partir de quel revenu devient-il \textbf{contributeur net},
+        c'est-à-dire paie-t-il plus d'impôts qu'il ne reçoit de
+        transferts ? Le calcul est fait pour l'ensemble (impôts des deux
+        ordres contre transferts des deux ordres) et par gouvernement ;
+  \item au revenu saisi, quelle est sa \textbf{position nette} ---
+        transferts reçus moins impôts payés ?
+\end{enumerate}
+
+Deux choix de définition : les \emph{cotisations} sont exclues du solde
+(elles sont assurantielles --- le RRQ, le RQAP et l'assurance-emploi
+ouvrent des droits à des prestations), de même que les \emph{frais de
+garde} (un coût privé, non un prélèvement). La convention de variation est
+celle du TEMI (section~\ref{sec:temi}) : le revenu de l'adulte~1 varie,
+tout le reste est fixe --- pour un couple dont le conjoint travaille, le
+ménage peut donc payer de l'impôt dès 0~\$ de revenu de l'adulte~1
+(tableau~\ref{tab:seuils-menages}, M8 et M9).
+
+Chaque seuil est obtenu par \emph{balayage} du moteur complet puis
+\emph{dichotomie} dans la tranche où le critère change de signe : le
+résultat est exact au dollar, sans aucune formule parallèle --- et la suite
+de tests revérifie l'invariant (au seuil, le critère est positif ; un
+dollar plus bas, il ne l'est pas). Le concept rejoint les \og seuils
+d'imposition nulle \fg{} publiés périodiquement dans la littérature
+fiscale québécoise (notamment par la CFFP) pour des cas types ; ici, ils
+sont calculés pour le ménage \emph{exact} de l'utilisateur, frais de garde
+et âges compris.
+
+\input{exemples/seuils}

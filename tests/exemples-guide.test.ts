@@ -17,8 +17,8 @@ const DOSSIER = path.join(process.cwd(), "docs", "guide", "exemples");
 describe("exemples du guide", () => {
   const fichiers = genererTous(); // lève si une recette diverge du moteur
 
-  it("génère les 20 postes + le cast de ménages + le tableau TEMI", () => {
-    expect(fichiers.length).toBe(22);
+  it("génère les 20 postes + le cast + les tableaux TEMI et seuils", () => {
+    expect(fichiers.length).toBe(23);
   });
 
   if (process.env.ECRIRE_EXEMPLES) {

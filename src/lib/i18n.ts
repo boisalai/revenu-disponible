@@ -190,6 +190,28 @@ export const UI = {
     en: "Retired household: this curve also reads as the marginal cost of an additional RRIF withdrawal (or extra pension income).",
   },
 
+  // Seuils d'imposition et de contribution nette
+  seuilsTitre: { fr: "Seuils d'imposition et de contribution nette", en: "Tax and net-contribution thresholds" },
+  seuilsDesc: {
+    fr: "Où votre ménage se situe entre les transferts qu'il reçoit et les impôts qu'il paie, et les revenus où la situation bascule (calcul exact du moteur, au dollar près).",
+    en: "Where your household stands between transfers received and taxes paid, and the incomes at which this flips (exact engine computation, to the dollar).",
+  },
+  beneficiaireNet: { fr: "Bénéficiaire net", en: "Net beneficiary" },
+  contributeurNetTitre: { fr: "Contributeur net", en: "Net contributor" },
+  transfertsRecus: { fr: "de transferts reçus", en: "in transfers received" },
+  impotsPayes: { fr: "d'impôts payés", en: "in taxes paid" },
+  premierImpotQC: { fr: "Premier dollar d'impôt du Québec", en: "First dollar of Québec income tax" },
+  premierImpotFed: { fr: "Premier dollar d'impôt fédéral", en: "First dollar of federal income tax" },
+  basculeContributeur: { fr: "Contributeur net (impôts > transferts)", en: "Net contributor (taxes > transfers)" },
+  parGouvPrefixe: { fr: "Par gouvernement : contributeur net", en: "By government: net contributor" },
+  parGouvQC: { fr: "envers le Québec à partir de", en: "to Québec from" },
+  parGouvFed: { fr: "envers le fédéral à partir de", en: "to the federal government from" },
+  nonAtteint: { fr: "non atteint avant 300 000 $", en: "not reached below $300,000" },
+  seuilsNote: {
+    fr: "Impôts contre transferts seulement — hors cotisations (assurantielles : elles ouvrent des droits) et hors frais de garde. Le revenu de l'adulte 1 varie, le reste du ménage est fixe.",
+    en: "Taxes versus transfers only — excluding contributions (insurance-based: they earn future entitlements) and childcare costs. Adult 1's income varies; everything else is held fixed.",
+  },
+
   // Export
   exportCsv: { fr: "Exporter en CSV", en: "Export to CSV" },
   exportPdf: { fr: "Exporter en PDF", en: "Export to PDF" },

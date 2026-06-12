@@ -36,6 +36,7 @@ import { IMPOT_FEDERAL, IMPOT_QUEBEC } from "../src/postes/19-impot";
 import { PALIERS_FEDERAL, PALIERS_QC } from "../src/impot/parametres";
 import { calculerRevenuDisponible } from "../src/postes/20-revenu-disponible";
 import { courbeTauxMarginal, zonesTrappe } from "../src/lib/taux-marginal";
+import { CRITERES, positionNette, seuilsMenage, type Critere } from "../src/lib/seuils";
 
 const AN = 2025;
 
@@ -312,6 +313,62 @@ au revenu imposable correspondant (zéro sous le montant personnel de base).}
 \\end{table}
 `;
   return { nom: "temi.tex", contenu };
+}
+
+// ---------------------------------------------------------------------------
+// Seuils d'imposition nulle et de contribution nette (section « architecture »)
+// ---------------------------------------------------------------------------
+
+function fichierSeuils(): Fichier {
+  const tiret = "---"; // seuil non atteint avant le plafond du balayage
+  const signe = (v: number) => `${v >= 0 ? "$+$" : "$-$"}\\num{${Math.round(Math.abs(v))}}`;
+
+  const lignes = MENAGES.map((m) => {
+    const s = seuilsMenage(m.menage, AN);
+    const pos = positionNette(m.menage, AN);
+    // Revérification de l'invariant de dichotomie : au seuil, le critère est strictement
+    // positif ; un dollar plus bas, il ne l'est pas. Toute dérive du moteur ferait échouer.
+    const compAu = (r: number) => calculerRevenuDisponible({ ...m.menage, revenu1: r }, AN).composantes;
+    for (const nom of Object.keys(CRITERES) as Critere[]) {
+      const seuil = s[nom];
+      if (seuil === null) continue;
+      if (!(CRITERES[nom](compAu(seuil)) > 0)) throw new Error(`Seuil ${m.code}/${nom} : non positif au seuil ${seuil}.`);
+      if (seuil > 0 && CRITERES[nom](compAu(seuil - 1)) > 0)
+        throw new Error(`Seuil ${m.code}/${nom} : déjà positif à ${seuil - 1} — le seuil n'est pas le premier dollar.`);
+    }
+    const cell = (v: number | null) => (v === null ? tiret : `\\num{${v}}`);
+    return `${m.code} & ${cell(s.impotFederal)} & ${cell(s.impotQuebec)} & ${cell(s.contributeurNet)} & ${signe(pos.nette)} \\\\`;
+  });
+
+  const s4 = seuilsMenage(M.M4.menage, AN);
+  const contenu = `${entete}\\begin{table}[ht]
+\\centering
+\\small
+\\begin{tabular}{c r r r r}
+\\toprule
+Code & 1\\ier{} \\$ d'impôt fédéral & 1\\ier{} \\$ d'impôt du Québec & Contributeur net & Position nette \\\\
+\\midrule
+${lignes.join("\n")}
+\\bottomrule
+\\end{tabular}
+\\caption{Seuils 2025 des ménages types, au dollar près (le revenu de
+l'adulte~1 varie, le reste est fixe) : revenu au premier dollar d'impôt de
+chaque ordre de gouvernement, puis revenu où les impôts (Québec et fédéral
+réunis) dépassent les transferts. La \\og position nette \\fg{} est le solde
+\\emph{au revenu du tableau~\\ref{tab:menages-exemples}} (transferts reçus
+moins impôts payés ; positif : bénéficiaire net). \\og ${tiret} \\fg{} :
+seuil non atteint avant \\D{300000}.}
+\\label{tab:seuils-menages}
+\\end{table}
+
+\\noindent À titre de lecture : M4 (personne vivant seule) paie son premier
+dollar d'impôt fédéral à ${s4.impotFederal === null ? tiret : `\\D{${s4.impotFederal}}`} de revenu de
+travail, son premier dollar d'impôt québécois à ${s4.impotQuebec === null ? tiret : `\\D{${s4.impotQuebec}}`},
+et devient contributeur net à ${s4.contributeurNet === null ? tiret : `\\D{${s4.contributeurNet}}`} ---
+trois seuils que les tables d'imposition seules ne permettent pas de
+déduire, puisque transferts et crédits s'y mêlent.
+`;
+  return { nom: "seuils.tex", contenu };
 }
 
 // ---------------------------------------------------------------------------
@@ -1738,6 +1795,7 @@ export function genererTous(): Fichier[] {
   return [
     fichierMenages(),
     fichierTemi(),
+    fichierSeuils(),
     p01rrq(),
     p02rqap(),
     p03ae(),

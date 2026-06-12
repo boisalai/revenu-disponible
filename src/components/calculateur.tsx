@@ -14,6 +14,7 @@ import { BoutonsExport } from "@/components/boutons-export";
 import { AssistantChat, BoutonAssistant } from "@/components/assistant/assistant-chat";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { GraphiqueTauxMarginal } from "@/components/graphique-taux-marginal";
+import { SeuilsBascule } from "@/components/seuils-bascule";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 
 export function Calculateur() {
@@ -81,6 +82,13 @@ export function Calculateur() {
           <>
             <div className="px-5 py-5">
               <TableauResultats rGauche={r25} rDroite={r26} lang={lang} enteteGauche="2025" enteteDroite="2026" />
+            </div>
+            <div className="border-t px-5 py-5">
+              <h3 className="text-base font-semibold">{UI.seuilsTitre[lang]}</h3>
+              <p className="mt-0.5 max-w-3xl text-sm text-muted-foreground">{UI.seuilsDesc[lang]}</p>
+              <div className="mt-4">
+                <SeuilsBascule menage={menage} revenuActuel={etat.revenu1} lang={lang} />
+              </div>
             </div>
             <div className="border-t px-5 py-5">
               <h3 className="text-base font-semibold">{UI.tauxMarginalTitre[lang]}</h3>
