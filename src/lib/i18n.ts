@@ -221,6 +221,20 @@ export const UI = {
     en: "Taxes versus transfers only — excluding contributions (insurance-based: they earn future entitlements) and childcare costs. Adult 1's income varies; everything else is held fixed.",
   },
 
+  // Taux effectif d'une variation de revenu (page Comparaison)
+  tvTitre: { fr: "Taux effectif de la variation de revenu", en: "Effective rate of the income change" },
+  tvDe: { fr: "De", en: "From" },
+  tvVers: { fr: "à", en: "to" },
+  tvHausse: { fr: "le revenu disponible augmente de", en: "disposable income rises by" },
+  tvBaisse: { fr: "le revenu disponible diminue de", en: "disposable income falls by" },
+  tvLabel: { fr: "taux effectif sur la variation", en: "effective rate over the change" },
+  tvGloss: { fr: "Chaque dollar de revenu supplémentaire rapporte", en: "Each extra dollar of income yields" },
+  tvNet: { fr: "de revenu disponible.", en: "of disposable income." },
+  tvNote: {
+    fr: "Taux moyen sur tout l'écart de revenu — distinct du taux marginal en un point précis (graphique du calculateur).",
+    en: "Average rate over the whole income gap — distinct from the marginal rate at a single point (calculator chart).",
+  },
+
   // Cas types du guide
   casTypes: { fr: "Cas types du guide", en: "Guide case profiles" },
   casTypesPlaceholder: { fr: "Charger un cas type (M1–M13)…", en: "Load a case profile (M1–M13)…" },

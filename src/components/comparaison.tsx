@@ -11,6 +11,7 @@ import { usePartageURL } from "@/lib/use-partage-url";
 import { FormulaireMenage } from "@/components/formulaire-menage";
 import { CasTypes } from "@/components/cas-types";
 import { TableauResultats } from "@/components/tableau-resultats";
+import { TauxVariation } from "@/components/taux-variation";
 import { EspaceTravail, BarreSuperieure } from "@/components/espace-travail";
 import { BoutonEnregistrer } from "@/components/compte/bouton-enregistrer";
 import { MenagePicker } from "@/components/menage-picker";
@@ -138,7 +139,7 @@ export function Comparaison() {
       central={{
         titre: UI.revenuDisponible[lang],
         contenu: (
-          <div className="px-5 py-5">
+          <div className="space-y-5 px-5 py-5">
             <TableauResultats
               rGauche={rA}
               rDroite={rB}
@@ -148,6 +149,7 @@ export function Comparaison() {
               descGauche={descriptionMenage(etatA, lang)}
               descDroite={descriptionMenage(etatB, lang)}
             />
+            <TauxVariation etatA={etatA} etatB={etatB} rA={rA} rB={rB} lang={lang} />
           </div>
         ),
       }}
