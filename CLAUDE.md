@@ -27,6 +27,7 @@ Reconstruction **lisible, vérifiée et testée** du calculateur du ministère d
 - Les cotisations sont stockées en **négatif** (elles réduisent le revenu disponible) → les fonctions TS les renvoient en **positif**.
 - Table des situations (rangées B5:G9) : col. C = `nbAdultes`, col. G = `retraité` ; le drapeau `c2G11 == 1` ⟺ ménage retraité.
 - `reference/` est en **lecture seule** (traçage uniquement). Ne jamais l'éditer, ni exécuter le `.js`.
+- Les `.js` de `reference/` ne sont **PAS dans le dépôt** (droit d'auteur de l'État québécois — voir `reference/README.md`) : copie locale via `node scripts/telecharger-reference.mjs` (URL officielle MFQ + SHA-256 épinglés ; dé-minification `js-beautify@1.15.4 --indent-size 2`, vérifiée aussi). Sans eux, les 692 tests de parité sont **sautés** (suite verte quand même). **Ne jamais les committer.**
 
 ## Conventions du code TypeScript
 - `Annee = 2025 | 2026`. Paramètres par année dans un `Record<Annee, …>` exporté (ex. `RRQ`, `AE`, `FSS`).

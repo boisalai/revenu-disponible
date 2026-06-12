@@ -14,8 +14,24 @@
 // admissibles / le revenu de travail internes — couverts une fois le module d'impôt construit.
 // ===========================================================================
 
-import { describe, it, expect } from "vitest";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { describe as describeVitest, it, expect } from "vitest";
 import { calcReference } from "./reference/load-reference";
+
+// Le calculateur du MFQ n'est pas redistribué dans ce dépôt (droit d'auteur de
+// l'État — voir reference/README.md). Sans lui, la parité est SAUTÉE, pas en
+// échec : `node scripts/telecharger-reference.mjs` l'obtient de la source
+// officielle (sommes de contrôle vérifiées), puis relancer `npm test`.
+const REFERENCE_PRESENTE = existsSync(
+  fileURLToPath(new URL("../reference/revenu-disponible_dec2025_beautified.js", import.meta.url)),
+);
+if (!REFERENCE_PRESENTE) {
+  console.warn(
+    "⚠️ Parité sautée : référence MFQ absente. La télécharger : node scripts/telecharger-reference.mjs",
+  );
+}
+const describe = describeVitest.skipIf(!REFERENCE_PRESENTE);
 import {
   Situation,
   SITUATIONS,

@@ -64,6 +64,16 @@ npm test           # tests (concordance au cent près)
 npm run build
 ```
 
+**Vérifier la parité vous-même.** Le calculateur officiel du MFQ appartient à
+l'État québécois et n'est pas redistribué dans ce dépôt ([pourquoi](reference/README.md)) ;
+sans lui, les 692 tests de parité sont sautés. Pour l'obtenir de la source
+officielle (sommes de contrôle vérifiées) puis exécuter la suite complète :
+
+```bash
+node scripts/telecharger-reference.mjs
+npm test
+```
+
 ## Avertissement
 
 Outil **pédagogique** : les montants sont **indicatifs** et **ne constituent pas un avis fiscal**. Les exemples n'utilisent que des **données fictives**.
@@ -132,6 +142,16 @@ npm install
 npm run dev        # http://localhost:3100
 npm test           # tests (match to the cent)
 npm run build
+```
+
+**Verify the parity yourself.** The official MFQ calculator is owned by the
+Québec government and is not redistributed in this repository ([why](reference/README.md));
+without it, the 692 parity tests are skipped. To fetch it from the official
+source (checksums verified) and run the full suite:
+
+```bash
+node scripts/telecharger-reference.mjs
+npm test
 ```
 
 ## Disclaimer

@@ -19,3 +19,7 @@ next-env.d.ts
 
 # Fichiers de travail (captures d'écran, brouillons) — ne pas versionner
 tmp/
+
+# Calculateur de référence du MFQ : propriété de l'État, non redistribué.
+# L'obtenir de la source officielle : node scripts/telecharger-reference.mjs
+reference/*.js
