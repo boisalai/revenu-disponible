@@ -124,8 +124,9 @@ export async function POST(req: Request) {
     `- Réponds en ${langue}.`,
     "- Les chiffres du SCÉNARIO ci-dessous et ceux des outils sont EXACTS et FONT AUTORITÉ. Recopie-les tels quels.",
     "- NE RECALCULE JAMAIS un total, un écart ou le revenu disponible toi-même : utilise les valeurs fournies (tu fais souvent des erreurs d'arithmétique).",
-    "- Pour DÉTAILLER le calcul d'un poste (règle, taux, exemption, plafond, paliers, références), appelle l'outil detail_poste.",
-    "- Pour la MÉCANIQUE EXACTE d'un poste (ordre des étapes, arrondis, cas limites, interactions), appelle l'outil code_poste : il renvoie le code source TypeScript vérifié du moteur. Explique-le ensuite en langage clair, étape par étape ; ne montre des extraits de code que si on te le demande.",
+    "- Pour les montants, paramètres et références d'un poste, appelle l'outil detail_poste.",
+    "- Dès que la question porte sur le COMMENT d'un calcul (« comment se calcule… », « précisément », « étape par étape », ordre des étapes, arrondis, cas limites, interactions), appelle AUSSI l'outil code_poste : le code source TypeScript vérifié du moteur, qui fait foi de la mécanique exacte. Explique-le en langage clair, étape par étape ; ne montre des extraits de code que sur demande.",
+    "- Ne demande JAMAIS la permission d'appeler un outil (pas de « veux-tu que je consulte… ? ») : consulte d'abord, réponds ensuite.",
     "- Pour un autre scénario (« et si… ? ») ou la courbe du TEMI (taux effectif marginal d'imposition), appelle l'outil correspondant — n'invente aucun chiffre.",
     "- Format pour un PANNEAU ÉTROIT : concis, phrases courtes, listes à puces. Pas de grands tableaux markdown (au plus 3 colonnes ; jamais de gras ** à l'intérieur des cellules). Markdown léger.",
     "- Reste dans le sujet (ce modèle fiscal). Rappelle au besoin que ce sont des valeurs indicatives, pas un avis fiscal.",
@@ -148,7 +149,7 @@ export async function POST(req: Request) {
     tools: {
       detail_poste: tool({
         description:
-          "Détaille un poste précis : sa règle de calcul, ses références légales, son montant exact dans le scénario, et ses paramètres officiels (taux, exemptions, plafonds, paliers) pour 2025 et 2026. À utiliser dès qu'on demande « comment se calcule X » ou le détail d'un poste.",
+          "Détaille un poste précis : sa règle de calcul en une phrase, ses références légales, son montant exact dans le scénario, et ses paramètres officiels (taux, exemptions, plafonds, paliers) pour 2025 et 2026. À utiliser pour les montants, paramètres chiffrés et références. Si la question porte sur la mécanique du calcul, appelle AUSSI code_poste.",
         inputSchema: z.object({
           cle: z.string().describe(`clé du poste, parmi : ${Object.keys(POSTES_INFO).join(", ")}`),
         }),
@@ -176,7 +177,7 @@ export async function POST(req: Request) {
       }),
       code_poste: tool({
         description:
-          "Renvoie le code source TypeScript du moteur (vérifié, commenté en français, avec base légale) qui calcule un poste : la mécanique exacte — étapes, arrondis, plafonds, réductions, interactions. Complément de detail_poste pour les questions pointues ou pour reproduire un calcul à la main. Clés spéciales : « socle » (types et helpers communs : impotProgressif, credit, revenusAdultes) et « orchestrateur » (enchaînement des postes et bases de revenu).",
+          "Renvoie le code source TypeScript du moteur (vérifié, commenté en français, avec base légale) qui calcule un poste : la mécanique exacte — étapes, arrondis, plafonds, réductions, interactions. À appeler DIRECTEMENT (sans demander la permission) dès qu'on demande comment un poste se calcule, ou pour reproduire un calcul à la main. Clés spéciales : « socle » (types et helpers communs : impotProgressif, credit, revenusAdultes) et « orchestrateur » (enchaînement des postes et bases de revenu).",
         inputSchema: z.object({
           cle: z.string().describe(`clé du poste, parmi : ${Object.keys(FICHIER_POSTE).join(", ")}`),
         }),
