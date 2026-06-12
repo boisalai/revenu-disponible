@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import Link from "next/link";
 import { calculerRevenuDisponible } from "@/index";
 import { UI } from "@/lib/i18n";
@@ -32,6 +32,15 @@ export function Calculateur() {
   const menage = useMemo(() => versMenage(etat), [etat]);
   const r25 = useMemo(() => calculerRevenuDisponible(menage, 2025), [menage]);
   const r26 = useMemo(() => calculerRevenuDisponible(menage, 2026), [menage]);
+
+  // La carte des seuils et le graphique du TEMI relancent des centaines d'appels
+  // au moteur (balayages 2025+2026, courbe par pas de 1 000 $) à chaque frappe.
+  // On les nourrit d'une version DIFFÉRÉE de l'état : la saisie et le tableau
+  // (légers) restent instantanés ; ces deux blocs rattrapent quand le navigateur
+  // est libre. Pendant le rattrapage, ils sont légèrement estompés.
+  const etatDiffere = useDeferredValue(etat);
+  const menageDiffere = useMemo(() => versMenage(etatDiffere), [etatDiffere]);
+  const obsolete = etat !== etatDiffere;
 
   return (
     <EspaceTravail
@@ -88,15 +97,15 @@ export function Calculateur() {
             <div className="border-t px-5 py-5">
               <h3 className="text-base font-semibold">{UI.seuilsTitre[lang]}</h3>
               <p className="mt-0.5 max-w-3xl text-sm text-muted-foreground">{UI.seuilsDesc[lang]}</p>
-              <div className="mt-4">
-                <SeuilsBascule menage={menage} revenuActuel={etat.revenu1} lang={lang} />
+              <div className={`mt-4 transition-opacity ${obsolete ? "opacity-50" : ""}`}>
+                <SeuilsBascule menage={menageDiffere} revenuActuel={etatDiffere.revenu1} lang={lang} />
               </div>
             </div>
             <div className="border-t px-5 py-5">
               <h3 className="text-base font-semibold">{UI.tauxMarginalTitre[lang]}</h3>
               <p className="mt-0.5 max-w-3xl text-sm text-muted-foreground">{UI.tauxMarginalDesc[lang]}</p>
-              <div className="mt-4">
-                <GraphiqueTauxMarginal menage={menage} annee={2025} revenuActuel={etat.revenu1} lang={lang} />
+              <div className={`mt-4 transition-opacity ${obsolete ? "opacity-50" : ""}`}>
+                <GraphiqueTauxMarginal menage={menageDiffere} annee={2025} revenuActuel={etatDiffere.revenu1} lang={lang} />
               </div>
             </div>
           </>
