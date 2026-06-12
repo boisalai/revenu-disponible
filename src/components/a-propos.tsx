@@ -89,11 +89,20 @@ export function APropos() {
           </Section>
 
           <Section titre={UI.aProposMethodeTitre[lang]}>
-            <AvecLien
-              texte={UI.aProposMethode[lang]}
-              terme={lang === "fr" ? "calculateur officiel" : "calculator"}
-              href={MFQ_CALCULATEUR}
-            />
+            <p>
+              <AvecLien
+                texte={UI.aProposMethode[lang]}
+                terme={lang === "fr" ? "calculateur officiel" : "calculator"}
+                href={MFQ_CALCULATEUR}
+              />
+            </p>
+            <p className="mt-2">
+              <AvecLien
+                texte={UI.aProposMethodeGuide[lang]}
+                terme={lang === "fr" ? "guide PDF" : "PDF guide"}
+                href="/guide-revenu-disponible.pdf"
+              />
+            </p>
           </Section>
           <Section titre={UI.aProposTechTitre[lang]}>{UI.aProposTech[lang]}</Section>
           <Section titre={UI.aProposIATitre[lang]}>{UI.aProposIA[lang]}</Section>

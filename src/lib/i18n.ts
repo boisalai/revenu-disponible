@@ -340,13 +340,17 @@ export const UI = {
   },
   aProposAuteurTitre: { fr: "L'auteur", en: "The author" },
   aProposAuteur: {
-    fr: "Présentement membre du conseil d'administration de la Chambre des notaires du Québec et étudiant en droit, j'expérimente l'IA appliquée au droit et au notariat en développant des prototypes.",
-    en: "Currently a member of the board of directors of the Chambre des notaires du Québec and a law student, I experiment with AI applied to law and the notarial profession by developing prototypes.",
+    fr: "Présentement membre du conseil d'administration de la Chambre des notaires du Québec et étudiant en droit, j'expérimente l'IA appliquée au droit et au notariat en développant des prototypes. Auparavant, j'ai fait carrière en finances publiques au gouvernement du Québec, notamment en modélisation fiscale au ministère des Finances.",
+    en: "Currently a member of the board of directors of the Chambre des notaires du Québec and a law student, I experiment with AI applied to law and the notarial profession by developing prototypes. Before that, I spent my career in public finance with the Quebec government, including tax modelling at the Ministère des Finances.",
   },
   aProposMethodeTitre: { fr: "Méthodologie", en: "Methodology" },
   aProposMethode: {
-    fr: "Tous les chiffres — montants, taux et seuils — viennent de sources officielles : Revenu Québec, l'Agence du revenu du Canada, Retraite Québec et Service Canada. Rien n'est inventé. Les calculs suivent les règles de 2025 et de 2026, appliquées à des ménages types. Pour s'assurer qu'ils sont exacts, nous les avons comparés au calculateur officiel du ministère des Finances du Québec : les résultats correspondent au cent près.",
-    en: "Every figure — amounts, rates and thresholds — comes from an official source: Revenu Québec, the Canada Revenue Agency, Retraite Québec and Service Canada. Nothing is made up. The calculations follow the 2025 and 2026 rules, applied to typical households. To make sure they're correct, we compared them with the Quebec Ministry of Finance's own calculator — the results match to the penny.",
+    fr: "Tous les chiffres — montants, taux et seuils — viennent de sources officielles : Revenu Québec, l'Agence du revenu du Canada, Retraite Québec et Service Canada. Rien n'est inventé. Les calculs suivent les règles de 2025 et de 2026, appliquées à des ménages types. Pour m'assurer qu'ils sont exacts, je les ai comparés au calculateur officiel du ministère des Finances du Québec : les résultats correspondent au cent près, vérifiés par près de 700 tests automatisés de parité.",
+    en: "Every figure — amounts, rates and thresholds — comes from an official source: Revenu Québec, the Canada Revenue Agency, Retraite Québec and Service Canada. Nothing is made up. The calculations follow the 2025 and 2026 rules, applied to typical households. To make sure they're correct, I compared them with the Quebec Ministry of Finance's own calculator — the results match to the penny, verified by nearly 700 automated parity tests.",
+  },
+  aProposMethodeGuide: {
+    fr: "La méthode complète — sources, règles de calcul et exemples chiffrés pour chaque poste — est exposée dans le guide PDF.",
+    en: "The full method — sources, calculation rules and worked examples for every item — is laid out in the PDF guide.",
   },
   aProposTechTitre: { fr: "Technologie", en: "Technology" },
   aProposTech: {
