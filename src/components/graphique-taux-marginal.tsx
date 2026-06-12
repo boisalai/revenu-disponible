@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Area, AreaChart, CartesianGrid, Line, ReferenceArea, ReferenceLine, XAxis, YAxis } from "recharts";
-import type { Annee, Menage } from "@/index";
+import { SITUATIONS, type Annee, type Menage } from "@/index";
 import { courbeTauxMarginal, tauxMarginalAu, zonesTrappe, SEUIL_TRAPPE } from "@/lib/taux-marginal";
 import { UI, type Lang } from "@/lib/i18n";
 import {
@@ -30,7 +30,9 @@ export function GraphiqueTauxMarginal({
 }) {
   const data = useMemo(() => courbeTauxMarginal(menage, annee, { max: MAX, pas: 1000 }), [menage, annee]);
   const trappes = useMemo(() => zonesTrappe(data), [data]);
+  const trappes100 = useMemo(() => zonesTrappe(data, 100), [data]);
   const decomposition = useMemo(() => tauxMarginalAu(menage, annee, revenuActuel), [menage, annee, revenuActuel]);
+  const retraite = SITUATIONS[menage.situation].retraite;
   // Plancher numérique de l'axe (sommet des aires négatives empilées), arrondi à −20 % près.
   const yMin = useMemo(() => {
     const bas = Math.min(0, ...data.map((d) => CATEGORIES.reduce((s, c) => s + Math.min(0, d[c]), 0)));
@@ -45,6 +47,7 @@ export function GraphiqueTauxMarginal({
       transfertsFederaux: { label: UI.transfertsFederaux[lang], color: "var(--chart-4)" },
       impotFederal: { label: UI.impotFederal[lang], color: "var(--chart-5)" },
       total: { label: UI.tauxTotal[lang], color: "var(--foreground)" },
+      bareme: { label: UI.baremeSeul[lang], color: "var(--muted-foreground)" },
     }),
     [lang],
   );
@@ -90,6 +93,10 @@ export function GraphiqueTauxMarginal({
         {trappes.map((z, i) => (
           <ReferenceArea key={`trap-${i}`} x1={z.debut} x2={z.fin} fill="var(--destructive)" fillOpacity={0.1} ifOverflow="hidden" />
         ))}
+        {trappes100.map((z, i) => (
+          <ReferenceArea key={`trap100-${i}`} x1={z.debut} x2={z.fin} fill="var(--destructive)" fillOpacity={0.2} ifOverflow="hidden" />
+        ))}
+        <Line dataKey="bareme" type="stepAfter" stroke="var(--color-bareme)" dot={false} strokeWidth={1.5} strokeDasharray="6 3" />
         <Line dataKey="total" type="monotone" stroke="var(--color-total)" dot={false} strokeWidth={2} />
         <ReferenceLine
           y={SEUIL_TRAPPE}
@@ -135,6 +142,10 @@ export function GraphiqueTauxMarginal({
               <td className="px-3 py-1.5">{UI.tauxTotal[lang]}</td>
               <td className="px-3 py-1.5 text-right tabular-nums">{fmtPct(decomposition.total)}</td>
             </tr>
+            <tr className="border-t text-muted-foreground">
+              <td className="px-3 py-1.5">{UI.baremeSeul[lang]}</td>
+              <td className="px-3 py-1.5 text-right tabular-nums">{fmtPct(decomposition.bareme)}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -142,8 +153,10 @@ export function GraphiqueTauxMarginal({
       {trappes.length > 0 && (
         <p className="text-xs text-muted-foreground">
           <span className="font-medium text-destructive">{UI.trappePauvrete[lang]}</span> — {UI.trappeNote[lang]}
+          {trappes100.length > 0 && <> {UI.zone100Note[lang]}</>}
         </p>
       )}
+      {retraite && <p className="text-xs text-muted-foreground">{UI.ferrNote[lang]}</p>}
     </div>
   );
 }

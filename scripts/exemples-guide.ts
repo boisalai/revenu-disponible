@@ -35,6 +35,7 @@ import { SUPPLEMENT_MEDICAL } from "../src/postes/18-supplement-medical-federal"
 import { IMPOT_FEDERAL, IMPOT_QUEBEC } from "../src/postes/19-impot";
 import { PALIERS_FEDERAL, PALIERS_QC } from "../src/impot/parametres";
 import { calculerRevenuDisponible } from "../src/postes/20-revenu-disponible";
+import { courbeTauxMarginal, zonesTrappe } from "../src/lib/taux-marginal";
 
 const AN = 2025;
 
@@ -273,6 +274,44 @@ une fraction (équation~\\eqref{eq:ral}).}
 \\end{table}
 `;
   return { nom: "menages.tex", contenu };
+}
+
+// ---------------------------------------------------------------------------
+// TEMI — tableau d'illustration de la section « architecture » (M6)
+// ---------------------------------------------------------------------------
+
+function fichierTemi(): Fichier {
+  const pas = 5000;
+  const points = courbeTauxMarginal(M.M6.menage, AN, { max: 60_000, pas });
+  // Le texte du guide affirme que M6 traverse une trappe (> 60 %) : on le garantit.
+  if (zonesTrappe(points).length === 0) {
+    throw new Error("TEMI M6 : plus aucune zone de trappe > 60 % — revoir le texte de la section TEMI du guide.");
+  }
+  const pct = (x: number) => `\\pc{${String(Math.round(x * 10) / 10)}}`;
+  const lignes = points.map((p) => {
+    const cellules = [`\\num{${p.revenu}}`, pct(p.bareme), pct(p.total)];
+    return (p.total > 60 ? cellules.map((c) => `\\textbf{${c}}`) : cellules).join(" & ") + " \\\\";
+  });
+  const contenu = `${entete}\\begin{table}[ht]
+\\centering
+\\small
+\\begin{tabular}{r r r}
+\\toprule
+Revenu de travail (\\$) & Barème seul & TEMI réel \\\\
+\\midrule
+${lignes.join("\n")}
+\\bottomrule
+\\end{tabular}
+\\caption{TEMI 2025 du ménage type M6 (famille monoparentale, un enfant de
+3~ans en garde subventionnée), par tranche de \\D{5000} : chaque ligne donne
+le taux effectif sur la tranche de revenu qui débute au montant indiqué. En
+gras, les tranches en \\emph{trappe} (TEMI $>$ \\pc{60}). La colonne
+\\og barème seul \\fg{} est le taux marginal des seules tables d'imposition
+au revenu imposable correspondant (zéro sous le montant personnel de base).}
+\\label{tab:temi-m6}
+\\end{table}
+`;
+  return { nom: "temi.tex", contenu };
 }
 
 // ---------------------------------------------------------------------------
@@ -1698,6 +1737,7 @@ de transferts : revenu disponible de ${D(RES.M4.revenuDisponible)}.`,
 export function genererTous(): Fichier[] {
   return [
     fichierMenages(),
+    fichierTemi(),
     p01rrq(),
     p02rqap(),
     p03ae(),

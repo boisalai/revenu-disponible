@@ -142,3 +142,65 @@ programme ne dépend de sa propre sortie.
 \end{itemize}
 
 \input{exemples/menages}
+
+\subsection{Le taux effectif marginal d'imposition (TEMI)}
+\label{sec:temi}
+
+Le calculateur trace, pour le ménage affiché, son \emph{taux effectif
+marginal d'imposition} : la part d'un dollar de revenu supplémentaire qui
+n'atteint pas le revenu disponible,
+\begin{equation}
+\label{eq:temi}
+TEMI \;=\; 1 - \frac{\Delta RD}{\Delta r}.
+\end{equation}
+La dérivée est approchée par \emph{différences finies} au pas de \D{1000} :
+au revenu $r$, le moteur calcule le revenu disponible complet (postes 1 à
+20) en $r$ puis en $r + 1\,000$, et le TEMI sur la tranche. La même
+différence, appliquée à chacune des grandes composantes, donne la
+décomposition empilée du graphique : une cotisation ou un impôt qui
+augmente \emph{ajoute} au taux ; un transfert récupéré aussi ; un transfert
+en phase de croissance (la prime au travail à bas revenu) y contribue
+\emph{négativement}.
+
+\paragraph{Conventions.} C'est le revenu de travail de l'\emph{adulte~1}
+qui varie, toutes les autres entrées étant fixes. Pour un ménage retraité,
+c'est sa pension qui varie : la courbe se lit alors comme le \emph{coût
+marginal d'un retrait FERR supplémentaire}, dominé par la récupération du
+Supplément de revenu garanti (poste~17). Les courbes publiées du CQFF
+(encadré ci-dessous) font plutôt varier, pour les couples, le revenu total
+à répartition constante (\pc{60}--\pc{40}) : les niveaux peuvent différer,
+la lecture reste la même.
+
+\paragraph{La ligne \og barème seul \fg{}.} Le graphique superpose au TEMI
+une ligne pointillée : le taux du \emph{palier d'imposition} où tombe le
+revenu imposable de l'adulte (Québec, plus fédéral après l'abattement de
+\pc{16.5}), et zéro tant que ce revenu ne dépasse pas le montant personnel
+de base. C'est le taux qu'annoncent les tables d'imposition --- celui
+auquel on pense spontanément. L'écart entre cette ligne et le TEMI réel
+mesure tout ce que les tables ne disent pas : cotisations sociales et,
+surtout, récupération des transferts.
+
+\paragraph{Les trappes.} Les zones où le TEMI dépasse \pc{60} sont
+marquées en rouge sur le graphique (« trappes à la pauvreté ») ; au-delà de
+\pc{100} --- un revenu supplémentaire y \emph{réduit} le revenu disponible
+---, le marquage est foncé. Le tableau~\ref{tab:temi-m6} illustre le
+phénomène pour le ménage type M6 : là où le barème annonce \pc{0} puis
+\pc{26.1}, le TEMI réel franchit deux fois la barre des \pc{80} --- à la
+sortie de l'aide de dernier recours puis dans la zone où l'Allocation
+famille, le crédit pour la solidarité et l'Allocation canadienne pour
+enfants se réduisent en même temps que l'impôt s'installe.
+
+\input{exemples/temi}
+
+\paragraph{Encadré --- les courbes de Laferrière.} Ce type d'analyse est
+popularisé au Québec depuis 1998 par les \og courbes de Laferrière \fg{}
+(Claude Laferrière, UQAM, et Yves Chartrand, CQFF), aujourd'hui poursuivies
+par le CQFF avec l'équipe de CalculFiscal : 42~ménages types, années 2024 à
+2026, avec la même définition du TEMI
+qu'ici\footnote{\url{https://cqff.com/courbes-cqff/}}. Les niveaux exacts
+diffèrent légèrement de ceux du présent modèle --- périmètres de mesures et
+hypothèses distincts ; elles supposent notamment une assurance médicaments
+\emph{privée}, là où le modèle MFQ applique la prime du régime public
+(poste~5) --- mais les reliefs (plateaux, pointes, trappes) concordent.
+Leurs analyses récentes signalent des TEMI dépassant \pc{100} pour des
+familles de trois enfants dans certaines plages de revenu.

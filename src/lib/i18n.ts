@@ -180,6 +180,15 @@ export const UI = {
     en: "red zones where the EMTR exceeds 60% — an extra dollar of employment income yields less than $0.40 of disposable income.",
   },
   axeRevenu: { fr: "Revenu de travail (brut)", en: "Gross employment income" },
+  baremeSeul: { fr: "Barème d'imposition seul", en: "Tax tables only" },
+  zone100Note: {
+    fr: "zones foncées où le TEMI dépasse 100 % : un revenu supplémentaire y réduit le revenu disponible.",
+    en: "darker zones where the EMTR exceeds 100%: extra income there reduces disposable income.",
+  },
+  ferrNote: {
+    fr: "Ménage retraité : cette courbe se lit aussi comme le coût marginal d'un retrait FERR (ou d'un revenu de pension) supplémentaire.",
+    en: "Retired household: this curve also reads as the marginal cost of an additional RRIF withdrawal (or extra pension income).",
+  },
 
   // Export
   exportCsv: { fr: "Exporter en CSV", en: "Export to CSV" },

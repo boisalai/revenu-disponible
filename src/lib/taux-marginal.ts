@@ -7,7 +7,20 @@
 // Une cotisation/un impôt qui augmente AJOUTE au taux ; un transfert récupéré (qui baisse) aussi ;
 // un transfert en phase de hausse (ex. prime au travail) RETRANCHE (contribution négative).
 
-import { calculerRevenuDisponible, type Annee, type Menage } from "@/index";
+import {
+  calculerRevenuDisponible,
+  cotisationRRQ,
+  deductionFraisGardeFederale,
+  psvImposable,
+  IMPOT_FEDERAL,
+  IMPOT_QUEBEC,
+  PALIERS_FEDERAL,
+  PALIERS_QC,
+  SITUATIONS,
+  type Annee,
+  type Menage,
+  type Palier,
+} from "@/index";
 
 export interface PointTMI {
   revenu: number; // revenu de travail (adulte 1) au point
@@ -17,11 +30,43 @@ export interface PointTMI {
   transfertsFederaux: number;
   impotFederal: number;
   total: number; // TMI cumulatif (%)
+  bareme: number; // taux du barème d'imposition SEUL au même revenu (%) — ligne de référence
 }
 
 export interface OptionsTMI {
   max?: number; // revenu maximal balayé ($)
   pas?: number; // pas du balayage / Δ des différences finies ($)
+}
+
+/**
+ * Taux marginal du **barème d'imposition seul** (« ce que les tables annoncent ») pour
+ * l'adulte 1 : taux du palier où tombe son revenu imposable, Québec + fédéral après
+ * abattement (16,5 %), et **zéro sous le montant personnel de base** (aucun impôt à payer).
+ * L'écart entre cette ligne et le TEMI réel = cotisations + récupération des transferts —
+ * le contraste qu'illustrent les courbes de Laferrière (CQFF).
+ */
+export function tauxBareme(menage: Menage, annee: Annee, revenu: number): number {
+  const { nbAdultes, retraite } = SITUATIONS[menage.situation];
+  const pq = IMPOT_QUEBEC[annee];
+  const pf = IMPOT_FEDERAL[annee];
+
+  const rrqSuppl = retraite ? 0 : cotisationRRQ(revenu, annee).supplementaire;
+  const dedTrav = retraite ? 0 : Math.min(pq.deducTravailleurTaux * revenu, pq.deducTravailleurMax);
+  const psvImp = psvImposable(menage.ageAdulte1, revenu, annee);
+  // Déduction fédérale pour frais de garde : réclamée par le conjoint au revenu le moindre
+  // (l'adulte 1 si le ménage n'a qu'un adulte, ou si son revenu est inférieur ou égal à l'autre).
+  const revenu2 = nbAdultes === 2 ? menage.revenu2 : Infinity;
+  const admissible = retraite ? 0 : Math.min(revenu, nbAdultes === 2 ? menage.revenu2 : revenu);
+  const dedGarde = revenu <= revenu2 ? deductionFraisGardeFederale(menage.enfants, admissible, annee) : 0;
+
+  const imposableQC = Math.max(0, revenu + psvImp - dedTrav - rrqSuppl);
+  const imposableFed = Math.max(0, revenu + psvImp - rrqSuppl - dedGarde);
+
+  const palier = (paliers: Palier[], x: number) => (paliers.find((p) => x <= p.plafond) ?? paliers[paliers.length - 1]).taux;
+  const tauxQC = imposableQC <= pq.bpa ? 0 : palier(PALIERS_QC[annee], imposableQC);
+  const tauxFed =
+    imposableFed <= pf.bpaBase + pf.bpaBonif ? 0 : palier(PALIERS_FEDERAL[annee], imposableFed) * (1 - pf.abattementQc);
+  return (tauxQC + tauxFed) * 100;
 }
 
 /** TEMI décomposé à un revenu de travail donné (différence finie sur [revenu, revenu+pas]). */
@@ -44,6 +89,7 @@ export function tauxMarginalAu(menage: Menage, annee: Annee, revenu: number, pas
     transfertsFederaux,
     impotFederal,
     total: cotisations + transfertsQuebec + impotQuebec + transfertsFederaux + impotFederal,
+    bareme: tauxBareme(menage, annee, revenu),
   };
 }
 

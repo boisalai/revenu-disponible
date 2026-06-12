@@ -208,7 +208,7 @@ export async function POST(req: Request) {
           "Calcule la courbe du taux effectif marginal d'imposition (TEMI, %) selon le revenu de travail, de 0 à 100 000 $. Sert à expliquer où le taux grimpe (trappes à la pauvreté).",
         inputSchema: menageSchema.extend({
           annee: z.union([z.literal(2025), z.literal(2026)]).default(2025),
-          pas: z.number().default(5000).describe("intervalle de revenu entre deux points, en $"),
+          pas: z.number().default(1000).describe("intervalle de revenu entre deux points, en $ (1000 = même finesse que le graphique de l'app)"),
         }),
         execute: async ({ annee, pas, ...m }) => {
           const points = courbeTauxMarginal(versMenage(m as MenageEtat), annee, { max: 100000, pas });
