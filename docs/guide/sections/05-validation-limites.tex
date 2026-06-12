@@ -67,6 +67,44 @@ corrigés :
         1\ier{}~janvier.
 \end{itemize}
 
+\subsection{Mesures réelles hors du périmètre}
+\label{sec:hors-perimetre}
+
+À l'inverse, certaines mesures du régime fiscal réel échappent au modèle
+--- soit parce que ses entrées ne permettent pas de les déclencher, soit
+parce que le calculateur officiel qu'il reproduit ne les couvre pas. Le
+revenu disponible réel d'un ménage peut donc différer de celui affiché :
+
+\begin{itemize}
+  \item \textbf{fractionnement des revenus de pension} entre conjoints
+        (jusqu'à \pc{50} des revenus admissibles ; 65~ans requis au
+        Québec) : pour les couples de retraités aux pensions inégales, le
+        modèle \emph{sous-estime} le revenu disponible (poste~19) ;
+  \item \textbf{bouclier fiscal} du Québec : il compense, l'année qui suit
+        une hausse du revenu de travail, une partie de la perte de la
+        prime au travail et du crédit pour frais de garde ; il dépend du
+        revenu de l'\emph{année précédente}, hors de portée d'un modèle
+        statique à une seule année ;
+  \item \textbf{crédit d'impôt pour la prolongation de carrière}
+        (travailleurs de 60~ans et plus) : un actif de 60~ans et plus dans
+        le calculateur ne le reçoit pas ;
+  \item \textbf{invalidité et aidants} : aucun champ d'invalidité dans les
+        entrées --- ni le supplément pour invalidité de l'ACT (poste~16),
+        ni les crédits pour personnes handicapées ou pour aidants ;
+  \item \textbf{garde partagée} : les demi-montants du crédit TPS, du
+        crédit pour la solidarité et de l'ACE ne sont pas modélisés ;
+  \item \textbf{Allocation canadienne pour l'épicerie et les besoins
+        essentiels} : la bonification de \pc{25} du crédit pour la TPS/TVH
+        à compter de juillet 2026 (Lois annuelles du Canada 2026, ch.~1)
+        n'est pas encore intégrée au calculateur officiel --- divergence
+        connue et documentée au poste~15.
+\end{itemize}
+
+Pour une description complète de ces mesures, voir le \emph{Guide des
+mesures fiscales} de la Chaire en fiscalité et en finances publiques de
+l'Université de Sherbrooke\footnote{\url{https://cffp.recherche.usherbrooke.ca/outils-ressources/guide-mesures-fiscales/}},
+dont les fiches sont citées en référence des postes concernés.
+
 \subsection{Avertissement}
 
 Cet outil est \textbf{pédagogique}. Les montants qu'il produit sont
@@ -81,9 +119,9 @@ Retraite Québec, Service Canada).
 \addcontentsline{toc}{section}{Colophon}
 
 Ce document a été rédigé par \textbf{Claude Fable~5} (Anthropic),
-assistant d'intelligence artificielle, le \textbf{10 juin 2026}, sous la
-direction d'Alain Boisvert, à partir du code source du moteur de calcul et
-de sa documentation de traçage. La mise en page reprend la classe
+assistant d'intelligence artificielle, le \textbf{10 juin 2026} (dernière
+mise à jour en page titre), sous la direction d'Alain Boisvert, à partir du
+code source du moteur de calcul et de sa documentation de traçage. La mise en page reprend la classe
 \LaTeX{} des préimpressions FAIR (Meta), telle que publiée avec
 arXiv:2412.06769, adaptée au français (le logo de Meta, marque de
 l'entreprise, a été retiré).

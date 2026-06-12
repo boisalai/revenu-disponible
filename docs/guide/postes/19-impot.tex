@@ -178,9 +178,31 @@ Abattement du Québec                     & \pc{16.5} & \pc{16.5} \\
 \end{tabular}
 \end{center}
 
+\pnotes Deux mécanismes réels des couples ne sont pas modélisés.
+
+(1) Le \emph{fractionnement des revenus de pension} : un conjoint peut
+attribuer à l'autre jusqu'à \pc{50} de ses revenus de pension admissibles
+--- rente d'un régime de pension agréé ; paiements d'un FERR et rente d'un
+REER à compter de 65~ans ---, le cédant devant avoir 65~ans au Québec
+(aucun âge minimal au fédéral pour la rente d'un RPA). La pension de la
+Sécurité de la vieillesse, le SRG et la rente du RRQ ne sont \emph{pas}
+fractionnables. Pour un couple de retraités aux pensions inégales (comme le
+ménage type M11), le fractionnement réduirait l'impôt combiné --- le revenu
+disponible affiché est donc prudent. Le calculateur officiel du MFQ ne le
+modélise pas non plus : une seule source de revenu par adulte, sans
+optimisation.
+
+(2) Au Québec, le \emph{transfert entre conjoints} de la partie inutilisée
+des crédits (que le modèle reproduit) exclut en réalité certains crédits
+--- prolongation de carrière, intérêts sur prêt étudiant, notamment ---,
+sans incidence ici puisque ces crédits ne sont pas modélisés.
+
 \input{exemples/19-impot}
 
 \prefs Québec : Loi sur les impôts (RLRQ, c.~I-3) ; Revenu Québec.
 Fédéral : Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
 (5\ieme{}~suppl.)), art.~117 (barème), 118 et suivants (crédits), 120(2)
-(abattement) ; Agence du revenu du Canada.
+(abattement) ; Agence du revenu du Canada ; CFFP, \emph{Guide des mesures
+fiscales}, fiches \og Crédit d'impôt personnel de base \fg{}, \og Transfert
+de crédits entre conjoints \fg{} et \og Fractionnement des revenus de
+pension et de retraite \fg{}\footnote{\url{https://cffp.recherche.usherbrooke.ca/outils-ressources/guide-mesures-fiscales/}}.

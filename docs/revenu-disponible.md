@@ -1351,6 +1351,8 @@ export function allocationCanadienneEnfants(revenuFamilialNetAjuste: number, nbE
 **Sortie :** `CA_tps` (crédit **annuel** du ménage). Aucune sortie `_bonif`.
 **Base légale :** *Loi de l'impôt sur le revenu* (LRC 1985, ch. 1 (5ᵉ suppl.)), **art. 122.5**. Crédit fédéral **remboursable**, versé trimestriellement par l'ARC (non imposable).
 
+> ⚠️ **Divergence connue (11 juin 2026).** Dès **juillet 2026**, le crédit est remplacé par l'« **Allocation canadienne pour l'épicerie et les besoins essentiels** » (LC 2026, ch. 1) : montants **bonifiés de 25 %** pendant 5 ans (ex. base adulte 356 → 445 $), plus un versement unique de rattrapage en juin 2026 (hors période, non modélisé). Les paramètres 2026 ci-dessous restent ceux du **fichier MFQ de déc. 2025, antérieur à la loi** — la parité avec le MFQ prime (règle du projet). Texte de loi : [LC 2026, ch. 1](https://laws-lois.justice.gc.ca/fra/LoisAnnuelles/2026_1/page-1.html). À retracer à la prochaine édition du calculateur officiel.
+
 #### Structure (confirmée dans le code)
 
 Traçage : `CA_tps` = `c2T194` (2025) / `c2S194` (2026) = `arr2xD66D71[2][0]` = `arr2xT406T411[2][0]` (lignes 23023, 23006). Et :

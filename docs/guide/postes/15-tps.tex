@@ -50,7 +50,39 @@ Taux de réduction                           & \pc{5}    & \pc{5} \\
 \end{tabular}
 \end{center}
 
+\pnotes Trois précisions.
+
+(1) \emph{Allocation canadienne pour l'épicerie et les besoins essentiels
+--- divergence connue.} À compter de juillet 2026, le crédit pour la
+TPS/TVH est remplacé par l'\emph{Allocation canadienne pour l'épicerie et
+les besoins essentiels}, dont les montants sont bonifiés de \pc{25} pour
+cinq ans (Lois annuelles du Canada 2026, ch.~1)\footnote{Texte de loi :
+\url{https://laws-lois.justice.gc.ca/fra/LoisAnnuelles/2026_1/page-1.html}.
+Un versement unique de rattrapage (environ \pc{50} de la valeur 2025-2026),
+payé en juin 2026, est un paiement ponctuel hors période de versement, non
+modélisé.}. La colonne 2026 du tableau (période juillet 2026--juin 2027)
+reproduit le calculateur officiel du MFQ dans son édition de décembre 2025,
+\emph{antérieure à cette loi} : les montants n'incluent pas la bonification
+(par exemple \D{356} par adulte plutôt que \D{445}). Conformément à la
+règle de parité du projet (section~\ref{sec:validation}), cette divergence
+est documentée plutôt que corrigée ; elle sera résorbée à la prochaine
+édition du calculateur officiel.
+
+(2) \emph{Paramétrisation.} L'article~122.5 LIR s'énonce autrement que le
+modèle : le premier enfant d'un parent seul y reçoit le montant
+\og équivalent de conjoint \fg{} ($B$ au lieu de $E$) et le supplément de
+célibataire est accordé \emph{en entier} au parent seul, sans accumulation.
+La forme du modèle --- $n \times E$ plus un supplément monoparental égal à
+$B$ --- est algébriquement équivalente, car le supplément maximal vaut
+exactement $E$ : $B + B + (n-1) \times E + S_{max} = B + n \times E + B$.
+Les deux écritures donnent le même crédit pour toute famille monoparentale.
+
+(3) La \emph{garde partagée} (la moitié du crédit de l'enfant à chaque
+parent) n'est pas couverte par les entrées du modèle.
+
 \input{exemples/15-tps}
 
 \prefs Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
-(5\ieme{}~suppl.)), art.~122.5 ; Agence du revenu du Canada.
+(5\ieme{}~suppl.)), art.~122.5 ; Agence du revenu du Canada ; CFFP,
+\emph{Guide des mesures fiscales}, fiche \og Crédit d'impôt pour la
+TPS/TVH \fg{}\footnote{\url{https://cffp.recherche.usherbrooke.ca/outils-ressources/guide-mesures-fiscales/credit-impot-tps-tvh/}}.

@@ -34,6 +34,11 @@ export const TPS: Record<Annee, ParamsTPS> = {
   // Année de prestation juillet 2025 – juin 2026
   2025: { baseAdulte: 349, parEnfant: 184, supplMonoparental: 349, seuilPhaseIn: 11_337, tauxPhaseIn: 0.02, plafondPhaseIn: 184, seuilReduction: 45_521, tauxReduction: 0.05 },
   // Année de prestation juillet 2026 – juin 2027 (indexée)
+  // ⚠️ DIVERGENCE CONNUE (constatée le 11 juin 2026) : dès juillet 2026, le crédit est remplacé par
+  //    l'« Allocation canadienne pour l'épicerie et les besoins essentiels » (LC 2026, ch. 1), montants
+  //    bonifiés de 25 % (ex. baseAdulte 356 → 445). On conserve ici les montants NON bonifiés du fichier
+  //    MFQ de déc. 2025, antérieur à la loi — règle du projet : parité avec le MFQ d'abord, divergence
+  //    documentée (guide §poste 15). À mettre à jour à la prochaine édition du calculateur officiel.
   2026: { baseAdulte: 356, parEnfant: 187, supplMonoparental: 356, seuilPhaseIn: 11_564, tauxPhaseIn: 0.02, plafondPhaseIn: 187, seuilReduction: 46_432, tauxReduction: 0.05 },
 };
 
