@@ -40,7 +40,7 @@ Tous les chiffres — montants, taux et seuils — proviennent de **sources offi
 
 Pour s'assurer que les calculs sont exacts, ils ont été **comparés au [calculateur officiel du ministère des Finances du Québec](https://www.finances.gouv.qc.ca/ministere/outils_services/outils_calcul/revenu_disponible/outil_revenu.asp)** : sur des milliers de cas, les résultats **concordent au cent près**.
 
-Un **[guide pédagogique détaillé](docs/guide/main.pdf)** (PDF, 42 pages) décrit chaque poste : règle de calcul, paramètres 2025/2026, références légales.
+Un **[guide pédagogique détaillé](docs/guide/main.pdf)** (PDF, 44 pages) décrit chaque poste : règle de calcul, paramètres 2025/2026, références légales.
 
 ## Technologies utilisées
 
@@ -110,7 +110,7 @@ Every figure — amounts, rates and thresholds — comes from **official sources
 
 To make sure the calculations are accurate, they have been **checked against the [Quebec Department of Finance's official calculator](https://www.finances.gouv.qc.ca/ministere/outils_services/outils_calcul/revenu_disponible/outil_revenu.asp)**: across thousands of cases, the results **match to the cent**.
 
-A **[detailed educational guide](docs/guide/main.pdf)** (PDF, 42 pages, in French) covers every item: calculation rule, 2025/2026 parameters, legal references.
+A **[detailed educational guide](docs/guide/main.pdf)** (PDF, 44 pages, in French) covers every item: calculation rule, 2025/2026 parameters, legal references.
 
 ## Technologies used
 

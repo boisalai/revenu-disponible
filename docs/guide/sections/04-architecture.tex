@@ -192,6 +192,46 @@ enfants se réduisent en même temps que l'impôt s'installe.
 
 \input{exemples/temi}
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{../graphique-temi_fr.png}
+  \caption{Le graphique du TEMI dans l'application, pour le scénario par
+  défaut (M4 : personne vivant seule, 40~ans, \D{50000} de revenu de
+  travail), année 2025. Aires empilées : contribution de chaque catégorie
+  au TEMI ; courbe noire : TEMI total ; escalier en tireté : barème
+  d'imposition seul ; bandes rouges : trappes (TEMI $>$ \pc{60}, marquage
+  foncé au-delà de \pc{100}) ; trait vertical : revenu actuel du ménage.}
+  \label{fig:graphique-temi}
+\end{figure}
+
+\paragraph{Lecture du graphique.} Quelques repères pour lire la
+figure~\ref{fig:graphique-temi} :
+\begin{itemize}
+  \item les aires \emph{sous} l'axe sont des transferts en phase de
+        croissance --- un dollar gagné en rapporte plus d'un : à bas
+        revenu, l'aire fédérale négative est l'Allocation canadienne pour
+        les travailleurs, qui s'accumule à \pc{37.3} (poste~16) ;
+  \item les aires positives sont des prélèvements qui augmentent ou des
+        transferts qui se retirent : la grande aire québécoise des
+        premiers milliers de dollars est l'aide de dernier recours, qui se
+        réduit au rythme des gains de travail nets au-delà de l'exemption
+        mensuelle, l'incitation au travail en préservant le quart
+        (poste~13) ;
+  \item la pointe étroite qui crève le plafond du graphique (marquage
+        foncé : TEMI $>$ \pc{100}) est la \emph{sortie} de l'aide de
+        dernier recours : à l'instant où la prestation nette s'éteint,
+        l'incitation au travail (\pc{25} des gains comptés) disparaît d'un
+        seul coup ;
+  \item la bande rouge suivante est la trappe principale de ce ménage :
+        l'Allocation canadienne pour les travailleurs (\pc{20}), la prime
+        au travail (\pc{10}), le crédit pour la solidarité (\pc{6}) et le
+        crédit TPS (\pc{5}) se réduisent en même temps que les deux impôts
+        s'installent ;
+  \item l'escalier en tireté --- le barème seul --- reste loin sous la
+        courbe noire dans toute la moitié gauche du graphique : c'est,
+        rendu visible, tout ce que les tables d'imposition ne disent pas.
+\end{itemize}
+
 \paragraph{Encadré --- les courbes de Laferrière.} Ce type d'analyse est
 popularisé au Québec depuis 1998 par les \og courbes de Laferrière \fg{}
 (Claude Laferrière, UQAM, et Yves Chartrand, CQFF), aujourd'hui poursuivies
@@ -243,4 +283,29 @@ fiscale québécoise (notamment par la CFFP) pour des cas types ; ici, ils
 sont calculés pour le ménage \emph{exact} de l'utilisateur, frais de garde
 et âges compris.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{../carte-seuils_fr.png}
+  \caption{La carte des seuils dans l'application, pour le scénario par
+  défaut (M4 : personne vivant seule, 40~ans, \D{50000} de revenu de
+  travail). De haut en bas : la position nette en une phrase (l'ordre de la
+  soustraction suit le statut du ménage) ; la ligne de revenu, teintée
+  jusqu'au seuil de bascule (zone \og bénéficiaire net \fg{}), avec les
+  trois seuils en pastilles et le trait du revenu actuel ; le tableau des
+  revenus de bascule 2025 et 2026, avec le détail par gouvernement.}
+  \label{fig:carte-seuils}
+\end{figure}
+
 \input{exemples/seuils}
+
+\paragraph{Lecture de la carte.} Sur la figure~\ref{fig:carte-seuils}, le
+ménage se trouve à droite du seuil de bascule : il paie \D{6209} de plus
+en impôts qu'il ne reçoit en transferts. Les trois pastilles reprennent la
+ligne M4 du tableau~\ref{tab:seuils-menages} --- premier dollar d'impôt
+fédéral, premier dollar d'impôt québécois, bascule de contribution nette
+--- et la zone teintée rappelle qu'en deçà de ce dernier seuil, le même
+ménage serait bénéficiaire net. La sous-ligne \og par gouvernement \fg{}
+montre une asymétrie instructive : pris isolément, le fédéral devient
+\og net \fg{} un peu avant le Québec --- l'impôt québécois démarre plus
+tard et le crédit pour la solidarité s'étire plus loin dans l'échelle des
+revenus que le crédit TPS, son pendant fédéral.
