@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:parity": "vitest run reference-parity",
     "typecheck": "tsc --noEmit",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "exemples": "ECRIRE_EXEMPLES=1 vitest run exemples-guide"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",

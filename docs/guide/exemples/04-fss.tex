@@ -1,0 +1,41 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Dans le modèle, seuls les \emph{revenus de retraite} y sont assujettis
+(le revenu d'emploi en est exclu) ; la cotisation se calcule \emph{par
+adulte}, en deux tranches additives de \pc{1}, plafonnées à
+\D{150} et \D{850} respectivement.
+
+\medskip\noindent\textbf{M10 --- retraité vivant seul, 70~ans, revenu de pension privée de \D{20000}.}
+\begin{align*}
+\text{tranche 1} &= \min\bigl(\pos{\num{20000} - \num{18130}} \times \pc{1},\ \num{150}\bigr) = \num{18.70} \\
+\text{tranche 2} &= \pos{\num{20000} - \num{63060}} \times \pc{1} = 0
+\end{align*}
+Cotisation FSS : \D{18.70}.
+
+\medskip\noindent\textbf{M11 --- couple de retraités, 72 et 70~ans, pensions privées de \D{30000} et \D{10000}.}
+Par adulte : l'adulte~1 (\D{30000}) sature la tranche~1
+(\num{30000} $-$ \num{18130} $=$ \num{11870}, dont \pc{1}
+excède le plafond de \D{150}) ; l'adulte~2 (\D{10000}) est sous le
+premier seuil.
+\begin{align*}
+\text{adulte 1} &= \min(\num{118.70},\ \num{150}) + 0 = \num{118.70} \\
+\text{adulte 2} &= 0 \quad (\num{10000} < \num{18130})
+\end{align*}
+Cotisation FSS du ménage : \D{118.70}.
+
+\medskip\noindent\textbf{M12 --- retraité vivant seul, 76~ans, revenu de pension privée de \D{110000}.}
+Le revenu occupe les deux tranches :
+\begin{align*}
+\text{tranche 1} &= \min\bigl(\pos{\num{110000} - \num{18130}} \times \pc{1},\ \num{150}\bigr) = \num{150} \\
+\text{tranche 2} &= \min\bigl(\pos{\num{110000} - \num{63060}} \times \pc{1},\ \num{850}\bigr) = \num{469.40} \\
+\text{cotisation} &= \num{150} + \num{469.40} = \num{619.40}
+\end{align*}
+Cotisation FSS : \D{619.40} (le maximum, \D{1000}, n'est
+atteint qu'à \D{148060} de revenu).
+
+\medskip\noindent\textbf{M13 --- couple de retraités, 68 et 66~ans, pensions privées de \D{12000} et \D{6000}.}
+Les deux pensions (\D{12000} et \D{6000}) sont sous le premier
+seuil de \D{18130} : cotisation nulle pour chacun des adultes —
+\D{0} au total.

@@ -35,10 +35,10 @@ Tous les frais payés (subventionnés ou non) sont déductibles au fédéral,
 dans une triple limite :
 \[
 D_{garde} = \min\Bigl(\sum_e f_e^{tot},\;\;
-\sum_{e \,:\, f^{tot}_e > 0} p^{féd}(\text{âge}_e),\;\;
+\sum_{e \,:\, f^{tot}_e > 0} p^{\text{féd}}(\text{âge}_e),\;\;
 \tfrac{2}{3} \times r_{\min}\Bigr)
 \]
-où $p^{féd}$ vaut \D{8000} (âge $\le 5$), \D{5000} (6 à 15~ans) ou zéro
+où $p^{\text{féd}}$ vaut \D{8000} (âge $\le 5$), \D{5000} (6 à 15~ans) ou zéro
 (16~ans et plus), et $r_{\min}$ est le revenu de travail du conjoint le
 moins payé (celui qui doit réclamer la déduction). $D_{garde}$ réduit le
 revenu imposable fédéral \emph{et} l'$\AFNI$
@@ -89,6 +89,8 @@ an ; (2)~le plafonnement est \emph{agrégé} (somme des plafonds contre somme
 des frais) plutôt qu'enfant par enfant, ce qui peut surévaluer les frais
 admissibles quand un enfant dépasse son plafond et qu'un autre est en deçà.
 Le plafond majoré pour enfant handicapé n'est pas modélisé.
+
+\input{exemples/06-garde}
 
 \prefs Loi sur les impôts (RLRQ, c.~I-3), art.~1029.8.67 et suivants ;
 déclaration TP-1, annexe~C ; Revenu Québec. Fédéral : Loi de l'impôt sur le

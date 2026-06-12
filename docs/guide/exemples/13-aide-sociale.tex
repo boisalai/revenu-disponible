@@ -1,0 +1,45 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Calcul \emph{mensuel} puis annualisé : prestation de base (selon la
+composition et l'âge), moins le revenu de travail \emph{net des cotisations}
+au-delà de l'exemption mensuelle (\D{200} pour un adulte seul,
+\D{300} pour un couple) ; si la prestation reste positive,
+\pc{25} des gains comptés sont remboursés (incitation au
+travail).
+
+\medskip\noindent\textbf{M1 --- personne vivant seule, 25~ans, aucun revenu.}
+Aucun revenu. Adulte seul de moins de 50~ans sans enfant : ajustement
+de \D{50} en sus de la base de \D{829}.
+\begin{align*}
+\text{prestation mensuelle} &= \num{829} + \num{50} = \num{879} \\
+\text{aide annuelle} &= \num{879} \times 12 = \num{10548}
+\end{align*}
+Aide de dernier recours : \D{10548}.
+
+\medskip\noindent\textbf{M2 --- personne vivant seule, 30~ans, revenu de travail de \D{9000}.}
+Revenu de travail de \D{9000}, net des cotisations (postes 1 à 3)
+\D{514.36}, soit \D{8485.64} par année.
+\begin{align*}
+\text{gains comptés} &= \pos{\num{8485.64} \div 12 - \num{200}} = \num{507.14} \\
+\text{prestation nette} &= \pos{\num{879} - \num{507.14}} = \num{371.86} \\
+\text{incitation} &= \pc{25} \times \num{507.14} = \num{126.78} \\
+\text{aide annuelle} &= (\num{371.86} + \num{126.78}) \times 12 = \num{5983.77}
+\end{align*}
+Aide de dernier recours : \D{5983.77}. Noter le rôle de l'exemption de
+\D{200} par mois et de l'incitation au travail de
+\pc{25}.
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Parent seul d'un enfant de moins de 5~ans : la prestation de base
+serait majorée de l'ajustement « contrainte temporaire à l'emploi »
+(\D{166}). Mais les gains comptés
+($\approx \num{2496.05}$
+par mois) dépassent largement cette base : prestation nulle, donc pas
+d'incitation non plus — aide de \D{0}.
+
+\medskip\noindent\textbf{M7 --- couple, 45 et 44~ans, revenus de travail de \D{30000} et \D{0}, sans enfant.}
+Couple (base de \D{1258}, exemption de \D{300}) :
+les gains de travail comptés excèdent la base — aide nulle. L'aide de dernier
+recours s'éteint vite : c'est un programme de \emph{dernier} recours.

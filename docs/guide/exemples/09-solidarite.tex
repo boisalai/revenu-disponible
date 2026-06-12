@@ -1,0 +1,38 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Deux volets (TVQ et logement) puis une réduction de \pc{6}
+du $\RFN$ au-delà de \D{42325}.
+
+\medskip\noindent\textbf{M3 --- personne vivant seule, 30~ans, revenu de travail de \D{15000}.}
+\begin{align*}
+\text{volet TVQ} &= \num{356} + \num{169} = \num{525} \quad (\text{base} + \text{vivant seul}) \\
+\text{volet logement} &= \num{731} \\
+\text{réduction} &= 0 \quad (\RFN = \num{13985} < \num{42325})
+\end{align*}
+Crédit \emph{plein} : \D{1256}.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+Mêmes volets (\num{525} et \num{731}), mais le $\RFN$
+excède le seuil :
+\begin{align*}
+\text{réduction} &= \pos{\num{48115} - \num{42325}} \times \pc{6} = \num{347.40} \\
+\text{crédit} &= \pos{\num{1256} - \num{347.40}} = \num{908.60}
+\end{align*}
+Crédit \emph{partiel} : \D{908.60}.
+
+\medskip\noindent\textbf{M8 --- couple, 38 et 36~ans, revenus de travail de \D{60000} et \D{40000}, deux enfants : 4~ans (garde non subventionnée, \D{13000}) et 8~ans (garde non subventionnée, \D{3000}).}
+Couple avec deux enfants :
+\begin{align*}
+\text{volet TVQ} &= \num{356} + \num{356} = \num{712} \\
+\text{volet logement} &= \num{888} + 2 \times \num{155} = \num{1198} \\
+\text{réduction} &= \pos{\num{96230} - \num{42325}} \times \pc{6} = \num{3234.30} \\
+\text{crédit} &= \pos{\num{1910} - \num{3234.30}} = \num{0}
+\end{align*}
+Crédit : \D{0}.
+
+\medskip\noindent\textbf{M5 --- personne vivant seule, 45~ans, revenu de travail de \D{100000}.}
+La réduction (\pc{6} de \num{97506} $-$
+\num{42325} $=$ \num{3310.86}) dépasse la somme des volets
+(\num{1256}) : crédit \emph{éteint} (\D{0}).

@@ -1,0 +1,36 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Montants de base par adulte (\D{349}) et par enfant
+(\D{184}), suppléments selon la composition, réduction de
+\pc{5} de l'$\AFNI$ au-delà de \D{45521}.
+
+\medskip\noindent\textbf{M3 --- personne vivant seule, 30~ans, revenu de travail de \D{15000}.}
+Personne seule sans enfant : le \emph{supplément pour célibataire}
+s'accumule à \pc{2} de l'$\AFNI$ au-delà de \num{11337},
+plafonné à \num{184}.
+\begin{align*}
+\text{supplément} &= \min\bigl(\pc{2} \times (\num{14885} - \num{11337}),\ \num{184}\bigr) = \num{70.96} \\
+\text{crédit} &= \num{349} + \num{70.96} - 0 = \num{419.96}
+\end{align*}
+Crédit TPS : \D{419.96}.
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Famille monoparentale : base adulte \num{349} $+$ enfant
+\num{184} $+$ supplément monoparental \num{349} $=$
+\num{882}. L'$\AFNI$ (\num{32685}) est sous le seuil de
+réduction : crédit \emph{plein} de \D{882}.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+\begin{align*}
+\text{total avant réduction} &= \num{349} + \num{184} = \num{533} \\
+\text{réduction} &= \pos{\num{49535} - \num{45521}} \times \pc{5} = \num{200.70} \\
+\text{crédit} &= \pos{\num{533} - \num{200.70}} = \num{332.30}
+\end{align*}
+Le supplément pour célibataire est au plafond (\num{184}), mais la
+réduction mord : crédit de \D{332.30}.
+
+\medskip\noindent\textbf{M5 --- personne vivant seule, 45~ans, revenu de travail de \D{100000}.}
+La réduction (\num{2670.25}) dépasse le total : crédit
+\emph{éteint} (\D{0}).

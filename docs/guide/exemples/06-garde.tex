@@ -1,0 +1,49 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Trois effets distincts sur le revenu disponible : le \textbf{crédit
+québécois} (frais \emph{non subventionnés} seulement), la \textbf{déduction
+fédérale} (tous les frais ; elle réduit l'$\AFNI$, donc augmente l'ACE et le
+crédit TPS, et réduit l'impôt fédéral — postes~14, 15 et 19), et le
+\textbf{coût} des frais payés, soustrait du revenu disponible.
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Garde \emph{subventionnée} : aucun frais admissible au crédit
+québécois (crédit nul). La déduction fédérale, elle, s'applique :
+\begin{align*}
+\text{déduction} &= \min\bigl(\num{2000},\ \num{8000},\ \tfrac{2}{3} \times \num{35000}\bigr) = \num{2000}
+\end{align*}
+Elle abaisse l'$\AFNI$ de \num{34685} à \num{32685} (le poste~19
+détaille la soustraction de la cotisation RRQ supplémentaire). Enfin, les
+\D{2000} payés sont soustraits du revenu disponible.
+
+\medskip\noindent\textbf{M8 --- couple, 38 et 36~ans, revenus de travail de \D{60000} et \D{40000}, deux enfants : 4~ans (garde non subventionnée, \D{13000}) et 8~ans (garde non subventionnée, \D{3000}).}
+Frais non subventionnés de \D{13000} (4~ans) et \D{3000}
+(8~ans). Le plafonnement québécois est \emph{agrégé} : on additionne d'abord
+les plafonds des enfants concernés, puis on borne la \emph{somme} des frais.
+\begin{align*}
+\text{plafonds} &= \num{12275} + \num{6180} = \num{18455} \\
+\text{frais admissibles} &= \min(\num{18455},\ \num{16000}) = \num{16000} \\
+\text{crédit} &= \pc{70} \times \num{16000} = \num{11200}
+\end{align*}
+Le taux de \pc{70} découle du $\RFN$ de \num{96230}
+(barème de 78\,\% à 67\,\%). Noter l'effet du plafond agrégé : l'enfant de
+4~ans dépasse à lui seul son plafond de \num{12275}, mais l'excédent
+est « absorbé » par le plafond inutilisé de l'autre enfant — les \num{16000}
+sont admissibles en entier. Au fédéral, le plafonnement est agrégé aussi :
+\begin{align*}
+\text{déduction} &= \min\bigl(\num{16000},\ \num{8000} + \num{5000},\ \tfrac{2}{3} \times \num{40000}\bigr) = \num{13000}
+\end{align*}
+(la borne de $\tfrac{2}{3}$ porte sur le revenu de travail du conjoint le
+moins payé). Coût soustrait du revenu disponible : \D{16000}.
+
+\medskip\noindent\textbf{M9 --- couple, 45 et 45~ans, revenus de travail de \D{120000} et \D{60000}, un enfant de 5~ans (garde non subventionnée, \D{15000}).}
+$\RFN$ de \num{175521} : au-delà du dernier seuil du
+barème, le taux est au \emph{plancher} de \pc{67}.
+\begin{align*}
+\text{frais admissibles} &= \min(\num{12275},\ \num{15000}) = \num{12275} \\
+\text{crédit} &= \pc{67} \times \num{12275} = \num{8224.25}
+\end{align*}
+Déduction fédérale : $\min(\num{15000},\ \num{8000},\
+\tfrac{2}{3} \times \num{60000}) = \num{8000}$. Coût soustrait : \D{15000}.

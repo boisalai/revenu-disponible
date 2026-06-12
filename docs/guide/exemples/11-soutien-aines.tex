@@ -1,0 +1,30 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples \D{2000} par adulte de 70~ans et plus,
+réduits de \pc{5.4} du $\RFN$ excédant le seuil (\D{27835}
+pour un adulte seul ; \D{45270} pour un couple).
+
+\medskip\noindent\textbf{M10 --- retraité vivant seul, 70~ans, revenu de pension privée de \D{20000}.}
+\begin{align*}
+\text{réduction} &= \pos{\num{29891.99} - \num{27835}} \times \pc{5.4} = \num{111.08} \\
+\text{crédit} &= \num{2000} - \num{111.08} = \num{1888.92}
+\end{align*}
+Le $\RFN$ (\num{29891.99}) inclut la Sécurité de la vieillesse, pas seulement
+la pension privée. Crédit : \D{1888.92}.
+
+\medskip\noindent\textbf{M11 --- couple de retraités, 72 et 70~ans, pensions privées de \D{30000} et \D{10000}.}
+Les deux conjoints ont 70~ans et plus : montant maximal de
+$2 \times \num{2000} = \num{4000}$.
+\begin{align*}
+\text{réduction} &= \pos{\num{57582.28} - \num{45270}} \times \pc{5.4} = \num{664.86} \\
+\text{crédit} &= \num{4000} - \num{664.86} = \num{3335.14}
+\end{align*}
+Crédit : \D{3335.14}.
+
+\medskip\noindent\textbf{M12 --- retraité vivant seul, 76~ans, revenu de pension privée de \D{110000}.}
+Le $\RFN$ (\num{115737.85}) est si élevé que la réduction
+(\num{4746.75}) dépasse le montant maximal : crédit \emph{éteint}
+(\D{0}). À noter : M13 (68 et 66~ans) n'y a pas droit non plus —
+l'âge d'admissibilité est 70~ans, pas 65.

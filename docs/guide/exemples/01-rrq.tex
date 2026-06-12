@@ -1,0 +1,55 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples La cotisation se calcule \emph{par adulte}, sur le revenu de travail.
+Paramètres 2025 : exemption de \D{3500}, MGA de \D{71300}, MGAS de
+\D{81200}, taux de \pc{5.4} (base), \pc{1} (1\iere{}
+supplémentaire) et \pc{4} (2\ieme{} supplémentaire).
+
+\medskip\noindent\textbf{M3 --- personne vivant seule, 30~ans, revenu de travail de \D{15000}.}
+Le revenu est sous le MGA : seule la bande~1 est occupée.
+\begin{align*}
+\text{bande 1} &= \min(\num{15000},\ \num{71300}) - \num{3500} = \num{11500} \\
+\text{régime de base} &= \num{11500} \times \pc{5.4} = \num{621} \\
+\text{1\iere{} cotisation supplémentaire} &= \num{11500} \times \pc{1} = \num{115} \\
+\text{bande 2} &= 0 \quad (\text{revenu} \le \text{MGA}) \\
+\text{cotisation totale} &= \num{736}
+\end{align*}
+Cotisation RRQ : \D{736}, dont \D{621} de régime de base
+(créditable à l'impôt) et \D{115} de régime supplémentaire (déductible).
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+Même mécanique, plus haut dans la bande~1.
+\begin{align*}
+\text{bande 1} &= \min(\num{50000},\ \num{71300}) - \num{3500} = \num{46500} \\
+\text{régime de base} &= \num{46500} \times \pc{5.4} = \num{2511} \\
+\text{1\iere{} cotisation supplémentaire} &= \num{46500} \times \pc{1} = \num{465} \\
+\text{bande 2} &= 0 \quad (\text{revenu} \le \text{MGA}) \\
+\text{cotisation totale} &= \num{2976}
+\end{align*}
+Cotisation RRQ : \D{2976} (base \D{2511} ; supplémentaire \D{465}).
+
+\medskip\noindent\textbf{M5 --- personne vivant seule, 45~ans, revenu de travail de \D{100000}.}
+Le revenu dépasse le MGAS (\D{81200}) : les deux bandes sont
+\emph{saturées} — la cotisation atteint son maximum 2025.
+\begin{align*}
+\text{bande 1} &= \min(\num{100000},\ \num{71300}) - \num{3500} = \num{67800} \\
+\text{régime de base} &= \num{67800} \times \pc{5.4} = \num{3661.20} \\
+\text{1\iere{} cotisation supplémentaire} &= \num{67800} \times \pc{1} = \num{678} \\
+\text{bande 2} &= \min(\num{100000},\ \num{81200}) - \num{71300} = \num{9900} \\
+\text{2\ieme{} cotisation supplémentaire} &= \num{9900} \times \pc{4} = \num{396} \\
+\text{cotisation totale} &= \num{4735.20}
+\end{align*}
+Cotisation RRQ maximale : \D{4735.20}, dont \D{1074} de régime
+supplémentaire (déductible du revenu imposable, ce qui réduit aussi les bases
+$\RFN$ et $\AFNI$).
+
+\medskip\noindent\textbf{M8 --- couple, 38 et 36~ans, revenus de travail de \D{60000} et \D{40000}, deux enfants : 4~ans (garde non subventionnée, \D{13000}) et 8~ans (garde non subventionnée, \D{3000}).}
+Pour un couple, on calcule chaque adulte séparément puis on additionne :
+\begin{align*}
+\text{adulte 1 } (\num{60000}) &: \num{3616} \\
+\text{adulte 2 } (\num{40000}) &: \num{2336} \\
+\text{ménage} &= \num{3616} + \num{2336} = \num{5952}
+\end{align*}
+Cotisation RRQ du ménage : \D{5952}.

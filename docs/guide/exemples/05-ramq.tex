@@ -1,0 +1,44 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples La prime se calcule sur le \emph{revenu familial net} ($\RFN$,
+tableau~\ref{tab:bases-exemples}), jamais sur le revenu brut.
+
+\medskip\noindent\textbf{M3 --- personne vivant seule, 30~ans, revenu de travail de \D{15000}.}
+Son $\RFN$ de \num{13985} est \emph{sous} le seuil d'exonération
+(1~adulte, 0~enfant : \D{19890}) : base cotisable nulle, prime nulle.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+\begin{align*}
+b &= \pos{\num{48115} - \num{19890}} = \num{28225} \\
+\text{prime} &= \min\bigl(\pc{7.65} \times \num{5000} + \pc{11.48} \times \num{23225},\ \num{744}\bigr) \\
+&= \min(\num{382.50} + \num{2666.23},\ \num{744}) = \num{744}
+\end{align*}
+La somme des deux tranches dépasse largement la prime maximale : prime
+\emph{plafonnée} à \D{744}.
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Avec un enfant, le seuil d'exonération passe à \D{32240} :
+\begin{align*}
+b &= \pos{\num{33265} - \num{32240}} = \num{1025} \\
+\text{prime} &= \pc{7.65} \times \min(\num{5000},\ \num{1025}) = \num{78.41}
+\end{align*}
+La base reste dans la première tranche : prime \emph{partielle} de
+\D{78.41}.
+
+\medskip\noindent\textbf{M13 --- couple de retraités, 68 et 66~ans, pensions privées de \D{12000} et \D{6000}.}
+Couple : barème à demi-taux, seuil de \D{32240}, et la prime
+calculée sur le revenu familial commun est payée par \emph{chacun} des deux
+adultes.
+\begin{align*}
+b &= \pos{\num{41237.58} - \num{32240}} = \num{8997.58} \\
+\text{prime par adulte} &= \pc{3.84} \times \num{5000} + \pc{5.75} \times \num{3997.58} = \num{421.86} \\
+\text{ménage} &= 2 \times \num{421.86} = \num{843.72}
+\end{align*}
+Prime du ménage : \D{843.72}.
+
+\medskip\noindent\textbf{M1 --- personne vivant seule, 25~ans, aucun revenu.}
+Ce ménage reçoit l'aide de dernier recours (poste~13) : chaque adulte
+prestataire est \emph{exonéré individuellement} — prime nulle, quel que soit
+le calcul ci-dessus.

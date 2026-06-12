@@ -1,0 +1,79 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\subsection{Les ménages types des exemples}
+\label{sec:menages-exemples}
+
+Les sections~\ref{sec:cotisations} à~\ref{sec:rd} illustrent chaque poste par
+des exemples chiffrés, calculés pour l'\textbf{année d'imposition 2025} sur un
+même jeu de treize ménages types (tableau~\ref{tab:menages-exemples}). Chaque
+exemple reproduit l'algorithme du poste à la calculatrice ; tous les montants
+sont produits par le moteur de calcul et chaque résultat final est
+\textbf{vérifié automatiquement} contre celui-ci par la suite de tests du
+projet (le fichier source des exemples est régénéré à chaque modification du
+moteur).
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{c l c l l}
+\toprule
+Code & Situation & Âges & Revenus bruts & Enfants (garde) \\
+\midrule
+M1 & Personne vivant seule & 25 & 0\,\$ & --- \\
+M2 & Personne vivant seule & 30 & \D{9000} & --- \\
+M3 & Personne vivant seule & 30 & \D{15000} & --- \\
+M4 & Personne vivant seule & 40 & \D{50000} & --- \\
+M5 & Personne vivant seule & 45 & \D{100000} & --- \\
+M6 & Famille monoparentale & 35 & \D{35000} & 3 ans (subv., \D{2000}) \\
+M7 & Couple & 45 / 44 & \D{30000} / 0\,\$ & --- \\
+M8 & Couple & 38 / 36 & \D{60000} / \D{40000} & 4 ans (\D{13000}) ; 8 ans (\D{3000}) \\
+M9 & Couple & 45 / 45 & \D{120000} / \D{60000} & 5 ans (\D{15000}) \\
+M10 & Retraité vivant seul & 70 & \D{20000} & --- \\
+M11 & Couple de retraités & 72 / 70 & \D{30000} / \D{10000} & --- \\
+M12 & Retraité vivant seul & 76 & \D{110000} & --- \\
+M13 & Couple de retraités & 68 / 66 & \D{12000} / \D{6000} & --- \\
+\bottomrule
+\end{tabular}
+\caption{Les treize ménages types des exemples. Les revenus sont des revenus
+de travail (ménages actifs) ou de pension privée (ménages retraités) ; les
+frais de garde sont les frais annuels payés.}
+\label{tab:menages-exemples}
+\end{table}
+
+Plusieurs postes sont modulés sur les bases de revenu de la
+section~\ref{sec:bases} plutôt que sur le revenu brut. Le
+tableau~\ref{tab:bases-exemples} donne ces bases, telles que le moteur les
+reconstruit (équations~\eqref{eq:rfn} à~\eqref{eq:ral}) : les exemples y
+renvoient sans refaire ce calcul, détaillé au poste~19 et à la
+section~\ref{sec:bases}.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{c r r r r}
+\toprule
+Code & Revenu brut $R$ & $\RFN$ & $\AFNI$ & $\RAL$ \\
+\midrule
+M1 & \num{0} & \num{10548} & \num{10548} & \num{10548} \\
+M2 & \num{9000} & \num{14388.77} & \num{14928.77} & \num{14388.77} \\
+M3 & \num{15000} & \num{13985} & \num{14885} & \num{13985} \\
+M4 & \num{50000} & \num{48115} & \num{49535} & \num{48115} \\
+M5 & \num{100000} & \num{97506} & \num{98926} & \num{97506} \\
+M6 & \num{35000} & \num{33265} & \num{32685} & \num{33265} \\
+M7 & \num{30000} & \num{28315} & \num{29735} & \num{28315} \\
+M8 & \num{100000} & \num{96230} & \num{86070} & \num{96230} \\
+M9 & \num{180000} & \num{175521} & \num{170361} & \num{175521} \\
+M10 & \num{20000} & \num{29891.99} & \num{29891.99} & \num{29401.05} \\
+M11 & \num{40000} & \num{57582.28} & \num{57582.28} & \num{56708.72} \\
+M12 & \num{110000} & \num{115737.85} & \num{115737.85} & \num{115453.08} \\
+M13 & \num{18000} & \num{41237.58} & \num{41237.58} & \num{40083.04} \\
+\bottomrule
+\end{tabular}
+\caption{Bases de revenu 2025 des ménages types, reconstruites par le moteur
+(montants en dollars). Pour les retraités, $\RFN$ et $\AFNI$ incluent la
+Sécurité de la vieillesse (pension, SRG et suppléments) ; $\RAL$ en retranche
+une fraction (équation~\eqref{eq:ral}).}
+\label{tab:bases-exemples}
+\end{table}

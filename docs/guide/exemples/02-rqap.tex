@@ -1,0 +1,28 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Taux unique de \pc{0.494} sur le revenu assurable, \emph{sans
+exemption} : dès que le revenu dépasse \D{2000}, la cotisation porte sur
+le plein montant, plafonné au maximum assurable de \D{98000}.
+
+\medskip\noindent\textbf{M2 --- personne vivant seule, 30~ans, revenu de travail de \D{9000}.}
+\begin{align*}
+\text{cotisation} &= \num{9000} \times \pc{0.494} = \num{44.46}
+\end{align*}
+Le revenu dépasse le seuil de \D{2000} : la cotisation s'applique dès le
+premier dollar, soit \D{44.46}.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+\begin{align*}
+\text{cotisation} &= \num{50000} \times \pc{0.494} = \num{247}
+\end{align*}
+Cotisation RQAP : \D{247}.
+
+\medskip\noindent\textbf{M5 --- personne vivant seule, 45~ans, revenu de travail de \D{100000}.}
+Le revenu (\D{100000}) excède le maximum assurable : la cotisation
+est plafonnée.
+\begin{align*}
+\text{cotisation} &= \min(\num{100000},\ \num{98000}) \times \pc{0.494} = \num{484.12}
+\end{align*}
+Cotisation RQAP maximale 2025 : \D{484.12}.

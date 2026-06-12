@@ -13,7 +13,7 @@ ciblage prononcé vers les revenus faibles et moyens.
 \pregle La prestation maximale dépend du nombre d'enfants et de leur âge
 (montant majoré pour les moins de 6~ans) :
 \[
-M = n_{<6} \times M_{jeune} + (n - n_{<6}) \times M_{aîné}
+M = n_{<6} \times M_{\text{jeune}} + (n - n_{<6}) \times M_{\text{aîné}}
 \]
 Elle est ensuite réduite selon le revenu familial net rajusté fédéral
 (équation~\ref{eq:afni}), en deux paliers dont les \emph{taux dépendent du
@@ -34,8 +34,8 @@ versement (juillet à juin).
 \toprule
 Paramètre & 2025 & 2026 \\
 \midrule
-Montant maximal --- enfant de moins de 6 ans ($M_{jeune}$) & \D{7997} & \D{8157} \\
-Montant maximal --- enfant de 6 à 17 ans ($M_{aîné}$)      & \D{6748} & \D{6883} \\
+Montant maximal --- enfant de moins de 6 ans ($M_{\text{jeune}}$) & \D{7997} & \D{8157} \\
+Montant maximal --- enfant de 6 à 17 ans ($M_{\text{aîné}}$)      & \D{6748} & \D{6883} \\
 Premier seuil de réduction ($s_1$)   & \D{37487} & \D{38237} \\
 Second seuil de réduction ($s_2$)    & \D{81222} & \D{82847} \\
 \bottomrule
@@ -54,6 +54,8 @@ Second palier ($\tau_2$)  & \pc{3.2} & \pc{5.7}  & \pc{8}  & \pc{9.5} \\
 
 Les taux de réduction sont identiques pour 2025 et 2026 ; seuls les
 montants et les seuils sont indexés.
+
+\input{exemples/14-ace}
 
 \prefs Loi de l'impôt sur le revenu (L.R.C. 1985, ch.~1
 (5\ieme{}~suppl.)), art.~122.6 à 122.64 ; Agence du revenu du Canada.

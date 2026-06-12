@@ -1,0 +1,19 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Pourquoi ce poste vaut toujours zéro dans le modèle : la seule dépense
+médicale qu'il connaît est la prime RAMQ (poste~5), et celle-ci ne dépasse
+jamais le plancher de \pc{3} du revenu familial net.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+Prime RAMQ de \D{744} ; plancher de \pc{3}
+$\times$ \num{48115} $=$ \num{1443.45}. Les frais admissibles
+$\pos{\num{744} - \num{1443.45}}$ sont nuls : crédit nul.
+
+\medskip\noindent\textbf{M10 --- retraité vivant seul, 70~ans, revenu de pension privée de \D{20000}.}
+Même constat pour un retraité : prime de \D{744}, plancher de
+\num{896.76}. La prime maximale (\D{744} par
+adulte) resterait sous le plancher dès que le $\RFN$ dépasse environ
+\D{24800} — or il faut un $\RFN$ bien supérieur
+pour devoir la prime maximale : le crédit ne peut jamais s'ouvrir.

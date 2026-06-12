@@ -1,0 +1,26 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Même structure que le RQAP : taux unique (taux réduit du Québec,
+\pc{1.31}), sans exemption, plafonné au maximum de la rémunération
+assurable (\D{65700}). Sous \D{2000} de rémunération, la cotisation est
+remboursée (art.~96(4) LAE).
+
+\medskip\noindent\textbf{M2 --- personne vivant seule, 30~ans, revenu de travail de \D{9000}.}
+\begin{align*}
+\text{cotisation} &= \num{9000} \times \pc{1.31} = \num{117.90}
+\end{align*}
+Cotisation AE : \D{117.90}.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+\begin{align*}
+\text{cotisation} &= \num{50000} \times \pc{1.31} = \num{655}
+\end{align*}
+Cotisation AE : \D{655}.
+
+\medskip\noindent\textbf{M5 --- personne vivant seule, 45~ans, revenu de travail de \D{100000}.}
+\begin{align*}
+\text{cotisation} &= \min(\num{100000},\ \num{65700}) \times \pc{1.31} = \num{860.67}
+\end{align*}
+Le revenu excède le MRA : cotisation maximale 2025, \D{860.67}.

@@ -1,0 +1,49 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Les paramètres sont des moyennes annuelles des quatre barèmes
+trimestriels (d'où les décimales). Le SRG et son supplément se calculent par
+\emph{tranches} de revenu (\num{24}, \num{48} ou
+\num{96}~\$) — le revenu de pension est arrondi à la tranche
+avant d'appliquer le taux de réduction.
+
+\medskip\noindent\textbf{M10 --- retraité vivant seul, 70~ans, revenu de pension privée de \D{20000}.}
+Pension de base : \num{8791.14} (le revenu est loin du seuil de
+récupération de \num{93454}). SRG (taux de \pc{50},
+tranches de \num{24}~\$) :
+\begin{align*}
+\text{revenu arrondi} &= \Bigl\lfloor \tfrac{\num{20000}}{\num{24}} \Bigr\rfloor \times \num{24} = \num{19992} \\
+SRG &= \pos{\num{11096.85} - \num{19992} \times \pc{50}} = \num{1100.85}
+\end{align*}
+Le supplément complémentaire est éteint à ce revenu (\num{0}).
+Total : \num{8791.14} $+$ \num{1100.85} $=$ \D{9891.99}.
+
+\medskip\noindent\textbf{M13 --- couple de retraités, 68 et 66~ans, pensions privées de \D{12000} et \D{6000}.}
+Couple dont les deux conjoints ont 65~ans et plus, revenu combiné de
+\num{18000}. Chacun reçoit la pension de base (\num{8791.14}) et le SRG au
+barème « couple » (maximum \num{7327.65}, taux \pc{25},
+tranches de \num{48}~\$) :
+\begin{align*}
+SRG &= \pos{\num{7327.65} - \num{18000} \times \pc{25}} = \num{2827.65} \quad (\text{par conjoint}) \\
+\text{supplément du couple} &= \pos{\num{1152.60} - \num{13920} \times \pc{25}} = \num{0} \\
+\text{total} &= 2 \times \num{8791.14} + 2 \times \num{2827.65} + \num{0} = \num{23237.58}
+\end{align*}
+Sécurité de la vieillesse du ménage : \D{23237.58}.
+
+\medskip\noindent\textbf{M11 --- couple de retraités, 72 et 70~ans, pensions privées de \D{30000} et \D{10000}.}
+Même structure, revenu combiné de \num{40000} : la réduction du SRG
+(\num{39984} $\times$ \pc{25} $=$
+\num{9996}) dépasse le maximum de
+\num{7327.65} : SRG \emph{éteint}. Reste la pension de base de chacun :
+$2 \times \num{8791.14} = \num{17582.28}$, soit \D{17582.28}.
+
+\medskip\noindent\textbf{M12 --- retraité vivant seul, 76~ans, revenu de pension privée de \D{110000}.}
+75~ans et plus : pension majorée (\num{8791.14} $+$ \num{879.15}
+$=$ \num{9670.29}). Le revenu déclenche l'\emph{impôt de récupération} :
+\begin{align*}
+\text{récupération} &= \pos{\num{110000} + \num{9670.29} - \num{93454}} \times \pc{15} = \num{3932.44} \\
+PSV &= \num{9670.29} - \num{3932.44} = \num{5737.85}
+\end{align*}
+Pension nette : \D{5737.85} (la pension s'éteint complètement vers
+\D{148252.31} de revenu).

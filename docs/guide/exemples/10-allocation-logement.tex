@@ -1,0 +1,43 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Le modèle \emph{impute} le loyer selon la composition du ménage, calcule
+le taux d'effort (loyer annuel $\div$ revenu $\RAL$, arrondi à quatre
+décimales), convertit ce taux en montant mensuel (0, \D{100},
+\D{150} ou \D{170}), puis réduit le montant annuel
+\emph{dollar pour dollar} au-delà du seuil de revenu.
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Admissible (un enfant à charge). Loyer imputé (1~adulte, 1~enfant) :
+\D{1002} par mois.
+\begin{align*}
+\text{effort} &= \frac{\num{1002} \times 12}{\num{33265}} = 0.3615 \ \Rightarrow\ \num{100}\,\$/\text{mois} \\
+\text{réduction} &= \pos{\num{33265} - \num{38700}} = \num{0} \\
+\text{allocation} &= \num{100} \times 12 - \num{0} = \num{1200}
+\end{align*}
+Allocation-logement : \D{1200} par année.
+
+\medskip\noindent\textbf{M10 --- retraité vivant seul, 70~ans, revenu de pension privée de \D{20000}.}
+Admissible (50~ans et plus). Le revenu $\RAL$ retranche du $\RFN$
+une fraction des pensions (équation~\eqref{eq:ral}) : \num{29401.05}.
+\begin{align*}
+\text{effort} &= \frac{\num{856} \times 12}{\num{29401.05}} = 0.3494 \ \Rightarrow\ \num{100}\,\$/\text{mois} \\
+\text{réduction} &= \pos{\num{29401.05} - \num{22400}} = \num{7001.05} \\
+\text{allocation} &= \pos{\num{1200} - \num{7001.05}} = \num{0}
+\end{align*}
+La réduction dollar pour dollar gruge une partie du montant :
+\D{0} par année.
+
+\medskip\noindent\textbf{M13 --- couple de retraités, 68 et 66~ans, pensions privées de \D{12000} et \D{6000}.}
+Couple d'aînés, loyer imputé de \D{1002} :
+\begin{align*}
+\text{effort} &= \frac{\num{1002} \times 12}{\num{40083.04}} = 0.3 \ \Rightarrow\ \num{100}\,\$/\text{mois} \\
+\text{réduction} &= \pos{\num{40083.04} - \num{31500}} = \num{8583.04} \\
+\text{allocation} &= \num{100} \times 12 - \num{8583.04} = \num{0}
+\end{align*}
+Allocation-logement : \D{0} par année.
+
+\medskip\noindent\textbf{M7 --- couple, 45 et 44~ans, revenus de travail de \D{30000} et \D{0}, sans enfant.}
+Aucun adulte de 50~ans ou plus et aucun enfant : ménage
+\emph{inadmissible}, allocation nulle — quel que soit son revenu.

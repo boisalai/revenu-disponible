@@ -1,0 +1,73 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Trois ménages, du plus simple au plus riche en mécanismes : l'actif seul
+(M4), le retraité (M10, montants d'âge et de pension), le couple monoactif
+(M7, montant pour conjoint et transfert de crédits). Les crédits valent
+\emph{montant} $\times$ \emph{taux du premier palier} (\pc{14} au
+Québec, \pc{14.5} au fédéral en 2025).
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+\emph{Québec.} Revenu imposable : \num{50000} $-$ \num{1420}
+(déduction pour travailleur, plafonnée) $-$ \num{465} (RRQ
+supplémentaire, déductible) $=$ \num{48115}.
+\begin{align*}
+\text{impôt brut} &= \pc{14} \times \num{48115} = \num{6736.10} \quad (\text{1\ier{} palier seulement}) \\
+\text{montant seul réduit} &= \pos{\num{2128} - \pc{18.75} \times \pos{\num{48115} - \num{42090}}} = \num{998.31} \\
+\text{crédits} &= (\num{18571} + \num{998.31}) \times \pc{14} = \num{2739.70} \\
+\text{impôt du Québec} &= \num{6736.10} - \num{2739.70} = \num{3996.40}
+\end{align*}
+\emph{Fédéral.} Revenu imposable : \num{50000} $-$ \num{465}
+$=$ \num{49535} (pas de déduction pour travailleur au fédéral).
+\begin{align*}
+\text{impôt brut} &= \pc{14.5} \times \num{49535} = \num{7182.58} \\
+\text{crédits} &= \num{16129} + \num{2511} + \num{247} + \num{655} + \num{1471} = \num{21013} \\
+\text{impôt net} &= \num{7182.58} - \num{21013} \times \pc{14.5} = \num{4135.69} \\
+\text{après abattement} &= \num{4135.69} \times (1 - \pc{16.5}) = \num{3453.30}
+\end{align*}
+Les crédits fédéraux : montant personnel de base bonifié (\num{16129}),
+cotisations RRQ de base, RQAP et AE (créditables), montant canadien pour
+emploi (\num{1471}). L'abattement du Québec retranche
+\pc{16.5} de l'impôt fédéral.
+
+\medskip\noindent\textbf{M10 --- retraité vivant seul, 70~ans, revenu de pension privée de \D{20000}.}
+\emph{Québec.} Revenu imposable : pension \num{20000} $+$ PSV
+imposable \num{8791.14} $=$ \num{28791.14} (le SRG, non imposable, en est
+exclu — mais il entre dans le revenu \emph{net} de \num{29891.99} qui
+module les crédits).
+\begin{align*}
+\text{impôt brut} &= \pc{14} \times \num{28791.14} = \num{4030.76} \\
+\text{montant combiné} &= \num{2128} + \num{3906} + \num{3470} = \num{9504} \\
+&\quad (\text{vivant seul} + \text{âge} + \text{pension; aucune réduction : } \num{29891.99} < \num{42090}) \\
+\text{crédits} &= (\num{18571} + \num{9504}) \times \pc{14} = \num{3930.50} \\
+\text{impôt du Québec} &= \pos{\num{4030.76} - \num{3930.50}} = \num{100.26}
+\end{align*}
+\emph{Fédéral.} Impôt brut \num{4174.72} sur \num{28791.14} ; crédits :
+BPA \num{16129}, montant en raison de l'âge \num{9028}
+(réduit par le revenu net, SRG \emph{inclus} : \num{29891.99}), montant pour
+revenu de pension \num{2000}.
+\begin{align*}
+\text{impôt net} &= \pos{\num{4174.72} - \num{27157} \times \pc{14.5}} = \num{236.95} \\
+\text{après abattement} &= \num{236.95} \times (1 - \pc{16.5}) = \num{197.85}
+\end{align*}
+Impôt fédéral : \D{197.85}.
+
+\medskip\noindent\textbf{M7 --- couple, 45 et 44~ans, revenus de travail de \D{30000} et \D{0}, sans enfant.}
+\emph{Québec.} Adulte~1 : revenu imposable \num{28315}, impôt brut
+\num{3964.10}, crédits \num{18571} $\times$ \pc{14} $=$ \num{2599.94}.
+Adulte~2 (aucun revenu) : impôt brut nul, crédits \emph{inutilisés} de
+\num{2599.94} — \textbf{transférés} au conjoint :
+\begin{align*}
+\text{impôt du Québec} &= \pos{\num{3964.10} - \num{2599.94} - \num{2599.94}} = \num{0}
+\end{align*}
+\emph{Fédéral.} L'adulte~1 réclame le \textbf{montant pour conjoint} :
+$\pos{\num{16129} - \text{revenu net du conjoint } (0)} = \num{16129}$ —
+un second montant personnel de base, en pratique.
+\begin{align*}
+\text{crédits} &= \num{16129} + \num{16129} + \num{1431} + \num{148.20} + \num{393} + \num{1471} = \num{35701.20} \\
+\text{impôt net} &= \pos{\num{4311.58} - \num{35701.20} \times \pc{14.5}} = \num{0} \\
+\text{après abattement} &= \num{0} \times (1 - \pc{16.5}) = \num{0}
+\end{align*}
+Impôt fédéral : \D{0} — le couple monoactif ne paie presque rien,
+grâce au montant pour conjoint et au transfert québécois des crédits.

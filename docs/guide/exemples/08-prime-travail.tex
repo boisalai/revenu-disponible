@@ -1,0 +1,44 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Deux mouvements : la prime \emph{croît} sur le revenu de travail au-delà
+d'un montant exclu (jusqu'au maximum du type de ménage), puis elle est
+\emph{réduite} de \pc{10} du $\RFN$ excédant le seuil de
+réduction.
+
+\medskip\noindent\textbf{M3 --- personne vivant seule, 30~ans, revenu de travail de \D{15000}.}
+Personne seule sans enfant (taux de croissance \pc{11.6},
+maximum \num{1185.52}) :
+\begin{align*}
+\text{croissance} &= \min\bigl(\pos{\num{15000} - \num{2400}} \times \pc{11.6},\ \num{1185.52}\bigr) = \num{1185.52} \\
+\text{réduction} &= \pos{\num{13985} - \num{12620}} \times \pc{10} = \num{136.50} \\
+\text{prime} &= \num{1185.52} - \num{136.50} = \num{1049.02}
+\end{align*}
+La croissance est \emph{plafonnée} au maximum ; la réduction commence à
+peine ($\RFN$ de \num{13985}) : prime de \D{1049.02}.
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Famille monoparentale : taux de croissance \emph{majoré} à
+\pc{30}, maximum de \num{3066}.
+\begin{align*}
+\text{croissance} &= \min\bigl(\num{32600} \times \pc{30},\ \num{3066}\bigr) = \num{3066} \\
+\text{réduction} &= \pos{\num{33265} - \num{12620}} \times \pc{10} = \num{2064.50} \\
+\text{prime} &= \pos{\num{3066} - \num{2064.50}} = \num{1001.50}
+\end{align*}
+Prime au travail : \D{1001.50}.
+
+\medskip\noindent\textbf{M7 --- couple, 45 et 44~ans, revenus de travail de \D{30000} et \D{0}, sans enfant.}
+Couple sans enfant (exclusion de \num{3600},
+seuil de réduction de \num{19534}) :
+\begin{align*}
+\text{croissance} &= \min\bigl(\num{26400} \times \pc{11.6},\ \num{1848.34}\bigr) = \num{1848.34} \\
+\text{réduction} &= \pos{\num{28315} - \num{19534}} \times \pc{10} = \num{878.10} \\
+\text{prime} &= \pos{\num{1848.34} - \num{878.10}} = \num{970.24}
+\end{align*}
+Prime au travail : \D{970.24}.
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+La croissance est plafonnée à \num{1185.52}, mais la réduction
+(\pc{10} de \num{48115} $-$ \num{12620} $=$
+\num{3549.50}) l'emporte largement : prime \emph{éteinte} (\D{0}).

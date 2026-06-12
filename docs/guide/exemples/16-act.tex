@@ -1,0 +1,44 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples Accumulation sur le revenu de \emph{travail} (au-delà d'une exclusion),
+réduction de \pc{20} sur l'$\AFNI$ — diminué, pour un couple,
+de l'exemption du second revenu de travail (jusqu'à
+\D{16386}).
+
+\medskip\noindent\textbf{M3 --- personne vivant seule, 30~ans, revenu de travail de \D{15000}.}
+Personne seule sans enfant (taux d'accumulation de
+\pc{37.3}, maximum de \num{3812.06}) :
+\begin{align*}
+\text{accumulation} &= \min\bigl(\pos{\num{15000} - \num{2400}} \times \pc{37.3},\ \num{3812.06}\bigr) = \num{3812.06} \\
+\text{réduction} &= \pos{\num{14885} - \num{14170.05}} \times \pc{20} = \num{142.99} \\
+ACT &= \num{3812.06} - \num{142.99} = \num{3669.07}
+\end{align*}
+L'accumulation est \emph{plafonnée} ; la réduction commence à peine :
+\D{3669.07}.
+
+\medskip\noindent\textbf{M7 --- couple, 45 et 44~ans, revenus de travail de \D{30000} et \D{0}, sans enfant.}
+Couple sans enfant, un seul revenu : le conjoint sans revenu n'apporte
+aucune exemption de second revenu.
+\begin{align*}
+\text{accumulation} &= \min\bigl(\num{26400} \times \pc{37.3},\ \num{5943.38}\bigr) = \num{5943.38} \\
+\text{réduction} &= \pos{\num{29735} - 0 - \num{21787.19}} \times \pc{20} = \num{1589.56} \\
+ACT &= \num{5943.38} - \num{1589.56} = \num{4353.82}
+\end{align*}
+ACT : \D{4353.82}.
+
+\medskip\noindent\textbf{M8 --- couple, 38 et 36~ans, revenus de travail de \D{60000} et \D{40000}, deux enfants : 4~ans (garde non subventionnée, \D{13000}) et 8~ans (garde non subventionnée, \D{3000}).}
+Couple avec enfants : maximum de \num{3808.23} (vite atteint sur
+\num{100000} de revenu de travail), mais l'exemption du second revenu
+(\num{16386}, le revenu de travail du conjoint le moins payé étant net
+de la cotisation RRQ supplémentaire) ne suffit pas :
+\begin{align*}
+\text{réduction} &= \pos{\num{86070} - \num{16386} - \num{22007.75}} \times \pc{20} = \num{9535.25}
+\end{align*}
+La réduction excède l'accumulation : ACT \emph{éteinte} (\D{0}).
+
+\medskip\noindent\textbf{M4 --- personne vivant seule, 40~ans, revenu de travail de \D{50000}.}
+Accumulation au maximum (\num{3812.06}), mais l'$\AFNI$ de
+\num{49535} donne une réduction de \num{7072.99} : ACT éteinte
+(\D{0}).

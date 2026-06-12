@@ -1,0 +1,40 @@
+% ============================================================================
+% GÉNÉRÉ par scripts/exemples-guide.ts — NE PAS ÉDITER À LA MAIN.
+% Régénérer : npm run exemples (chaque chiffre est vérifié contre le moteur).
+% ============================================================================
+\pexemples La prestation maximale dépend de l'âge des enfants ; la réduction, de
+l'$\AFNI$ (tableau~\ref{tab:bases-exemples}) et du \emph{nombre} d'enfants
+(taux par palier).
+
+\medskip\noindent\textbf{M6 --- famille monoparentale, 35~ans, revenu de travail de \D{35000}, un enfant de 3~ans en garderie subventionnée (\D{2000} payés dans l'année).}
+Un enfant de moins de 6~ans (maximum \num{7997}). L'$\AFNI$ de
+\num{32685} — abaissé par la déduction pour frais de garde (poste~6) — est
+\emph{sous} le premier seuil de \num{37487} : aucune réduction.
+\begin{align*}
+ACE &= \num{7997} - 0 = \num{7997}
+\end{align*}
+Prestation \emph{maximale} : \D{7997}, non imposable.
+
+\medskip\noindent\textbf{M8 --- couple, 38 et 36~ans, revenus de travail de \D{60000} et \D{40000}, deux enfants : 4~ans (garde non subventionnée, \D{13000}) et 8~ans (garde non subventionnée, \D{3000}).}
+Deux enfants (4 et 8~ans) : maximum de \num{7997} $+$
+\num{6748} $=$ \num{14745} ; taux de réduction « 2~enfants »
+(\pc{13.5} puis \pc{5.7}).
+\begin{align*}
+\text{bande 1} &= \min\bigl(\AFNI - \num{37487},\ \num{43735}\bigr) = \num{43735} \\
+\text{bande 2} &= \pos{\num{86070} - \num{81222}} = \num{4848} \\
+\text{réduction} &= \pc{13.5} \times \num{43735} + \pc{5.7} \times \num{4848} = \num{6180.56} \\
+ACE &= \num{14745} - \num{6180.56} = \num{8564.44}
+\end{align*}
+L'$\AFNI$ (\num{86070}) bénéficie ici de la déduction fédérale pour frais
+de garde de \num{13000} (poste~6) : sans elle, la réduction serait plus
+forte. ACE : \D{8564.44}.
+
+\medskip\noindent\textbf{M9 --- couple, 45 et 45~ans, revenus de travail de \D{120000} et \D{60000}, un enfant de 5~ans (garde non subventionnée, \D{15000}).}
+Un enfant de moins de 6~ans, $\AFNI$ de \num{170361} (taux
+« 1~enfant » : \pc{7} puis \pc{3.2}).
+\begin{align*}
+\text{réduction} &= \pc{7} \times \num{43735} + \pc{3.2} \times \num{89139} = \num{5913.90} \\
+ACE &= \pos{\num{7997} - \num{5913.90}} = \num{2083.10}
+\end{align*}
+Même à ce niveau de revenu, il reste \D{2083.10} : le second palier ne
+réduit qu'à \pc{3.2}.
