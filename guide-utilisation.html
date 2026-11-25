@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guide d'utilisation du calculateur</title>
+    <!-- Page générée à partir du fichier Markdown du même nom par la construction. Ne pas la modifier à la main. -->
+    <style>
+      body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #16323d; background: #fff; max-width: 48rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
+      h1, h2, h3, h4 { font-family: "Roboto Slab", Georgia, serif; font-weight: 600; color: #00455b; line-height: 1.25; }
+      h1 { font-size: 1.7rem; margin-bottom: 0.4rem; }
+      h2 { font-size: 1.25rem; margin-top: 2.4rem; border-bottom: 2px solid #00455b; padding-bottom: 0.3rem; }
+      h3 { font-size: 1.05rem; margin-top: 1.6rem; }
+      a { color: #146d9c; }
+      code { background: #f4f6f7; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.93em; }
+      pre { background: #f4f6f7; padding: 0.8rem 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.88em; line-height: 1.45; }
+      pre code { background: none; padding: 0; }
+      li { margin: 0.3rem 0; }
+      blockquote { background: #eef5f9; border-left: 4px solid #146d9c; margin: 1rem 0; padding: 0.4rem 0.9rem; }
+      .tableau { overflow-x: auto; }
+      table { border-collapse: collapse; margin: 0.8rem 0; font-size: 0.95em; }
+      th, td { border: 1px solid #dfe5e8; padding: 0.35rem 0.6rem; text-align: left; vertical-align: top; }
+      th { background: #f4f6f7; color: #00455b; }
+      nav.sommaire { background: #f4f6f7; border-radius: 6px; padding: 0.6rem 1rem; margin: 1.2rem 0 0; font-size: 0.95em; }
+      nav.sommaire p { margin: 0.2rem 0; font-weight: 600; color: #00455b; }
+      nav.sommaire ol { margin: 0.3rem 0; padding-left: 1.2rem; list-style: none; }
+      nav.sommaire li { margin: 0.15rem 0; }
+      @media (prefers-color-scheme: dark) {
+        body { color: #e3edf1; background: #0c1b22; }
+        h1, h2, h3, h4, th, nav.sommaire p { color: #cfe6f0; }
+        h2 { border-color: #5aaed6; }
+        a { color: #74c0e6; }
+        code, pre, th, nav.sommaire { background: #152d36; }
+        th, td { border-color: #24414c; }
+        blockquote { background: #152d36; border-left-color: #74c0e6; }
+      }
+      @media print {
+        body { max-width: none; padding: 0; }
+        nav.sommaire { display: none; }
+        a { color: inherit; text-decoration: none; }
+        h2, h3 { break-after: avoid; }
+        pre, table { break-inside: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+<h1 id="guide-d-39-utilisation-du-calculateur">Guide d&#39;utilisation du calculateur</h1>
+<p>Ce guide explique comment se servir du calculateur du revenu disponible : ouvrir l&#39;outil, décrire un ménage, lire les résultats, essayer un changement de paramètres et calculer plusieurs ménages d&#39;un coup. Il ne suppose aucune formation en informatique ni en fiscalité.</p>
+<p>Deux autres documents le complètent :</p>
+<ul>
+<li>le <strong>guide d&#39;entretien</strong>, pour les personnes qui tiennent l&#39;outil à jour (nouveaux paramètres, règle modifiée, nouveau programme) ;</li>
+<li>le <strong><a href="guide-revenu-disponible.pdf">document technique</a></strong> (PDF), qui donne la règle de calcul de chaque programme, avec ses équations, ses paramètres et ses articles de loi, et qui explique les fichiers du dossier : modifier les paramètres, lire et vérifier les calculs.</li>
+</ul>
+<nav class="sommaire" aria-label="Sommaire">
+<p>Sommaire</p>
+<ol>
+<li><a href="#1-ce-que-fait-l-39-outil">1. Ce que fait l&#39;outil</a></li>
+<li><a href="#2-ouvrir-l-39-outil">2. Ouvrir l&#39;outil</a></li>
+<li><a href="#3-calculer-le-revenu-disponible-d-39-un-menage">3. Calculer le revenu disponible d&#39;un ménage</a></li>
+<li><a href="#4-comparer-deux-menages">4. Comparer deux ménages</a></li>
+<li><a href="#5-simuler-un-changement-de-parametres">5. Simuler un changement de paramètres</a></li>
+<li><a href="#6-utiliser-son-propre-fichier-de-parametres">6. Utiliser son propre fichier de paramètres</a></li>
+<li><a href="#7-calculer-un-fichier-de-menages">7. Calculer un fichier de ménages</a></li>
+<li><a href="#8-ce-que-l-39-outil-ne-fait-pas">8. Ce que l&#39;outil ne fait pas</a></li>
+<li><a href="#9-questions-frequentes">9. Questions fréquentes</a></li>
+</ol>
+</nav>
+<h2 id="1-ce-que-fait-l-39-outil">1. Ce que fait l&#39;outil</h2>
+<p>L&#39;outil répond à une question : combien reste-t-il à un ménage québécois une fois ses impôts et ses cotisations payés, et ses allocations et crédits reçus ?</p>
+<pre><code>revenu disponible = revenus de travail ou de retraite
+                  − cotisations (RRQ, RQAP, assurance-emploi, FSS, assurance médicaments)
+                  + transferts du Québec (allocations et crédits)
+                  − impôt du Québec
+                  + transferts fédéraux
+                  − impôt fédéral
+                  − frais de garde payés
+</code></pre>
+<p>Il fait ce calcul pour 2025, 2026 et 2027, et montre chaque montant, programme par programme. L&#39;onglet <strong>Calculer</strong> présente deux années : par défaut les deux dernières (2026 et 2027). À gauche, sous la situation du ménage, deux listes, <strong>Première année</strong> et <strong>Seconde année</strong>, permettent d&#39;en choisir deux autres, par exemple 2025 et 2026 ou 2025 et 2027 ; le tableau, le calcul détaillé, la carte des seuils et le graphique suivent ce choix. Les onglets <strong>Comparer deux ménages</strong> et <strong>Simuler un changement de paramètres</strong> permettent aussi de choisir l&#39;année. Un programme (une cotisation, un crédit, une allocation ou l&#39;impôt) s&#39;appelle ici un <strong>poste</strong>. Il y en a 21.</p>
+<p><strong>Exemple.</strong> Une personne seule de 40 ans qui gagne 50 000 $ paie 2 976 $ au Régime de rentes du Québec en 2025 et 2 929,50 $ en 2026. Après toutes les cotisations, tous les transferts et les deux impôts, il lui reste 39 158,20 $ en 2025 et 39 993,68 $ en 2026.</p>
+<p>L&#39;outil est <strong>pédagogique</strong>. Ses montants sont indicatifs : ils reposent sur des ménages types simplifiés (section 8) et ne constituent pas un avis fiscal.</p>
+<h2 id="2-ouvrir-l-39-outil">2. Ouvrir l&#39;outil</h2>
+<p>L&#39;outil est un dossier de fichiers. Il n&#39;y a rien à installer.</p>
+<ol>
+<li>Ouvrez le dossier et faites un double-clic sur <code>index.html</code>. La page s&#39;ouvre dans votre navigateur.</li>
+<li>La page demande le fichier de paramètres. Glissez <code>parametres.csv</code> (il est dans le même dossier) sur la page, ou choisissez-le avec le bouton.</li>
+</ol>
+<p>Si l&#39;outil est installé sur un site Web, l&#39;étape 2 disparaît : la page lit <code>parametres.csv</code> toute seule.</p>
+<p>Rien de ce que vous saisissez ne quitte votre ordinateur. Il n&#39;y a ni compte ni inscription, et rien n&#39;est conservé d&#39;une ouverture à l&#39;autre.</p>
+<p>Le dossier contient :</p>
+<div class="tableau"><table>
+<thead><tr><th>Fichier</th><th>À quoi il sert</th></tr></thead>
+<tbody>
+<tr><td><code>index.html</code></td><td>La page à ouvrir</td></tr>
+<tr><td><code>parametres.csv</code></td><td>Tous les montants, taux et seuils, une colonne par année. S&#39;ouvre dans Excel</td></tr>
+<tr><td><code>calculs/</code></td><td>Les règles de calcul, un fichier par programme</td></tr>
+<tr><td><code>controle.html</code></td><td>Une page qui vérifie que les formules donnent toujours les résultats attendus</td></tr>
+<tr><td><code>guide-utilisation.html</code></td><td>Ce guide</td></tr>
+<tr><td><code>guide-revenu-disponible.pdf</code></td><td>Le document technique : règles de calcul, fichiers du dossier, lecture des calculs</td></tr>
+</tbody>
+</table></div>
+<h2 id="3-calculer-le-revenu-disponible-d-39-un-menage">3. Calculer le revenu disponible d&#39;un ménage</h2>
+<p>L&#39;onglet <strong>Calculer</strong> s&#39;ouvre au démarrage. La page a deux colonnes : le ménage à gauche, les résultats à droite. Sur un téléphone, elles sont l&#39;une sous l&#39;autre.</p>
+<h3 id="decrire-le-menage">Décrire le ménage</h3>
+<ol>
+<li>Choisissez la <strong>situation</strong> : personne vivant seule, famille monoparentale, couple, retraité vivant seul ou couple de retraités.</li>
+<li>Inscrivez le <strong>revenu</strong> et l&#39;<strong>âge</strong> de chaque adulte, au clavier ou avec la glissière. Pour un ménage actif, c&#39;est un revenu de travail ; pour un ménage retraité, une pension privée (régime d&#39;employeur, FERR, rente). L&#39;outil ajoute lui-même la pension de la Sécurité de la vieillesse et ses suppléments.</li>
+<li>Pour une famille, indiquez le <strong>nombre d&#39;enfants</strong> (jusqu&#39;à cinq), puis pour chacun son âge, les frais de garde payés dans l&#39;année et le type de service de garde (subventionné ou non).</li>
+</ol>
+<p>Les résultats se mettent à jour à chaque changement.</p>
+<p>Changer d&#39;onglet n&#39;efface rien : en revenant à un onglet, vous retrouvez ce que vous y aviez saisi. Recharger la page conserve aussi le ménage, puisqu&#39;il est dans l&#39;adresse.</p>
+<p>Les valeurs ont des bornes : un revenu de 0 à 1 000 000 $ (la glissière s&#39;arrête à 300 000 $ ; au-delà, tapez le montant), un adulte de 18 à 100 ans (60 à 100 ans pour un ménage retraité), un enfant de 0 à 17 ans, des frais de garde d&#39;au plus 15 000 $ par enfant. Une valeur hors bornes est ramenée à la borne la plus proche : un message rouge sous le champ indique la valeur que le calcul retient, et le champ l&#39;affiche dès que vous le quittez.</p>
+<h3 id="lire-les-resultats">Lire les résultats</h3>
+<ul>
+<li><strong>En haut</strong>, le revenu disponible de chacune des deux années et l&#39;écart entre les deux.</li>
+<li><strong>Le tableau</strong> donne une ligne par poste, regroupés en cotisations, transferts du Québec, impôt du Québec, transferts fédéraux et impôt fédéral, avec un sous-total par groupe. L&#39;écart d&#39;une ligne est en vert si le ménage y gagne, en rouge s&#39;il y perd.</li>
+<li>Les postes sans montant pour ce ménage sont masqués. La case <strong>Afficher aussi les postes sans montant</strong> les fait réapparaître.</li>
+</ul>
+<h3 id="comprendre-un-montant">Comprendre un montant</h3>
+<p>Cliquez sur le nom d&#39;un poste : son détail se déplie sous la ligne. Vous y trouvez :</p>
+<ol>
+<li>les <strong>paramètres</strong> que le programme utilise, avec leur valeur pour chaque année ;</li>
+<li>le <strong>calcul détaillé</strong> pour ce ménage : chaque étape, sa formule en mots et son montant. Vous pouvez le refaire à la calculatrice. Les montants y sont ceux que calcule la loi : un impôt ou une cotisation y est positif, alors que le tableau le soustrait du revenu. « — » dans la colonne de l&#39;écart : aucun écart ; « s.o. » (sans objet) : l&#39;étape n&#39;entre pas dans le calcul de cette colonne (par exemple, le calcul d&#39;un couple ne passe pas par les mêmes étapes que celui d&#39;une personne seule) ;</li>
+<li>la description du programme, son objectif, sa règle de calcul, ses références et un lien vers la source officielle.</li>
+</ol>
+<p>Un seul détail est ouvert à la fois.</p>
+<p>Une valeur que la source officielle n&#39;a pas encore publiée (par exemple, en novembre, la plupart des montants de l&#39;année suivante) est inscrite en attendant dans le fichier de paramètres. Le détail du poste le signale : « ⚠️ Valeurs provisoires pour… », avec la liste des paramètres en cause. Le document technique les marque d&#39;un astérisque.</p>
+<h3 id="les-seuils">Les seuils</h3>
+<p>Sous le tableau, une carte montre la <strong>position nette</strong> du ménage : les transferts qu&#39;il reçoit moins les impôts qu&#39;il paie. Sur une ligne de revenu, elle situe aussi le revenu à partir duquel le ménage paie son premier dollar d&#39;impôt (au Québec, au fédéral) et celui à partir duquel il paie plus d&#39;impôts qu&#39;il ne reçoit de transferts.</p>
+<h3 id="le-taux-effectif-marginal-d-39-imposition">Le taux effectif marginal d&#39;imposition</h3>
+<p>Plus bas, un graphique répond à la question : si ce ménage gagne un dollar de plus, quelle part lui échappe ?</p>
+<p>Cette part s&#39;appelle le <strong>taux effectif marginal d&#39;imposition</strong> (TEMI). Elle compte l&#39;impôt et les cotisations en plus, mais aussi les allocations et les crédits qui diminuent quand le revenu monte. C&#39;est pourquoi le TEMI dépasse souvent le taux d&#39;imposition affiché dans les tables.</p>
+<ul>
+<li>Les <strong>aires de couleur</strong> décomposent le TEMI : cotisations, impôts, transferts perdus.</li>
+<li>La <strong>ligne pointillée</strong> montre le taux du barème d&#39;imposition seul, pour comparer.</li>
+<li>Les zones où le TEMI <strong>dépasse 100 %</strong> sont marquées : dans ces zones, gagner plus fait baisser le revenu disponible.</li>
+<li>Un tableau donne la décomposition exacte au revenu du ménage.</li>
+</ul>
+<p>Le graphique porte sur une année à la fois : son titre la nomme, et deux boutons permettent de passer d&#39;une année à l&#39;autre.</p>
+<p>L&#39;outil calcule le TEMI en augmentant de 1 000 $ le revenu du premier adulte. Pour un retraité, la courbe se lit comme le coût d&#39;un retrait supplémentaire de son épargne-retraite.</p>
+<h3 id="partager-ou-imprimer">Partager ou imprimer</h3>
+<ul>
+<li><strong>Partager</strong> : l&#39;adresse de la page contient le ménage au complet, et les deux années présentées si vous en avez choisi d&#39;autres que celles par défaut. Le bouton <strong>Copier l&#39;adresse</strong>, dans l&#39;en-tête, la copie : la personne qui l&#39;ouvre voit le même ménage. Le bouton est aussi offert dans « Comparer deux ménages » et « Simuler ». L&#39;adresse ne contient pas le fichier de paramètres : si vous avez chargé le vôtre, joignez-le. Quand l&#39;outil est ouvert depuis votre ordinateur, l&#39;adresse ne sert qu&#39;à vous.</li>
+<li><strong>Imprimer</strong> : la commande Imprimer du navigateur donne une page propre, sans boutons ni onglets. Choisissez « Enregistrer en PDF » pour en garder une copie.</li>
+</ul>
+<h2 id="4-comparer-deux-menages">4. Comparer deux ménages</h2>
+<p>L&#39;onglet <strong>Comparer deux ménages</strong> place deux ménages côte à côte, A et B, calculés avec les paramètres de la même année. Le tableau montre les deux résultats et l&#39;écart, poste par poste (B moins A).</p>
+<p><em>Exemples d&#39;usage : l&#39;effet d&#39;un deuxième revenu, d&#39;un enfant de plus, du passage à la retraite.</em></p>
+<h2 id="5-simuler-un-changement-de-parametres">5. Simuler un changement de paramètres</h2>
+<p>L&#39;onglet <strong>Simuler un changement de paramètres</strong> fait l&#39;inverse : un même ménage, deux versions des paramètres.</p>
+<ol>
+<li>Décrivez le ménage.</li>
+<li>Les <strong>paramètres A</strong> sont ceux d&#39;une année du fichier, sans modification. C&#39;est le point de départ.</li>
+<li>Les <strong>paramètres B</strong> partent de la même année. Modifiez-y ce que vous voulez : un montant, un taux, un seuil, un palier d&#39;imposition.</li>
+</ol>
+<p>Tant que rien n&#39;est modifié, l&#39;écart est nul. Ensuite, il montre l&#39;effet de vos modifications, et de rien d&#39;autre.</p>
+<p><em>Exemple : que gagnerait ce ménage si le seuil de réduction d&#39;un crédit était relevé de 1 000 $ ?</em></p>
+<p>L&#39;unité est écrite à droite du champ : « $ » pour un montant, « % » pour un taux. Un taux s&#39;écrit en pourcentage : <code>5,3</code> pour 5,3 % (le point est aussi accepté). Une valeur hors de 0 à 100 n&#39;est pas retenue : le paramètre garde sa valeur et un message le signale. Le fichier de paramètres, lui, écrit les taux en fraction (<code>0,053</code>) : c&#39;est ainsi que les paramètres B y sont téléchargés. Une fraction de la loi peut aussi s&#39;y écrire en mots, par exemple <code>2 sur 3</code> (et non <code>2/3</code>, qu&#39;Excel prendrait pour une date). Quelques paramètres valent <code>1</code> (oui) ou <code>0</code> (non), comme « prestataire sans interruption depuis 2025 » de l&#39;aide sociale : toute autre valeur n&#39;est pas retenue.</p>
+<h3 id="garder-ou-partager-une-simulation">Garder ou partager une simulation</h3>
+<ul>
+<li><strong>Copier l&#39;adresse</strong>, dans l&#39;en-tête, copie l&#39;adresse de la page. Elle contient le ménage et les paramètres A et B : la personne qui l&#39;ouvre retrouve la même simulation.</li>
+<li><strong>Télécharger les paramètres B</strong>, sous le titre des paramètres B, enregistre une copie du fichier de paramètres, nommée d&#39;après la date et l&#39;heure (<code>parametres-20261115-130652.csv</code>). La colonne de l&#39;année choisie y contient vos valeurs modifiées ; le reste du fichier est repris tel quel. Chargez-la ensuite par le bouton <strong>Paramètres</strong> (section 6) pour vous en servir dans tous les onglets, y compris le calcul d&#39;un fichier de ménages.</li>
+</ul>
+<p>Quand vous rechargez ce fichier plus tard, l&#39;onglet Simuler s&#39;en souvient : les paramètres A restent ceux du fichier d&#39;origine, les paramètres B prennent les valeurs de votre fichier, et chaque valeur qui diffère est marquée comme modifiée, avec la valeur d&#39;origine barrée à côté.</p>
+<h2 id="6-utiliser-son-propre-fichier-de-parametres">6. Utiliser son propre fichier de paramètres</h2>
+<p>Pour beaucoup de modifications, ou pour une année entière, il est plus simple de modifier le fichier lui-même.</p>
+<ol>
+<li>Faites une copie de <code>parametres.csv</code> et ouvrez-la dans Excel.</li>
+<li>Modifiez les valeurs, ou ajoutez une colonne pour une nouvelle année.</li>
+<li>Enregistrez au format <strong>CSV UTF-8</strong> (dans Excel : « CSV UTF-8 (délimité par des virgules) » ; Excel en français garde le point-virgule). N&#39;utilisez pas « CSV (séparateur : point-virgule) », « CSV (Macintosh) » ni « CSV (MS-DOS) » : ces formats ne sont pas en UTF-8 et perdent des caractères (accents, symbole ⚠️).</li>
+<li>Dans la page, cliquez sur le bouton <strong>Paramètres</strong> de l&#39;en-tête et chargez votre fichier.</li>
+</ol>
+<p>Si le fichier contient une erreur (une valeur manquante, un texte à la place d&#39;un nombre), la page indique la ligne fautive et garde les paramètres précédents.</p>
+<p>Quand le fichier est accepté, la fenêtre se ferme, un court message le confirme sous l&#39;en-tête (« Paramètres chargés ») et le bouton de l&#39;en-tête devient <strong>Paramètres personnels</strong>. Tous les onglets utilisent alors vos valeurs. Rien n&#39;est conservé d&#39;une ouverture à l&#39;autre : rechargez votre fichier à chaque visite.</p>
+<p>Le même bouton permet de <strong>revenir au fichier d&#39;origine</strong>.</p>
+<p>L&#39;onglet <strong>Calculer</strong> présente par défaut les deux dernières années du fichier ; les listes <strong>Première année</strong> et <strong>Seconde année</strong> offrent toutes ses années.</p>
+<h2 id="7-calculer-un-fichier-de-menages">7. Calculer un fichier de ménages</h2>
+<p>L&#39;onglet <strong>Calculer un fichier de ménages</strong> traite des centaines de ménages d&#39;un coup.</p>
+<ol>
+<li><p>Téléchargez le modèle, <code>modele-menages.csv</code>, et ouvrez-le dans Excel.</p>
+</li>
+<li><p>Remplissez une ligne par ménage :</p>
+<div class="tableau"><table>
+<thead><tr><th>Colonne</th><th>Contenu</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>Un nom ou un numéro de votre choix</td></tr>
+<tr><td><code>situation</code></td><td>En toutes lettres : <code>personne vivant seule</code>, <code>famille monoparentale</code>, <code>couple</code>, <code>retraité vivant seul</code> ou <code>couple de retraités</code></td></tr>
+<tr><td><code>revenu1</code>, <code>age1</code></td><td>Le revenu et l&#39;âge du premier adulte (18 à 100 ans ; 60 à 100 ans pour un retraité)</td></tr>
+<tr><td><code>revenu2</code>, <code>age2</code></td><td>Ceux du deuxième adulte (vides pour un adulte seul)</td></tr>
+<tr><td><code>enfant1_age</code>, <code>enfant1_frais</code>, <code>enfant1_garde</code></td><td>L&#39;âge du premier enfant, ses frais de garde, et <code>subventionnée</code> ou <code>non subventionnée</code></td></tr>
+<tr><td>… jusqu&#39;à <code>enfant5_…</code></td><td>Les autres enfants ; laissez vide ce qui ne s&#39;applique pas</td></tr>
+</tbody>
+</table></div>
+</li>
+<li><p>Enregistrez au format <strong>CSV UTF-8</strong> (section 6) et chargez le fichier dans la page.</p>
+</li>
+<li><p>Téléchargez le fichier de résultats.</p>
+</li>
+</ol>
+<p>Le calcul porte sur les deux dernières années du fichier de paramètres. Le fichier de résultats reprend vos colonnes et ajoute, pour chaque année : chaque poste (en montant positif : une cotisation ou un impôt se retranche), les totaux, le revenu disponible, le revenu familial net et le revenu familial net rajusté, et le taux effectif marginal d&#39;imposition, total et par catégorie, calculé comme dans la page (revenu du premier adulte augmenté de 1 000 $).</p>
+<p>Une ligne fautive est signalée avec sa colonne et n&#39;est pas calculée ; les autres le sont.</p>
+<p>Le calcul utilise les paramètres en usage. Avec votre propre fichier de paramètres (section 6), vous mesurez l&#39;effet d&#39;une mesure sur tous les ménages du fichier.</p>
+<h2 id="8-ce-que-l-39-outil-ne-fait-pas">8. Ce que l&#39;outil ne fait pas</h2>
+<p>L&#39;outil calcule des <strong>ménages types</strong>, pas une déclaration de revenus. Voici ses principales simplifications :</p>
+<ul>
+<li><strong>Une seule source de revenu par adulte</strong> : un salaire pour les actifs, une pension privée pour les retraités. Pas de revenu de placement, d&#39;entreprise ou de location, pas de gain en capital.</li>
+<li><strong>Aucune déduction facultative</strong> : pas de cotisation à un REER, par exemple.</li>
+<li><strong>Enfants de moins de 18 ans</strong>, à la charge du ménage. La garde partagée n&#39;est pas prise en compte.</li>
+<li><strong>Le loyer n&#39;est pas demandé</strong> : pour l&#39;allocation-logement, l&#39;outil suppose un loyer type selon la composition du ménage.</li>
+<li><strong>Les prestations versées de juillet à juin</strong> (Allocation canadienne pour enfants, crédit pour la TPS, crédit pour la solidarité) sont rattachées à l&#39;année civile.</li>
+<li><strong>Certaines mesures ne sont pas calculées</strong> : le fractionnement des revenus de pension entre conjoints, le bouclier fiscal, le crédit pour la prolongation de carrière, les mesures pour les personnes handicapées et les aidants.</li>
+</ul>
+<p>Le document technique donne la liste complète (section « Vérifications, limites et avertissement »).</p>
+<h2 id="9-questions-frequentes">9. Questions fréquentes</h2>
+<p><strong>La page demande un fichier de paramètres à chaque ouverture.</strong> C&#39;est normal quand on ouvre l&#39;outil depuis son ordinateur : le navigateur ne laisse pas une page lire un fichier du disque sans votre accord. Glissez <code>parametres.csv</code> sur la page.</p>
+<p><strong>Excel a changé mon fichier et la page le refuse.</strong> La page indique la ligne en cause. Vérifiez le format d&#39;enregistrement : CSV UTF-8 (section 6). Une fraction écrite <code>2/3</code> devient une date dans Excel : écrivez-la <code>2 sur 3</code>. Une valeur négative est refusée : c&#39;est souvent un signe moins tapé par mégarde.</p>
+<p><strong>Un montant me surprend.</strong> Cliquez sur le nom du poste et suivez le calcul détaillé, étape par étape. Comparez ensuite avec la source officielle, dont le lien est au bas du détail.</p>
+<p><strong>L&#39;interface peut-elle être en anglais ?</strong> Oui : le choix de langue est dans l&#39;en-tête. Le mode clair ou sombre suit le réglage de votre ordinateur.</p>
+<p><strong>Comment vérifier que les formules n&#39;ont pas été modifiées par erreur ?</strong> Ouvrez <code>controle.html</code> : la page recalcule près de 900 ménages et compare chaque poste aux résultats attendus. Tout doit être ✔.</p>
+  </body>
+</html>

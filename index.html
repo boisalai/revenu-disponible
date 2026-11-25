@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr" class="font-sans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2300455b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='white'%3E%24%3C/text%3E%3C/svg%3E" />
+    <title>Revenu disponible des ménages — Québec</title>
+    <meta
+      name="description"
+      content="Calculateur du revenu disponible des ménages québécois pour 2025, 2026 et 2027 : chaque poste expliqué et rattaché à sa source officielle."
+    />
+    <link rel="stylesheet" href="interface.css" />
+  </head>
+  <body class="antialiased">
+    <div id="racine"></div>
+    <noscript>Cet outil nécessite JavaScript.</noscript>
+    <!-- Les calculs : du JavaScript simple, à lire et à modifier (l'ordre ci-dessous fait foi). -->
+    <script src="calculs/parametres-attendus.js"></script>
+    <script src="calculs/00-outils.js"></script>
+    <script src="calculs/00-socle.js"></script>
+    <script src="calculs/01-rrq.js"></script>
+    <script src="calculs/02-rqap.js"></script>
+    <script src="calculs/03-ae.js"></script>
+    <script src="calculs/04-fss.js"></script>
+    <script src="calculs/05-ramq.js"></script>
+    <script src="calculs/06-garde.js"></script>
+    <script src="calculs/07-allocation-famille.js"></script>
+    <script src="calculs/08-prime-travail.js"></script>
+    <script src="calculs/09-solidarite.js"></script>
+    <script src="calculs/10-allocation-logement.js"></script>
+    <script src="calculs/11-soutien-aines.js"></script>
+    <script src="calculs/12-frais-medicaux.js"></script>
+    <script src="calculs/13-aide-sociale.js"></script>
+    <script src="calculs/14-allocation-canadienne-enfants.js"></script>
+    <script src="calculs/15-credit-tps.js"></script>
+    <script src="calculs/16-allocation-travailleurs.js"></script>
+    <script src="calculs/17-securite-vieillesse.js"></script>
+    <script src="calculs/18-supplement-medical-federal.js"></script>
+    <script src="calculs/19-impot.js"></script>
+    <script src="calculs/20-revenu-disponible.js"></script>
+    <script src="calculs/21-versement-epicerie.js"></script>
+    <!-- L'interface (compilée : ne pas modifier). -->
+    <script src="interface.js"></script>
+  </body>
+</html>
